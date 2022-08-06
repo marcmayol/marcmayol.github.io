@@ -3,6 +3,7 @@
 :root {
     --font-titles: 'Lato', sans-serif;
     --font-text: 'Nunito Sans', sans-serif;
+    --primary-color: #CA2400;
 }
 
 body {
@@ -10,7 +11,7 @@ body {
     font-family: var(--font-text);
 }
 
-h1, h2, h3, h4, h5, h6, navbar-brand {
+h1, h2, h3, h4, h5, h6, .navbar-brand {
     font-family: var(--font-titles);
 }
 
@@ -20,6 +21,11 @@ h1, h2, h3, h4, h5, h6, navbar-brand {
     font-weight: bold;
 }
 
+.nav-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
 #analitycs {
     background-color: floralwhite;
 }
@@ -27,6 +33,23 @@ h1, h2, h3, h4, h5, h6, navbar-brand {
 #vida_digital {
     background-color: ghostwhite;
 }
-.cyt{
 
+.cyt {
+    border: none;
+}
+
+.cyt .card-body .btn, .btn-primary {
+    background-color: white;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.cyt .card-body .btn:hover, .btn-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.cyt img {
+    width: 90%;
 }
