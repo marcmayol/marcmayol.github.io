@@ -4,4 +4,4 @@ RewriteEngine On
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
-RewriteRule ^users/(\d+)*$ ./index.html?id=$1
+RewriteRule ^category/(\d+)*$ ./index.html?id=$1
