@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background-color: black; text-align: center;">
+<script>
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
+    // Used like so
+    let arr = [
+        "bebe agua",
+        "visita a tu abuelita",
+        "lleva siempre tu toalla",
+       "come una pieza de fruta",
+        "cuidado con los charlatanes",
+        "Si te acabas el papel, reemplazalo",
+        "No dejes nada en la ducha",
+        "Cede el paso",
+        "No comas mucha mayonesa",
+        "Haz ejercicio cada día",
+        "Come ensalada",
+        "Se amable"
+    ];
+    shuffle(arr);
+    console.log(arr);
+</script>
+<p style="font-size:75px; font-weight: bolder; color: white; width: 100%; height: 100%; justify-content: center; vertical-align: center;">
+    <script> document.write(arr[1]);</script>
+</p>
+</body>
+</html>
