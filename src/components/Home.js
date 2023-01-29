@@ -7,6 +7,7 @@ import { helmetJsonLdProp } from "react-schemaorg";
 import yo from '../images/yo.png';
 import googleTagManager from '../images/google-tag-manager-v.png';
 import ga4 from '../images/Ga4-header-image.webp';
+import {Link} from "react-router-dom";
 
 class Home extends Component {
     render() {
@@ -33,10 +34,10 @@ class Home extends Component {
                                 <h1 className="pt-3 pt-md-5 mt-md-5 mt-lg-5">Marc Mayol</h1>
                                 <h2 className="pt-3 pt-md-5 pb-md-5 mb-md-5 mb-lg-5">Analítica digital y vida
                                     digital</h2>
-                                <a id="cta_home_principal" className="btn-principal" href="/blog" title="blog">
+                                <Link id="cta_home_principal" className="btn-principal" to="/blog" title="blog">
                                     <span className="new">Ver</span>
                                     <span className="old">Blog</span>
-                                </a>
+                                </Link>
                             </div>
                         </section>
                     </section>
@@ -79,11 +80,11 @@ class Home extends Component {
                                 implementar etiquetas de forma rápida y
                                 sencilla sin tener que modificar el código de tu sitio web.</p>
                             <p className="text-center px-md-5 mx-md-5">
-                                <a id="cta_home_gtm" className="btn-secundario p-md-4 mx-md-5"
-                                   href="/blog/category/google-tag-manager" title="enlace a la categoría gtm">
+                                <Link id="cta_home_gtm" className="btn-secundario p-md-4 mx-md-5"
+                                   to="/blog/category/google-tag-manager" title="enlace a la categoría gtm">
                                     <span className="new ">Vamos!!</span>
                                     <span className="old">Ver Artículos sobre GTM</span>
-                                </a>
+                                </Link>
                             </p>
                             <p className="p-3">
                                 En mi blog, te brindaré una guía completa sobre cómo usar <strong>Google Tag
@@ -115,11 +116,11 @@ class Home extends Component {
                                 eventos personalizados, obtener una visión de 360 grados de tus usuarios y utilizar
                                 análisis predictivo para tomar decisiones informadas.</p>
                             <p className="text-center px-md-5 mx-md-5">
-                                <a id="cta_home_gtm" className="btn-secundario p-md-4 mx-md-5"
-                                   href="/blog/category/google-analytics-4" title="enlace a la categoría ga4">
+                                <Link id="cta_home_ga4" className="btn-secundario p-md-4 mx-md-5"
+                                   to="/blog/category/google-analytics-4" title="enlace a la categoría ga4">
                                     <span className="new ">Vamos!!</span>
                                     <span className="old">Ver Artículos sobre GA4</span>
-                                </a>
+                                </Link>
                             </p>
                             <p className="p-3">
                                 En mi blog, te brindaré una guía completa sobre cómo usar <strong>Google Analytics

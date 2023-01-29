@@ -5,7 +5,7 @@ class BlogArticle extends Component {
     render() {
         return (
             <>
-
+                <p>Blog article</p>
             </>
         );
     }

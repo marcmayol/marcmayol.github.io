@@ -2,40 +2,38 @@ import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import {LinkContainer} from 'react-router-bootstrap';
 import logo from '../../images/logo1_black_nb.svg';
 
 class Header extends Component {
     render() {
         return (
             <>
-                <Navbar  bg="dark" expand="lg" variant="dark">
+                <Navbar bg="dark" expand="lg" variant="dark">
                     <Container>
-                        <Navbar.Brand href="/" id="homeLink">
-                            <img
-                                alt=""
-                                src={logo}
-                                width="130"
-                                height="75"
-                                className="d-inline-block align-top App-logo"
-                            />
-                        </Navbar.Brand>
+                        <LinkContainer to="/">
+                            <Navbar.Brand href="/" id="homeLink">
+                                <img
+                                    alt=""
+                                    src={logo}
+                                    width="130"
+                                    height="75"
+                                    className="d-inline-block align-top App-logo"
+                                />
+                            </Navbar.Brand>
+                        </LinkContainer>
                         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
-                                <Nav.Link href="#home">Home</Nav.Link>
-                                <Nav.Link href="#link">Link</Nav.Link>
-                                <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.2">
-                                        Another action
-                                    </NavDropdown.Item>
-                                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                    <NavDropdown.Divider/>
-                                    <NavDropdown.Item href="#action/3.4">
-                                        Separated link
-                                    </NavDropdown.Item>
-                                </NavDropdown>
+                                <LinkContainer to="/blog">
+                                    <Nav.Link href="/blog" className="link-menu">Blog</Nav.Link>
+                                </LinkContainer>
+                                <LinkContainer to="/blog/category/google-tag-manager">
+                                    <Nav.Link href="/blog/category/google-tag-manager"  className="link-menu">Google tag manager</Nav.Link>
+                                </LinkContainer>
+                                <LinkContainer to="/blog/category/google-analytics-4">
+                                    <Nav.Link href="/blog/category/google-analytics-4"  className="link-menu">Google Analytics 4</Nav.Link>
+                                </LinkContainer>
                             </Nav>
                         </Navbar.Collapse>
                     </Container>
