@@ -4,25 +4,14 @@ import {ArrowRight, Mail, Linkedin, Github} from 'lucide-react'
 export default function PersonalPage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans antialiased">
-            <header className="sticky top-0 bg-white bg-opacity-90 backdrop-blur-md z-10">
-                <nav className="container mx-auto px-6 py-4">
-                    <ul className="flex justify-center space-x-8">
-                        {['About', 'Newsletter', 'Speaks', 'Contact'].map((item) => (
-                            <li key={item}>
-                                <a
-                                    href={`#${item.toLowerCase()}`}
-                                    className="text-gray-800 hover:text-gray-600 transition-colors duration-300 text-sm font-medium"
-                                >
-                                    {item}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            </header>
 
             <main className="container mx-auto px-6 py-16 max-w-4xl">
                 <section id="about" className="mb-24 text-center">
+                    <img
+                        src="/perfil.png"
+                        alt="Marc Mayol"
+                        className="block mx-auto mb-4 w-40 h-45 rounded-full"
+                    />
                     <h1 className="text-5xl font-bold mb-4 tracking-tight">Marc Mayol</h1>
                     <h2 className="text-2xl text-gray-500 mb-8">Gen AI Developer & Researcher</h2>
                     <p className="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
@@ -109,7 +98,7 @@ export default function PersonalPage() {
                                  className="bg-gray-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
                                 <h3 className="text-2xl font-semibold mb-3">{talk.title}</h3>
                                 <p className="mb-4 text-gray-700">{talk.description}</p>
-                                <p className="text-sm text-gray-500">Audiencia: {talk.audience}</p>
+                                <p className="text-sm text-gray-500">Recomendado para: {talk.audience}</p>
                             </div>
                         ))}
                     </div>
