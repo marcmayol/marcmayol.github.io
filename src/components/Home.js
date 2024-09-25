@@ -1,152 +1,169 @@
-import React, {Component} from 'react';
-import jumbotron from '../images/jumbotron.png';
-import Image from 'react-bootstrap/Image';
-import {Helmet} from "react-helmet";
-import {Person} from 'schema-dts';
-import { helmetJsonLdProp } from "react-schemaorg";
-import yo from '../images/yo.png';
-import googleTagManager from '../images/google-tag-manager-v.png';
-import ga4 from '../images/Ga4-header-image.webp';
-import {Link} from "react-router-dom";
+import React from 'react'
+import {ArrowRight, Mail, Linkedin, Github} from 'lucide-react'
 
-class Home extends Component {
-    render() {
-        return (
-            <>
-                <Helmet>
-                    <title>Marc Mayol</title>
-                    <link rel="canonical" href="https://marcmayol.com/"/>
-                    script={[
-                    helmetJsonLdProp<Person>({
-                        "@context": "https://schema.org",
-                        "@type": "Person",
-                        name: "Marc Mayol",
-                        alternateName: "Marc Mayol Orell",
-                        knowsAbout: ["google tag manger", "google analytics", "google analytics 4", "javascript","web development"],
-                    }),
-                ]}
-                </Helmet>
-                <main className="container">
-                    <section className="row">
-                        <section className="col-12 jumbotron p-0 mt-md-5 border"
-                                 style={{background: 'url(' + jumbotron + ') center/cover no-repeat'}}>
-                            <div className="pt-5 pb-5 text-center">
-                                <h1 className="pt-3 pt-md-5 mt-md-5 mt-lg-5">Marc Mayol</h1>
-                                <h2 className="pt-3 pt-md-5 pb-md-5 mb-md-5 mb-lg-5">Analítica digital y vida
-                                    digital</h2>
-                                <Link id="cta_home_principal" className="btn-principal" to="/blog" title="blog">
-                                    <span className="new">Ver</span>
-                                    <span className="old">Blog</span>
-                                </Link>
+export default function PersonalPage() {
+    return (
+        <div className="min-h-screen bg-white text-gray-900 font-sans antialiased">
+            <header className="sticky top-0 bg-white bg-opacity-90 backdrop-blur-md z-10">
+                <nav className="container mx-auto px-6 py-4">
+                    <ul className="flex justify-center space-x-8">
+                        {['About', 'Newsletter', 'Speaks', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <a
+                                    href={`#${item.toLowerCase()}`}
+                                    className="text-gray-800 hover:text-gray-600 transition-colors duration-300 text-sm font-medium"
+                                >
+                                    {item}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </header>
+
+            <main className="container mx-auto px-6 py-16 max-w-4xl">
+                <section id="about" className="mb-24 text-center">
+                    <h1 className="text-5xl font-bold mb-4 tracking-tight">Marc Mayol</h1>
+                    <h2 className="text-2xl text-gray-500 mb-8">Gen AI Developer & Researcher</h2>
+                    <p className="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+                        ¡Hola! Soy Marc, Tech Lead especializado en Inteligencia Artificial Generativa y un
+                        entusiasta apasionado de este fascinante mundo. Con experiencia en el desarrollo de aplicaciones
+                        de inteligencia artificial, me esfuerzo por crear sistemas inteligentes que puedan tener un
+                        impacto positivo en nuestro mundo.
+                    </p>
+                </section>
+
+                <section id="newsletter" className="mb-24">
+                    <h2 className="text-3xl font-semibold mb-6 text-center">Mantente al día</h2>
+                    <div
+                        className="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
+                        <div className="md:w-1/2 mb-6 md:mb-0">
+                            <img
+                                src="/samrtAI.png?height=300&width=400"
+                                alt="Smart AI Developer Newsletter"
+                                className="rounded-2xl shadow-lg"
+                                width={400}
+                                height={300}
+                            />
+                        </div>
+                        <div className="md:w-1/2 md:pl-10 text-center md:text-left">
+                            <p className="mb-6 text-xl text-gray-700">
+                                Suscríbete a mi newsletter en LinkedIn para estar al tanto de las últimas novedades en
+                                desarrollo de IA, tendencias del sector y contenido exclusivo.
+                            </p>
+                            <a
+                                href="https://www.linkedin.com/newsletters/7226589723593498624/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
+                            >
+                                Suscríbete en LinkedIn
+                                <ArrowRight className="ml-2 h-5 w-5"/>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="speaks" className="mb-24">
+                    <h2 className="text-3xl font-semibold mb-10 text-center">Charlas y Conferencias</h2>
+                    <div className="space-y-8 pb-10">
+                        <p className="text-xl leading-relaxed text-gray-700  mx-auto mb-4 text-balance">
+
+                            Estoy disponible para impartir charlas y conferencias sobre Inteligencia Artificial
+                            Generativa, desarrollo de aplicaciones de IA y las últimas tendencias en el sector. Con
+                            experiencia previa en eventos donde he compartido estos temas, me apasiona transmitir
+                            conocimientos y experiencias a profesionales y entusiastas interesados en explorar el
+                            fascinante mundo de la IA.
+                        </p>
+                    </div>
+                    <div className="space-y-8">
+                        {[
+                            {
+                                title: "La IA y el Programador Junior",
+                                description: "Cómo utilizar correctamente la inteligencia artificial al iniciarse en el mundo de la programación profesional.",
+                                audience: "Programadores noveles, estudiantes y personas que comienzan en el sector tecnológico"
+                            },
+                            {
+                                title: "El Futuro de la IA",
+                                description: "Una exploración sobre cómo la inteligencia artificial transformará diversos sectores y nuestra vida cotidiana.",
+                                audience: "Profesionales interesados en IA, entusiastas de la tecnología y público general"
+                            },
+                            {
+                                title: "La IA y el Trabajo",
+                                description: "Análisis del impacto de la inteligencia artificial en el mundo laboral y cómo prepararse para los empleos del futuro.",
+                                audience: "Líderes empresariales, profesionales de recursos humanos y orientadores laborales"
+                            },
+                            {
+                                title: "Introducción a Hugging Face",
+                                description: "Una guía para comenzar con Hugging Face y aprovechar sus herramientas en proyectos de IA.",
+                                audience: "Desarrolladores, investigadores y estudiantes interesados en procesamiento de lenguaje natural"
+                            },
+                            {
+                                title: "Prompting: Cómo Hablar con la Inteligencia Artificial",
+                                description: "Técnicas y mejores prácticas para interactuar eficazmente con modelos de IA a través de prompts.",
+                                audience: "Usuarios de IA, desarrolladores y cualquier persona interesada en comunicación hombre-máquina"
+                            }
+                        ]
+                            .map((talk, index) => (
+                            <div key={index}
+                                 className="bg-gray-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
+                                <h3 className="text-2xl font-semibold mb-3">{talk.title}</h3>
+                                <p className="mb-4 text-gray-700">{talk.description}</p>
+                                <p className="text-sm text-gray-500">Audiencia: {talk.audience}</p>
                             </div>
-                        </section>
-                    </section>
-                    <section className="row mt-3 mt-md-5 section_home">
-                        <section className="col-12 col-md-8 p-5 ">
-                            <p className="p-3">
-                                ¡Bienvenido a mi blog! Mi nombre es <strong>Marc Mayol</strong> y he creado este espacio
-                                para compartir mis
-                                conocimientos y experiencias en la vida digital. Aquí, voy a mostrar cómo intento vivir
-                                de
-                                Internet por mi cuenta, a través de mi trabajo en YouTube, SEO y marketing digital.</p>
-                            <p className="p-3">
-                                Sin embargo, el tema principal de mi blog será la analítica digital, enfocándome
-                                especialmente
-                                en <strong>Google Analytics 4</strong> y <strong>Google Tag Manager</strong>. Estos
-                                herramientas son fundamentales para
-                                entender cómo los usuarios interactúan con tu sitio web y cómo puedes mejorar su
-                                experiencia. Si estás interesado en aprender cómo sacar el máximo provecho de estas
-                                herramientas y cómo aplicarlas en tu negocio, <strong>¡este es el lugar perfecto para
-                                ti!</strong>
-                            </p>
-                        </section>
-                        <section className="col-12 col-md-4 p-5 pt-0 pt-md-5">
-                            <Image fluid="true" style={{borderRadius: '50%'}} src={yo}/>
-                            <small className="caption w-100 text-center">
-                                <p className="w-100">¡si! ¡adoro los Goldens!</p>
-                            </small>
-                        </section>
-                    </section>
-                    <section className="row mt-3 mt-md-5 section_home">
-                        <section className="col-12 col-md-8 p-5 pt-md-0 pb-0 pb-md-5">
-                            <h2 className="text-center text-md-start p-3  h1">Google Tag Manager</h2>
-                            <p className="p-3">
-                                <strong>Google Tag Manager</strong> es una herramienta esencial para cualquier
-                                profesional del
-                                marketing digital o del desarrollo web. Con <strong>Google Tag Manager</strong>, puedes
-                                administrar todas tus etiquetas
-                                y píxeles de seguimiento en un solo lugar, lo que facilita el seguimiento y la medición
-                                de datos de tu sitio web. Además, <strong>Google Tag Manager</strong> te permite
-                                implementar etiquetas de forma rápida y
-                                sencilla sin tener que modificar el código de tu sitio web.</p>
-                            <p className="text-center px-md-5 mx-md-5">
-                                <Link id="cta_home_gtm" className="btn-secundario p-md-4 mx-md-5"
-                                   to="/blog/category/google-tag-manager" title="enlace a la categoría gtm">
-                                    <span className="new ">Vamos!!</span>
-                                    <span className="old">Ver Artículos sobre GTM</span>
-                                </Link>
-                            </p>
-                            <p className="p-3">
-                                En mi blog, te brindaré una guía completa sobre cómo usar <strong>Google Tag
-                                Manager</strong> para maximizar su
-                                potencial y obtener los mejores resultados. A través de mis artículos, aprenderás cómo
-                                configurar y usar <strong>Google Tag Manager</strong>, cómo crear etiquetas
-                                personalizadas y cómo analizar los datos
-                                recopilados para mejorar tu sitio web. Te recomiendo que eches un vistazo a mis
-                                publicaciones para obtener más información y consejos valiosos
-                            </p>
-                        </section>
-                        <section className="col-12 col-md-4 p-5 pt-0 pt-md-5  pb-md-5 d-flex justify-content-around">
-                            <Image src={googleTagManager} className="d-none d-md-flex p-5"
-                                   alt="google tag manger en una pantalla" title="google tag manger en una pantalla"/>
-                            <Image fluid="true" src={googleTagManager} className="d-md-none"
-                                   alt="google tag manger en una pantalla mobiel"
-                                   title="google tag manger en una pantalla v mobile"/>
-                        </section>
-                    </section>
-                    <section className="row mt-3 mt-md-5 section_home">
-                        <section className="col-12 col-md-8 p-5 pt-md-0 pb-0 pb-md-5">
-                            <h2 className="text-center text-md-start p-3 h1">Google Analytics 4</h2>
-                            <p className="p-3">
-                                <strong>Google Analytics 4</strong> es la última versión de la plataforma de análisis de
-                                Google, con una
-                                gran cantidad de características y mejoras que te permiten obtener una comprensión más
-                                profunda de cómo tus usuarios interactúan con tu sitio web. Con <strong>Google Analytics
-                                4</strong>, puedes rastrear
-                                eventos personalizados, obtener una visión de 360 grados de tus usuarios y utilizar
-                                análisis predictivo para tomar decisiones informadas.</p>
-                            <p className="text-center px-md-5 mx-md-5">
-                                <Link id="cta_home_ga4" className="btn-secundario p-md-4 mx-md-5"
-                                   to="/blog/category/google-analytics-4" title="enlace a la categoría ga4">
-                                    <span className="new ">Vamos!!</span>
-                                    <span className="old">Ver Artículos sobre GA4</span>
-                                </Link>
-                            </p>
-                            <p className="p-3">
-                                En mi blog, te brindaré una guía completa sobre cómo usar <strong>Google Analytics
-                                4</strong> para maximizar su
-                                potencial y obtener los mejores resultados. A través de mis artículos, aprenderás cómo
-                                configurar y usar <strong>Google Analytics 4</strong>, cómo crear informes
-                                personalizados y cómo analizar los datos
-                                recopilados para mejorar tu sitio web. Te recomiendo que eches un vistazo a mis
-                                publicaciones para obtener más información y consejos valiosos.
-                            </p>
-                        </section>
-                        <section className="col-12 col-md-4 p-5 pt-0 pt-md-5  pb-md-5 d-flex justify-content-around">
-                            <Image src={ga4} className="d-none d-md-flex p-5"
-                                   alt="google tag manger en una pantalla" title="google tag manger en una pantalla"/>
-                            <Image fluid="true" src={ga4} className="d-md-none"
-                                   alt="google tag manger en una pantalla mobiel"
-                                   title="google tag manger en una pantalla v mobile"/>
-                        </section>
-                    </section>
+                        ))}
+                    </div>
+                </section>
 
-                </main>
-            </>
+                <section id="contact" className="mb-24 text-center">
+                    <h2 className="text-3xl font-semibold mb-6">Ponte en contacto</h2>
+                    <p className="mb-8 text-xl text-gray-700">
+                        ¿Interesado en colaborar o en que participe como ponente en tu evento? ¡No dudes en contactarme!
+                    </p>
+                    <div className="flex justify-center space-x-6">
+                        {[
+                            {
+                                icon: Mail,
+                                label: 'Email',
+                                href: 'mailto:marcmayolorell@gmail.com',
+                                bgColor: 'bg-gray-200',
+                                textColor: 'text-gray-800'
+                            },
+                            {
+                                icon: Linkedin,
+                                label: 'LinkedIn',
+                                href: 'https://www.linkedin.com/in/marc-mayol-orell/',
+                                bgColor: 'bg-blue-100',
+                                textColor: 'text-blue-800'
+                            },
+                            {
+                                icon: Github,
+                                label: 'GitHub',
+                                href: 'https://github.com/marcmayol',
+                                bgColor: 'bg-gray-800',
+                                textColor: 'text-white'
+                            }
+                        ].map((item, index) => (
+                            <a
+                                key={index}
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`inline-flex items-center px-6 py-3 ${item.bgColor} ${item.textColor} rounded-full hover:opacity-80 transition-opacity duration-300`}
+                            >
+                                <item.icon className="mr-2 h-5 w-5"/>
+                                {item.label}
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            </main>
 
-        );
-    }
-
+            <footer className="border-t py-8">
+                <div className="container mx-auto px-6 text-center text-gray-500 text-sm">
+                    © {new Date().getFullYear()} Marc Mayol. All rights reserved.
+                </div>
+            </footer>
+        </div>
+    )
 }
-
-export default Home;
