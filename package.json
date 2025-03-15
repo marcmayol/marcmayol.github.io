@@ -25,7 +25,7 @@
     "react-schemaorg": "^2.0.0",
     "react-scripts": "^5.0.1",
     "reactui": "^0.0.7",
-    "schema-dts": "^1.1.0",
+    "schema-dts": "^1.1.5",
     "shadcn-ui": "^0.2.3",
     "ui": "^0.2.4",
     "web-vitals": "^2.1.4"

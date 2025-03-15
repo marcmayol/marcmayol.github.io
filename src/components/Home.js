@@ -1,8 +1,32 @@
 import React from 'react'
-import {ArrowRight, Mail, Linkedin, Github} from 'lucide-react'
+import {ArrowRight} from 'lucide-react'
+import {Helmet} from "react-helmet";
+
 
 export default function PersonalPage() {
     return (
+        <>
+            <Helmet>
+                <title>Marc Mayol</title>
+                <meta name="description"
+                      content="Marc Mayol Gen AI Developer & Researcher conocimientos sobre IA Generativa, productos de Google y desarrollo de inteligencia artificial"/>
+                <link rel="canonical" href="https://marcmayol.com/"/>
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Person",
+                        "name": "Marc Mayol",
+                        "alternateName": "Marc Mayol Orell",
+                        "knowsAbout": [
+                            "python",
+                            "google products",
+                            "Generative AI",
+                            "javascript",
+                            "vertexai"
+                        ]
+                    })}
+                </script>
+            </Helmet>
         <div className="min-h-screen bg-white text-gray-900 font-sans antialiased">
 
             <main className="container mx-auto px-6 py-16 max-w-4xl">
@@ -28,7 +52,7 @@ export default function PersonalPage() {
                         className="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
                         <div className="md:w-1/2 mb-6 md:mb-0">
                             <img
-                                src="/samrtAI.png?height=300&width=400"
+                                src="/newslleter.png"
                                 alt="Smart AI Developer Newsletter"
                                 className="rounded-2xl shadow-lg"
                                 width={400}
@@ -52,6 +76,34 @@ export default function PersonalPage() {
                         </div>
                     </div>
                 </section>
+                <section id="blog" className="mb-24">
+                    <h2 className="text-3xl font-semibold mb-6 text-center">Aprende e infórmate</h2>
+                    <div
+                        className="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
+                        <div className="md:w-1/2 mb-6 md:mb-0">
+                            <img
+                                src="/mediumlogo.png"
+                                alt="medium logo"
+                                className="rounded-2xl shadow-lg"
+                                width={400}
+                                height={300}
+                            />
+                        </div>
+                        <div className="md:w-1/2 md:pl-10 text-center md:text-left">
+                            <p className="mb-6 text-xl text-gray-700">
+                                Tampoco te pierdas mi blog en medium donde comparto mis conocimientos sobre IA
+                                Generativa, productos de Google y desarrollo de inteligencia artificial.
+                            </p>
+                            <a
+                                href="/blog"
+                                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
+                            >
+                                Ver atículos
+                                <ArrowRight className="ml-2 h-5 w-5"/>
+                            </a>
+                        </div>
+                    </div>
+                </section>
 
                 <section id="speaks" className="mb-24">
                     <h2 className="text-3xl font-semibold mb-10 text-center">Charlas y Conferencias</h2>
@@ -63,6 +115,7 @@ export default function PersonalPage() {
                             experiencia previa en eventos donde he compartido estos temas, me apasiona transmitir
                             conocimientos y experiencias a profesionales y entusiastas interesados en explorar el
                             fascinante mundo de la IA.
+                            Aqui una lsita de posibles temas que te podrian interesar:
                         </p>
                     </div>
                     <div className="space-y-8">
@@ -103,56 +156,8 @@ export default function PersonalPage() {
                         ))}
                     </div>
                 </section>
-
-                <section id="contact" className="mb-24 text-center">
-                    <h2 className="text-3xl font-semibold mb-6">Ponte en contacto</h2>
-                    <p className="mb-8 text-xl text-gray-700">
-                        ¿Interesado en colaborar o en que participe como ponente en tu evento? ¡No dudes en contactarme!
-                    </p>
-                    <div className="flex justify-center space-x-6">
-                        {[
-                            {
-                                icon: Mail,
-                                label: 'Email',
-                                href: 'mailto:marcmayolorell@gmail.com',
-                                bgColor: 'bg-gray-200',
-                                textColor: 'text-gray-800'
-                            },
-                            {
-                                icon: Linkedin,
-                                label: 'LinkedIn',
-                                href: 'https://www.linkedin.com/in/marc-mayol-orell/',
-                                bgColor: 'bg-blue-100',
-                                textColor: 'text-blue-800'
-                            },
-                            {
-                                icon: Github,
-                                label: 'GitHub',
-                                href: 'https://github.com/marcmayol',
-                                bgColor: 'bg-gray-800',
-                                textColor: 'text-white'
-                            }
-                        ].map((item, index) => (
-                            <a
-                                key={index}
-                                href={item.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`inline-flex items-center px-6 py-3 ${item.bgColor} ${item.textColor} rounded-full hover:opacity-80 transition-opacity duration-300`}
-                            >
-                                <item.icon className="mr-2 h-5 w-5"/>
-                                {item.label}
-                            </a>
-                        ))}
-                    </div>
-                </section>
             </main>
-
-            <footer className="border-t py-8">
-                <div className="container mx-auto px-6 text-center text-gray-500 text-sm">
-                    © {new Date().getFullYear()} Marc Mayol. All rights reserved.
-                </div>
-            </footer>
         </div>
+        </>
     )
 }
