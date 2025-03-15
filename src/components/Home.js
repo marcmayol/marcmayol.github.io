@@ -1,6 +1,7 @@
 import React from 'react'
 import {ArrowRight} from 'lucide-react'
 import {Helmet} from "react-helmet";
+import { Link } from "react-router-dom";
 
 
 export default function PersonalPage() {
@@ -68,7 +69,7 @@ export default function PersonalPage() {
                                 href="https://www.linkedin.com/newsletters/7226589723593498624/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
+                                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg newsletter-link"
                             >
                                 Suscríbete en LinkedIn
                                 <ArrowRight className="ml-2 h-5 w-5"/>
@@ -94,13 +95,13 @@ export default function PersonalPage() {
                                 Tampoco te pierdas mi blog en medium donde comparto mis conocimientos sobre IA
                                 Generativa, productos de Google y desarrollo de inteligencia artificial.
                             </p>
-                            <a
+                            <Link
                                 href="/blog"
                                 className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
                             >
                                 Ver atículos
                                 <ArrowRight className="ml-2 h-5 w-5"/>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </section>

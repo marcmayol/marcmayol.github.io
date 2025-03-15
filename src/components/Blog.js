@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {Helmet} from "react-helmet";
-import {ArrowRight} from 'lucide-react'
 
 class Blog extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {loading: true};
+    }
     componentDidMount() {
         this.loadMediumPosts();
     }
@@ -14,7 +17,7 @@ class Blog extends Component {
         const container = document.getElementById("medium");
         container.innerHTML = ""; // Limpiar antes de agregar
         const uniqueLinks = new Set(); // Evitar duplicados
-
+        this.setState({loading: false});
         data.items.forEach(item => {
             console.log(item)
             if (!uniqueLinks.has(item.link)) {
@@ -38,6 +41,7 @@ class Blog extends Component {
                 container.appendChild(post);
             }
         });
+
     }
     render() {
         return (
@@ -84,6 +88,14 @@ class Blog extends Component {
                                 En este blog comparto conocimientos sobre <strong>IA Generativa productos de Google y desarrollo de inteligencia artificial</strong>. ¡Espero que disfrutes de la lectura! Está hecho en Medium, que no reasume la redirección.
                             </p>
                         </section>
+                        {this.state.loading ? (
+                            <div className="flex justify-center py-6">
+                                <div
+                                    className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        ) : (<></>
+
+                        )}
                         <section id="medium" className="mb-24"></section>
                     </main>
                 </div>
