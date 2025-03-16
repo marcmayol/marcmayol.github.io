@@ -18,11 +18,15 @@ class Blog extends Component {
         container.innerHTML = ""; // Limpiar antes de agregar
         const uniqueLinks = new Set(); // Evitar duplicados
         this.setState({loading: false});
+        let title_listado = document.createElement("h2");
+        title_listado.classList.add("text-2xl", "text-gray-500", "mb-8");
+        title_listado.innerText = "Listado de artículos";
+        container.appendChild(title_listado);
         data.items.forEach(item => {
             console.log(item)
             if (!uniqueLinks.has(item.link)) {
                 uniqueLinks.add(item.link);
-                const post = document.createElement("div");
+                let post = document.createElement("div");
                 post.classList.add("bg-gray-50", "rounded-3xl", "p-8", "transition-all", "duration-300", "hover:shadow-lg", "flex", "items-center", "mb-6", "border-b", "pb-4");
                 post.innerHTML = `
                     <div class="flex-1">
