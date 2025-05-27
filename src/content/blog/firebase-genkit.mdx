@@ -1,0 +1,35 @@
+---
+title: 'Firebase Genkit'
+description: 'En la Jsconf 2025, celebrada en Madrid, descubrí una interesnate librería en uno de los workshops, se trataba del framework Firebase Genkit.'
+pubDate: 'Mar 18, 2025'
+heroImage: '/1_mn5o7Fj8RNSp09dalxywow.webp'
+---
+
+En la Jsconf 2025, celebrada en Madrid, descubrí una interesnate librería en uno de los workshops, se trataba del framework Firebase Genkit.
+<br/>
+
+Esta librería open source desarrollada por el equipo de Firebase e de Google , aunque no limitada a su ecosistema, ofrece una solución directa y sin fricciones. Compatible con JavaScript, TypeScript y Go (en beta), y con soporte en desarrollo para Python, está diseñada para ser ultraliviana, altamente tipada y completamente orientada al código. No requiere configuraciones engorrosas ni estructuras rígidas: simplemente se implementa y empieza a construir.
+<br/>
+Lo que realmente me llamó la atención fue su filosofía, totalmente enfocada en el desarrollo de productos. Su diseño permite acelerar el proceso de construcción y lanzamiento, eliminando fricciones y optimizando el flujo de trabajo desde el primer momento.
+<br/>
+<img src="/0_qPIOBHt87APVmxXB.webp" alt="ejemplo de generación básica en Firebase Genkit tanto simple como con streming"
+     class="w-full max-w-7xl mx-auto h-auto rounded-lg shadow" loading="lazy"/><br/>
+
+## ¿En que destaca Firebase Genkit?
+- **Simplicidad absoluta:** todo está pensado para que puedas empezar a desarrollar sin barreras.
+- **Ultra liviano y escalable:** optimizado para rendimiento sin sacrificar capacidades.
+- **Production-ready:**  desde el primer momento, está listo para integrarse en entornos reales.
+- **Gran ecosistema de plugins:**  amplia compatibilidad con LLMs y bases de datos vectoriales.
+- **CLI y UI en local:**  permite ejecutar y probar el framework sin necesidad de despliegues externos. Con una interfaz intuitiva y un playground integrado, facilita la depuración y experimentación en tiempo real, acelerando el desarrollo.
+- **Sistema de evaluaciones:**  incluye una suite de evaluaciones que te permite definir criterios personalizados o seleccionar valores predeterminados. Además, puedes emplear LLMs para validar respuestas de forma automática.
+- **Observabilidad y monitoring:**  proporciona herramientas de monitorización y análisis del flujo de ejecución a través de la UI.
+- **Prompts:**  los prompts son puro código. Puedes definir el tipo de entrada, variables y el formato de salida basado en Zod (de forma nativa) para validación. Lo que facilita la creación de una biblioteca propia de prompts reutilizables.
+<br/>
+Es un buen planteamiento base, pero desde mi punto de vista, presenta algunas carencias. Por ejemplo, en la documentación y los recursos revisados, no se menciona ningún otro sistema de gestión de memoria más allá de bases de datos vectoriales. En especial, no ofrece ninguna solución específica para la gestión de memoria a corto plazo. Sin embargo, nada impide almacenar las ejecuciones en un JSON e ir introduciéndose como parte del contexto
+<br/>
+Incorpora un sistema para el desarrollo de agentes, donde si presenta más tipo de memoria. Sin embargo, esta funcionalidad aún se encuentra en una fase bastante temprana de desarrollo.
+<br/>
+Desde mi punto de vista por ahora, esta librería destaca en aplicaciones sin un backend tradicional, donde su ligereza y fácil integración permiten un desarrollo ágil sin infraestructuras complejas. Principalmente en aplicaciones sin un backend tradicional, donde su ligereza y fácil integración permiten un desarrollo ágil sin infraestructuras complejas. Destaca en Single Page Applications (SPA), aplicaciones móviles sin backend, chatbots conectados a APIs o sistemas de procesamiento de datos en tiempo real con funciones AWS Lambda o entornos sin servidor.
+<br/>
+Definitivamente es una libreira que tendre en mi punto de vista, y recomeindo tenerla en cuenta. Si te interesa conocer más te recomindo vistar su <a href="https://firebase.google.com/docs/genkit?hl=es-419#google-gemini" title="docuemtacion genkit">documentación oficial</a>, su repositorio en <a href="https://github.com/firebase/genkit/issues" title="github genkit">github</a> y por su puesto su comunidad en  <a href="https://discord.gg/qXt5zzQKpc" title="discord genkit">discord</a>.
+<br/>

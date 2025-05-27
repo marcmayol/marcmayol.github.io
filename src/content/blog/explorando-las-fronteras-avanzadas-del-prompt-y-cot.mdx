@@ -1,0 +1,72 @@
+---
+title: 'Explorando las Fronteras Avanzadas del Prompt Engineering: Zero-shot, Few-shot y CoT'
+description: 'OpenAI ha publicado un interesante artículo sobre cómo los estudiantes pueden utilizar ChatGPT para mejorar sus habilidades de escritura y pensamiento crítico.'
+pubDate: 'Feb 12, 2024'
+heroImage: '/1707756578801.png'
+---
+En la era de la inteligencia artificial, las técnicas avanzadas de modelado de lenguaje como Zero-shot, Few-shot y Cadena de Pensamientos (CoT) están re re-definiendo las capacidades de los modelos de lenguaje de gran escala (LLMs). Estas estrategias no solo amplían las fronteras de lo que la IA puede lograr sino que también ofrecen una ventana a métodos más intuitivos y humanos de interacción con la tecnología. En este artículo, nos adentraremos en cada una de estas técnicas para explorar su funcionamiento, aplicaciones y el impacto que tienen en el avance de la inteligencia artificial, proporcionando una comprensión integral de estas estrategias de vanguardia.
+<br/>
+
+## Técnica Few-shot
+La técnica Few-shot se centra en mejorar la capacidad de los modelos de lenguaje para realizar tareas específicas proporcionando unos pocos ejemplos dentro del prompt. Esta aproximación ayuda al modelo a entender mejor el contexto y la naturaleza de la tarea, guiándolo hacia la respuesta deseada. Al incluir ejemplos concretos, se crea un marco de referencia que el modelo puede utilizar para generar respuestas más precisas y contextualizadas.
+<br/>
+
+### Ejemplo de Few-shot:
+Supongamos que queremos que un modelo clasifique opiniones de productos como positivas o negativas. En lugar de simplemente pedirle al modelo que clasifique una opinión sin más contexto, le proporcionamos ejemplos:
+
+<br/>
+
+```
+Ejemplo 1: "Este teléfono es increíble, la batería dura mucho." - Positiva
+Ejemplo 2: "Me decepcionó la cámara, las fotos salen borrosas." - Negativa
+Clasifica la siguiente opinión: "El servicio al cliente fue excepcional, me ayudaron rápidamente."
+```
+<br/>
+Con estos ejemplos, el modelo tiene un marco de referencia sobre qué criterios utilizar para clasificar las opiniones, mejorando su capacidad para realizar la tarea con mayor precisión.
+<br/>
+
+## Técnica de Zero-shot
+La técnica Zero-shot permite a los modelos de lenguaje realizar tareas sin haber sido entrenados específicamente en ellas, basándose en su entrenamiento general y la capacidad para seguir instrucciones. Esta capacidad se deriva del amplio conocimiento adquirido durante su entrenamiento inicial, permitiendo al modelo aplicar este conocimiento a nuevas tareas simplemente interpretando las instrucciones dadas. Esto hace posible que el modelo aborde una amplia gama de tareas sin la necesidad de ejemplos específicos o entrenamiento adicional en esa tarea particular.
+<br/>
+
+### Ejemplo de Zero-shot:
+Imagina que queremos que un modelo determine si un texto es informativo o publicitario sin haberlo entrenado específicamente en esta tarea. Simplemente le damos el prompt: "Determina si el siguiente texto es informativo o publicitario" y le presentamos el texto. El modelo utilizará su conocimiento general y habilidades de inferencia para clasificar el texto, aplicando principios aprendidos durante su entrenamiento, aunque nunca se le haya presentado específicamente este tipo de tarea antes.
+<br/>
+
+```
+Prompt: Determina si el siguiente texto es informativo o publicitario.
+Texto: "Descubre las maravillas del cielo nocturno con nuestro nuevo telescopio astronómico. Con óptica avanzada y diseño fácil de usar, es perfecto para los aficionados a la astronomía de todos los niveles. ¡No esperes más para explorar el universo!"
+```
+<br/>
+Este prompt guía al modelo para analizar el contenido y decidir si el texto tiene un propósito informativo, ofreciendo datos o conocimientos, o si es publicitario, buscando promocionar un producto o servicio.
+<br/>
+
+## Técnica de Chain-of-Thought (CoT) Prompting
+La técnica de Cadena de Pensamientos (CoT, por sus siglas en inglés Chain-of-Thought) implica desglosar el razonamiento en pasos secuenciales para abordar tareas complejas. Esta metodología estructura el proceso de pensamiento del modelo, facilitando la resolución de problemas que requieren múltiples etapas de lógica o razonamiento. Lo entenderemos más claramente con un buen ejemplo:
+<br/>
+
+### Ejemplo de Chain-of-Thought (CoT):
+
+```Pregunta: "Si Pedro tiene 3 manzanas y María le da 5 manzanas más, ¿cuántas manzanas tiene Pedro ahora?"```
+<br/>
+Como es de conocimiento general los LLM no son especialmente buenos en matemáticas  por ello este prompt de tipo zero-shot tiene muchas posibilidades de resultar en un error del modelo LLM. Pero  este resultado aplicando la técnica de Cot cambia radicalmente de modo que si añadimos al prompt una Cadena de Pensamientos:
+<br/>
+
+```
+Pregunta: "Si Pedro tiene 3 manzanas y María le da 5 manzanas más, ¿cuántas manzanas tiene Pedro ahora?" Cadena de Pensamientos:
+
+1 Pedro comienza con 3 manzanas.
+
+2 María le da 5 manzanas adicionales.
+
+3 Para encontrar el total, sumamos las manzanas que Pedro tenía con las que María le dio: 3 + 5.
+
+4 Pedro tiene 8 manzanas en total.
+```
+
+<br/>
+El modelo  dispondrá de  unas pautas para llevar acabo la tarea.
+<br/>
+En conclusión, las técnicas Zero-shot, Few-shot y Cadena de Pensamientos (CoT) representan avances significativos en el campo de la inteligencia artificial, cada una con su enfoque y aplicación única. Zero-shot destaca por su capacidad de abordar tareas sin ejemplos específicos, Few-shot mejora la precisión mediante ejemplos concretos, y CoT estructura el razonamiento en pasos secuenciales para resolver problemas complejos. Estas estrategias no solo amplían las capacidades de los modelos de lenguaje, sino que también abren nuevas posibilidades para su aplicación en diversos campos, desde la educación hasta la industria, demostrando el potencial ilimitado de la IA en la resolución de problemas y la generación de conocimiento.
+<br/>
+Si te interesa profundizar en más técnicas o explorar aplicaciones específicas de estas estrategias, no dudes en comentar y compartir este artículo. Tu interacción nos guía para ofrecerte contenido aún más relevante y detallado en el futuro.

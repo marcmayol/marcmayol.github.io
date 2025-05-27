@@ -1,0 +1,72 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const image = "https://marcmayol.com/" + heroImage
+const datePublished = new Date(pubDate).toISOString()
+const currentURL = Astro.url
+---
+
+<html lang="es">
+	<head>
+		<BaseHead title={title} description={description} image={heroImage} item={{
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			"mainEntityOfPage": {
+				"@type": "WebPage",
+				"@id": {currentURL},
+			},
+			"headline": {title},
+			"description": {description},
+			"image": {image},
+			"author": {
+				"@type": "Person",
+				"name": "Marc Mayol Orell",
+				"url": "https://marcmayol.com/about"
+			},
+			"publisher": {
+				"@type": "Organization",
+				"name": "Marc Mayol Orell",
+				"logo": {
+					"@type": "ImageObject",
+					"url": "https://marcmayol.com/logo512.png"
+				}
+			},
+			"datePublished": {datePublished },
+		}}/>
+	</head>
+
+	<body>
+		<Header />
+		<main class="mt-10 mb-16">
+			<article class="w-[calc(100%-2em)] max-w-full m-0">
+				<div class="hero-image w-full">
+					{heroImage &&
+						<img width={1020} height={510} src={heroImage} class="block mx-auto rounded-[12px] h-[510px] shadow-lg"
+							 alt={title} title={title}/>}
+				</div>
+				<div class="text-sm text-center text-[rgb(var(--gray))] mt-5 mb-2">
+					<FormattedDate date={pubDate}/>
+				</div>
+
+				<div class="prose max-w-[calc(100%-2em)] w-[720px] mx-auto p-4 text-[rgb(var(--gray-dark))]">
+					<div class="title text-center py-4 mb-4 leading-none">
+						<h1  class="text-3xl font-bold leading-tight mb-2">{title}</h1>
+					</div>
+
+					<div id="post-content" class="font-normal text-[rgb(var(--gray-dark))] text-lg leading-relaxed">
+						<slot/>
+					</div>
+				</div>
+			</article>
+		</main>
+		<hr/>
+		<Footer />
+	</body>
+</html>

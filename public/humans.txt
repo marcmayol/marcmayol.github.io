@@ -7,7 +7,7 @@ Twitter: @natzx94.
 Location: Artà, Balearic islands, Spain.
 
 /* SITE */
-	Last update:2023/01/30
+	Last update:2025/05/26
 	Language:Castellano
 	Doctype:HTML5
-	IDE: Webstorm, Github pages,  react, Photoshop
+	IDE: Webstorm, Github pages, astro, Photoshop

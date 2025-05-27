@@ -1,58 +1,26 @@
 {
-  "name": "marcmayol.com",
-  "homepage": "https://marcmayol.com",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
-    "@shadcn/ui": "^0.0.4",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "autoprefixer": "^10.4.20",
-    "framer-motion": "^11.5.6",
-    "gh-pages": "^5.0.0",
-    "lucide-react": "^0.445.0",
-    "postcss": "^8.4.47",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
-    "react-router-dom": "^6.26.2",
-    "react-router-hash-link": "^2.4.3",
-    "react-scripts": "^5.0.1",
-    "reactui": "^0.0.7",
-    "shadcn-ui": "^0.2.3",
-    "ui": "^0.2.4",
-    "web-vitals": "^2.1.4"
-  },
+  "name": "webpersonal",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "start": "react-scripts start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.4.0",
+    "@lucide/astro": "^0.511.0",
+    "@tailwindcss/vite": "^4.1.7",
+    "astro": "^5.8.0",
+    "astro-embed": "^0.9.0",
+    "astro-seo-schema": "^5.0.0",
+    "schema-dts": "^1.1.5",
+    "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.12"
+    "gh-pages": "^6.3.0"
   }
 }

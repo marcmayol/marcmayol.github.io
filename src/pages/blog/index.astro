@@ -1,0 +1,96 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import {SITE_TITLE} from '../../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
+import {Github, Linkedin, Mail} from "@lucide/astro";
+import PreFooter from "../../components/PreFooter.astro";
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const latestPosts = posts.slice(0, 5);
+
+let blogPostSchema = latestPosts.map((post) => ({
+	"@type": "BlogPosting",
+	"headline": post.data.title,
+	"url": `https://marcmayol.com/blog/${post.slug}`,
+	"datePublished": post.data.pubDate.toISOString()
+}));
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={SITE_TITLE + " | Blog"}
+				  description="Blog donde comparto conocimientos sobre IA Generativa, productos de Google y desarrollo de inteligencia artificial"
+				  item={{
+					  "@context": "https://schema.org",
+					  "@type": "Person",
+					  "name": "Marc Mayol | Blog",
+					  "publisher": {
+						  "@type": "Person",
+						  "name": "Marc Mayol Orell",
+						  "url": "https://marcmayol.com/about"
+					  },
+					  "blogPost": {blogPostSchema}
+				  }}/>
+	</head>
+	<body>
+		<Header />
+		<div  class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+		<main class="container mx-auto px-6 py-16 max-w-4xl">
+			<section id="about" class="mb-24 text-center">
+				<img
+					src="/perfil.png"
+					alt="Marc Mayol"
+					class="block mx-auto mb-4 w-35 h-50 rounded-full"
+				/>
+				<h1 class="text-5xl font-bold mb-4 tracking-tight">Marc Mayol</h1>
+				<h2 class="text-2xl text-gray-500 mb-8">Gen AI Developer & Researcher</h2>
+				<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+					¡Hola! Soy Marc, Tech Lead especializado en <strong>Inteligencia Artificial
+					Generativa</strong> y un entusiasta apasionado de este fascinante mundo. Con experiencia en el
+					desarrollo de
+					aplicaciones de <strong>inteligencia artificial</strong>, me esfuerzo por crear sistemas
+					inteligentes que puedan tener un impacto positivo en nuestro mundo.
+				</p>
+				<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+					En este blog comparto conocimientos sobre <strong>IA Generativa productos de Google y desarrollo de
+					inteligencia artificial</strong>. ¡Espero que disfrutes de la lectura!
+				</p>
+			</section>
+			<div class="max-w-7xl mx-auto px-4 py-8">
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+					{
+						posts.map((post) => (
+							<div>
+								<a href={`/blog/${post.id}/`} class="block group">
+									<img
+										width={720}
+										height={360}
+										src={post.data.heroImage}
+										alt=""
+										class="rounded-lg h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+									/>
+									<h2 class="mt-4 text-xl font-semibold text-gray-900">{post.data.title}</h2>
+									<p class="mt-2 text-gray-600 line-clamp-3">
+										{post.data.description}
+									</p>
+									<p class="text-sm text-gray-500">
+										<FormattedDate date={post.data.pubDate}/>
+									</p>
+								</a>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		<PreFooter/>
+		</main>
+		</div>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,51 @@
+---
+import {Github, Linkedin, Mail} from "@lucide/astro";
+---
+<section>
+    <section id="contact" class="mb-24 mt-10 text-center">
+        <h2 class="text-3xl font-semibold mb-6">Ponte en contacto</h2>
+        <p class="mb-8 text-xl text-gray-700">
+            ¿Interesado en colaborar o en que participe como ponente en tu evento? ¡No dudes en
+            contactarme!
+        </p>
+        <div class="flex justify-center flex-wrap gap-4 mt-6">
+            {[
+                {
+                    icon: Mail,
+                    label: 'Email',
+                    href: 'mailto:marcmayolorell@gmail.com',
+                    bgColor: 'bg-gray-100',
+                    textColor: 'text-gray-800',
+                    ringColor: 'ring-1 ring-gray-300',
+                },
+                {
+                    icon: Linkedin,
+                    label: 'LinkedIn',
+                    href: 'https://www.linkedin.com/in/marc-mayol-orell/',
+                    bgColor: 'bg-blue-50',
+                    textColor: 'text-blue-700',
+                    ringColor: 'ring-1 ring-blue-200',
+                },
+                {
+                    icon: Github,
+                    label: 'GitHub',
+                    href: 'https://github.com/marcmayol',
+                    bgColor: 'bg-gray-800',
+                    textColor: 'text-white',
+                    ringColor: 'ring-0',
+                }
+            ].map((item, index) => (
+                    <a
+                            key={index}
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class={`inline-flex items-center px-5 py-2 ${item.bgColor} ${item.textColor} ${item.ringColor} rounded-full shadow-sm hover:opacity-90 transition`}
+                    >
+                        <item.icon class="mr-2 h-5 w-5" />
+                        {item.label}
+                    </a>
+            ))}
+        </div>
+    </section>
+</section>
