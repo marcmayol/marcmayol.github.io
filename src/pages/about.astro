@@ -3,8 +3,40 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import PreFooter from '../components/PreFooter.astro';
-import {ArrowRight} from '@lucide/astro';
-import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
+const item = {
+	'@context': 'https://schema.org',
+	'@type': 'AboutPage',
+	"name": "Sobre mí - Marc Mayol",
+	"alternativeName": "Sobre mí -Marc Mayol Orell",
+	"description": "Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones.",
+	"author": {
+		"@type": "Person",
+		"name": "Marc Mayol Orell",
+		"url": "https://marcmayol.com",
+		"sameAs": [
+			"https://www.linkedin.com/in/marc-mayol-orell/",
+			"https://github.com/marcmayol"
+		],
+		"knowsAbout": [
+			"python",
+			"google products",
+			"Generative AI",
+			"javascript",
+			"vertexai",
+			"OpenAi",
+			"Prompt Engineering",
+		]
+	},
+	"mainEntity": {
+		"@type": "Person",
+		"name": "Marc Mayol Orell",
+		"jobTitle": "IA engineer y profesor",
+		"image": "https://marcmayol.com/images/perfil.jpg",
+		"description": "Marc es especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
+		"url": "https://marcmayol.com"
+	}
+}
+
 ---
 
 <!doctype html>
@@ -12,40 +44,7 @@ import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
 <head>
 	<BaseHead title="Sobre mí - Marc Mayol"
 			  description="Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones."
-			  item={{
-				  '@context': 'https://schema.org',
-				  '@type': 'AboutPage',
-				  "name": "Sobre mí - Marc Mayol",
-				  alternativeName: "Sobre mí -Marc Mayol Orell",
-				  "description": "Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones.",
-				  "author": {
-					  "@type": "Person",
-					  "name": "Marc Mayol Orell",
-					  "url": "https://marcmayol.com",
-					  "sameAs": [
-						  "https://www.linkedin.com/in/marc-mayol-orell/",
-						  "https://github.com/marcmayol"
-					  ],
-					  knowsAbout: [
-						  "python",
-						  "google products",
-						  "Generative AI",
-						  "javascript",
-						  "vertexai",
-						  "OpenAi",
-						  "Prompt Engineering",
-					  ]
-				  },
-				  "mainEntity": {
-					  "@type": "Person",
-					  "name": "Marc Mayol Orell",
-					  "jobTitle": "Ingeniero de IA y profesor",
-					  "image": "https://marcmayol.com/images/perfil.jpg",
-					  "description": "Marc es especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
-					  "url": "https://marcmayol.com"
-				  }
-			  }
-			  } } image="/perfil.png"/>
+			  item={item} image="/perfil.png"/>
 </head>
 <body>
 <Header/>

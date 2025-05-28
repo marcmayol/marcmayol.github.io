@@ -11,35 +11,36 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 const image = "https://marcmayol.com/" + heroImage
 const datePublished = new Date(pubDate).toISOString()
 const currentURL = Astro.url
+const item= {
+	"@context": "https://schema.org",
+	"@type": "BlogPosting",
+	"mainEntityOfPage": {
+		"@type": "WebPage",
+		"@id":currentURL,
+	},
+	"headline": title,
+	"description": description,
+	"image": image,
+	"author": {
+		"@type": "Person",
+		"name": "Marc Mayol Orell",
+		"url": "https://marcmayol.com/about"
+	},
+	"publisher": {
+		"@type": "Organization",
+		"name": "Marc Mayol Orell",
+		"logo": {
+			"@type": "ImageObject",
+			"url": "https://marcmayol.com/logo512.png"
+		}
+	},
+	"datePublished": {datePublished },
+}
 ---
 
 <html lang="es">
 	<head>
-		<BaseHead title={title} description={description} image={heroImage} item={{
-			"@context": "https://schema.org",
-			"@type": "BlogPosting",
-			"mainEntityOfPage": {
-				"@type": "WebPage",
-				"@id": {currentURL},
-			},
-			"headline": {title},
-			"description": {description},
-			"image": {image},
-			"author": {
-				"@type": "Person",
-				"name": "Marc Mayol Orell",
-				"url": "https://marcmayol.com/about"
-			},
-			"publisher": {
-				"@type": "Organization",
-				"name": "Marc Mayol Orell",
-				"logo": {
-					"@type": "ImageObject",
-					"url": "https://marcmayol.com/logo512.png"
-				}
-			},
-			"datePublished": {datePublished },
-		}}/>
+		<BaseHead title={title} description={description} image={heroImage} item={item}/>
 	</head>
 
 	<body>

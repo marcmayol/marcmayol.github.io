@@ -5,27 +5,29 @@ import Footer from '../components/Footer.astro';
 import PreFooter from '../components/PreFooter.astro';
 import {ArrowRight} from '@lucide/astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const item = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	'name': "Marc Mayol",
+	"descriontion": SITE_DESCRIPTION,
+	'alternativeName': "Marc Mayol Orell",
+	'knowsAbout': [
+		"python",
+		"google products",
+		"Generative AI",
+		"javascript",
+		"vertexai",
+		"OpenAi",
+		"Prompt Engineering",
+	]
+}
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} item={{
-			'@context': 'https://schema.org',
-			'@type': 'Person',
-			name: "Marc Mayol",
-			"descriontion":{SITE_DESCRIPTION},
-			alternativeName: "Marc Mayol Orell",
-			knowsAbout: [
-				"python",
-				"google products",
-				"Generative AI",
-				"javascript",
-				"vertexai",
-				"OpenAi",
-				"Prompt Engineering",
-			]
-		}} image="/perfil.png" />
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} item={item} image="/perfil.png"/>
 	</head>
 	<body>
 		<Header />
