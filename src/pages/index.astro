@@ -8,12 +8,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} item={{
 			'@context': 'https://schema.org',
 			'@type': 'Person',
 			name: "Marc Mayol",
+			"descriontion":{SITE_DESCRIPTION},
 			alternativeName: "Marc Mayol Orell",
 			knowsAbout: [
 				"python",
@@ -24,7 +25,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				"OpenAi",
 				"Prompt Engineering",
 			]
-		}}/>
+		}} image="/perfil.png" />
 	</head>
 	<body>
 		<Header />
@@ -66,12 +67,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 								desarrollo de IA, tendencias del sector y contenido exclusivo.
 							</p>
 							<a
-								href="https://www.aedin.com/newsletters/7226589723593498624/"
+								href="https://www.aedin.com/newsletters/7226589723593498624/" title="newsletter linkedin"
 								target="_blank"
 								rel="noopener noreferrer"
 								class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg newsletter-a"
 							>
-								Suscríbete en aedIn
+								Suscríbete en LinkedIn
 								<ArrowRight class="ml-2 h-5 w-5"/>
 							</a>
 						</div>
@@ -83,7 +84,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 						class="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
 						<div class="md:w-1/2 mb-6 md:mb-0">
 							<img
-								src="/mediumlogo.png"
+								src="/what-is-ai.jpg"
 								alt="medium logo"
 								class="rounded-2xl shadow-lg"
 								width={400}
@@ -96,7 +97,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 								Generativa, productos de Google y desarrollo de inteligencia artificial.
 							</p>
 							<a
-								href="/blog"
+								href="/blog" title="ver blog"
 								class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
 							>
 								Ver atículos

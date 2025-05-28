@@ -1,62 +1,129 @@
 ---
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PreFooter from '../components/PreFooter.astro';
+import {ArrowRight} from '@lucide/astro';
+import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage="/blog-placeholder-about.jpg"
->
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
+<!doctype html>
+<html lang="es">
+<head>
+	<BaseHead title="Sobre mí - Marc Mayol"
+			  description="Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones."
+			  item={{
+				  '@context': 'https://schema.org',
+				  '@type': 'AboutPage',
+				  "name": "Sobre mí - Marc Mayol",
+				  alternativeName: "Sobre mí -Marc Mayol Orell",
+				  "description": "Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones.",
+				  "author": {
+					  "@type": "Person",
+					  "name": "Marc Mayol Orell",
+					  "url": "https://marcmayol.com",
+					  "sameAs": [
+						  "https://www.linkedin.com/in/marc-mayol-orell/",
+						  "https://github.com/marcmayol"
+					  ],
+					  knowsAbout: [
+						  "python",
+						  "google products",
+						  "Generative AI",
+						  "javascript",
+						  "vertexai",
+						  "OpenAi",
+						  "Prompt Engineering",
+					  ]
+				  },
+				  "mainEntity": {
+					  "@type": "Person",
+					  "name": "Marc Mayol Orell",
+					  "jobTitle": "Ingeniero de IA y profesor",
+					  "image": "https://marcmayol.com/images/perfil.jpg",
+					  "description": "Marc es especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
+					  "url": "https://marcmayol.com"
+				  }
+			  }
+			  } } image="/perfil.png"/>
+</head>
+<body>
+<Header/>
+<div class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+	<main class="container mx-auto px-6 py-16 max-w-4xl">
+		<section id="about" class="mb-24 text-center">
+			<img
+				src="/perfil.png"
+				alt="Marc Mayol"
+				class="block mx-auto mb-4 w-35 h-50 rounded-full"
+			/>
+			<h1 class="text-5xl font-bold mb-4 tracking-tight">Conoce me</h1>
 
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
+			<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+				Soy Marc, Tech Lead especializado en Inteligencia Artificial Generativa y un entusiasta apasionado de
+				este fascinante mundo. Con experiencia en el desarrollo de aplicaciones de inteligencia artificial, me
+				esfuerzo por crear sistemas inteligentes que puedan tener un impacto positivo en nuestro mundo.
+				Pero ante todo soy un friki de todo lo que te puedas imaginar anime, videojuegos, series, películas,
+				libros, cómics, etc. Pero sobre todo soy un nerd de la tecnología por lo que e encanta aprender y
+				compartir mis conocimientos sobre ella con los demás.
+			</p>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<img src="/fotoarearea.jpg" alt="foto aerea palma franciscogarvi" class="w-full rounded-lg shadow" />
+			</div>
 
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
+			<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">Mi historia</h3>
+				<p class="text-gray-700">
+					Desde que era pequeño en Mallorca, siempre sentí una curiosidad insaciable por entender cómo funcionaban las cosas. Desmontaba juguetes, aparatos electrónicos y cualquier cacharro que cayera en mis manos. No lo hacía por romper, sino por descubrir su lógica interna, por aprender. Esa misma curiosidad es la que, con los años, me llevó a formarme como ingeniero y, más adelante, a dedicarme al mundo de la inteligencia artificial.
+					<br/>
+					<br/>
+					Hoy soy programador de IA y profesor. Combino el desarrollo técnico con la docencia porque creo firmemente que el conocimiento, cuando se comparte, se multiplica. Me apasiona crear soluciones que realmente funcionen, que vayan más allá de lo llamativo para convertirse en herramientas útiles. Y al mismo tiempo, disfruto enseñando, explicando conceptos complejos de forma sencilla, y ayudando a otros a descubrir el potencial de la IA.
+				</p>
+			</div>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row-reverse items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<img src="/GitHub__headpic.webp" alt="github headpic" class="w-full rounded-lg shadow" />
+			</div>
 
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
+			<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">PromptSuite</h3>
+				<p class="text-gray-700">
+					Uno de los proyectos que más representa esta forma de trabajar es PromptSuite, una librería que desarrollé para gestionar prompts de manera estructurada, con versiones específicas para cada modelo, tanto en formatos como JSON como en SQL. Nació de una necesidad real y la he diseñado pensando en la versatilidad, la seguridad y la claridad para quienes la usen.
+				<br/>
+				<br/>
+					<span class="font-bold">Próximamente disponible</span>
+				</p>
+			</div>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<figure>
+					<img src="/20f5d489-5e90-4cd0-906a-e58353358e9b.png" alt="ia-chan" class="w-full rounded-lg shadow" />
+					<figcaption class="text-gray-500 text-sm mt-2">IA-chan la compañera que me ayuda en mis clases y articulos de ia</figcaption>
+				</figure>
+			</div>
+		<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">Mis contenidos</h3>
+				<p class="text-gray-700">
+					Pero no me quedo ahí. Escribo artículos, preparo contenidos, y participo en iniciativas donde la IA no sea solo una moda, sino una herramienta con propósito. Me interesa especialmente cómo los agentes inteligentes pueden convertirse en productos útiles, valiosos y vendibles para las empresas. Estoy convencido de que ahí está una de las claves del futuro: en crear sistemas que no solo automaticen, sino que entiendan, propongan y evolucionen con nosotros.
+					<br/>
+					<br/>
+					Sigo aprendiendo cada día, explorando nuevos caminos, y compartiendo lo que descubro. Porque si algo he aprendido en este viaje, es que la tecnología solo tiene sentido cuando mejora la vida de las personas. Y en eso, sigo trabajando.
+			</div>
 
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
-</Layout>
+		</section>
+	</main>
+	<PreFooter/>
+</div>
+<Footer/>
+</body>
+</html>
