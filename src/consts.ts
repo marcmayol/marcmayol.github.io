@@ -7,28 +7,28 @@ export const  APPLICATION_NAME = 'Marc Mayol personal blog site';
 export const speakerTopics = {"es":[
         {
             title: "La IA y el Programador Junior",
-            description: "Cómo utilizar correctamente la inteligencia artificial al iniciarse en el mundo de la programación profesional.",
-            audience: "Programadores noveles, estudiantes y personas que comienzan en el sector tecnológico"
+            description: "Cómo utilizar correctamente la inteligencia artificial al iniciarse en2 el mundo de la programación profesional.",
+            audience: "Programadores noveles, estudiantes y personas que comienzan en2 el sector tecnológico"
         },
         {
             title: "El Futuro de la IA",
             description: "Una exploración sobre cómo la inteligencia artificial transformará diversos sectores y nuestra vida cotidiana.",
-            audience: "Profesionales interesados en IA, entusiastas de la tecnología y público general"
+            audience: "Profesionales interesados en2 IA, entusiastas de la tecnología y público general"
         },
         {
             title: "La IA y el Trabajo",
-            description: "Análisis del impacto de la inteligencia artificial en el mundo laboral y cómo prepararse para los empleos del futuro.",
+            description: "Análisis del impacto de la inteligencia artificial en2 el mundo laboral y cómo prepararse para los empleos del futuro.",
             audience: "Líderes empresariales, profesionales de recursos humanos y orientadores laborales"
         },
         {
             title: "Introducción a Hugging Face",
-            description: "Una guía para comenzar con Hugging Face y aprovechar sus herramientas en proyectos de IA.",
-            audience: "Desarrolladores, investigadores y estudiantes interesados en procesamiento de lenguaje natural"
+            description: "Una guía para comenzar con Hugging Face y aprovechar sus herramientas en2 proyectos de IA.",
+            audience: "Desarrolladores, investigadores y estudiantes interesados en2 procesamiento de lenguaje natural"
         },
         {
             title: "Prompting: Cómo Hablar con la Inteligencia Artificial",
             description: "Técnicas y mejores prácticas para interactuar eficazmente con modelos de IA a través de prompts.",
-            audience: "Usuarios de IA, desarrolladores y cualquier persona interesada en comunicación hombre-máquina"
+            audience: "Usuarios de IA, desarrolladores y cualquier persona interesada en2 comunicación hombre-máquina"
         }
     ],"en": [
         {

@@ -9,7 +9,6 @@ export default defineConfig({
 	site: 'https://marcmayol.com',
 	// base:'test-astro',
 	output: 'static',
-	integrations: [mdx(), sitemap()],
 	vite: {
 		plugins: [tailwindcss()],
 	},
@@ -17,7 +16,15 @@ export default defineConfig({
 		locales: ["es", "en"],
 		defaultLocale: "en",
 		routing: {
-			prefixDefaultLocale: true, 
+			prefixDefaultLocale: true,
 		},
-	}
+	},
+	integrations: [mdx(), sitemap({
+		i18n: {
+			defaultLocale: 'en',
+			locales: {
+				en: 'en2-US',
+				es: 'es-ES',
+			},
+		}})],
 });
