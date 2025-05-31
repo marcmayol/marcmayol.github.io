@@ -1,14 +1,18 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import PreFooter from '../components/PreFooter.astro';
+import BaseHead from '../../../components/BaseHead.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import PreFooter from '../../../components/PreFooter.astro'
+	;
+import { getLangFromUrl, useTranslations } from '../../../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 const item = {
 	'@context': 'https://schema.org',
 	'@type': 'AboutPage',
-	"name": "Sobre mí - Marc Mayol",
+	"name": "t('about.seotitle')",
 	"alternativeName": "Sobre mí -Marc Mayol Orell",
-	"description": "Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones.",
+	"description": t('about.seodescription'),
 	"author": {
 		"@type": "Person",
 		"name": "Marc Mayol Orell",
@@ -32,7 +36,7 @@ const item = {
 		"name": "Marc Mayol Orell",
 		"jobTitle": "IA engineer y profesor",
 		"image": "https://marcmayol.com/images/perfil.jpg",
-		"description": "Marc es especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
+		"description": "Marc Mayol especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
 		"url": "https://marcmayol.com"
 	}
 }
@@ -42,8 +46,8 @@ const item = {
 <!doctype html>
 <html lang="es">
 <head>
-	<BaseHead title="Sobre mí - Marc Mayol"
-			  description="Página personal de Marc Mayol Orell, IA engineer y profesor. Descubre su trayectoria, proyectos y publicaciones."
+	<BaseHead title={t('about.seotitle')}
+			  description={t('about.seodescription')}
 			  item={item} image="/perfil.png"/>
 </head>
 <body>
@@ -56,15 +60,10 @@ const item = {
 				alt="Marc Mayol"
 				class="block mx-auto mb-4 w-35 h-50 rounded-full"
 			/>
-			<h1 class="text-5xl font-bold mb-4 tracking-tight">Conoce me</h1>
+			<h1 class="text-5xl font-bold mb-4 tracking-tight">{t('about.title')}</h1>
 
 			<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
-				Soy Marc, Tech Lead especializado en Inteligencia Artificial Generativa y un entusiasta apasionado de
-				este fascinante mundo. Con experiencia en el desarrollo de aplicaciones de inteligencia artificial, me
-				esfuerzo por crear sistemas inteligentes que puedan tener un impacto positivo en nuestro mundo.
-				Pero ante todo soy un friki de todo lo que te puedas imaginar anime, videojuegos, series, películas,
-				libros, cómics, etc. Pero sobre todo soy un nerd de la tecnología por lo que e encanta aprender y
-				compartir mis conocimientos sobre ella con los demás.
+				{t('about.description')}
 			</p>
 		</section>
 		<section class="flex flex-col-reverse md:flex-row items-center gap-8 py-12 px-4">

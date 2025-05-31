@@ -7,7 +7,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage,customURL} = Astro.props;
 const image = "https://marcmayol.com/" + heroImage
 const datePublished = new Date(pubDate).toISOString()
 const currentURL = Astro.url
@@ -44,7 +44,7 @@ const item= {
 	</head>
 
 	<body>
-		<Header />
+		<Header  customURL={customURL}/>
 		<main class="mt-10 mb-16">
 			<article class="w-[calc(100%-2em)] max-w-full m-0">
 				<div class="hero-image w-full">

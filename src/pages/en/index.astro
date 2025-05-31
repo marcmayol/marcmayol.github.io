@@ -1,0 +1,135 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PreFooter from '../../components/PreFooter.astro';
+import {ArrowRight} from '@lucide/astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import {speakerTopics} from "../../consts";
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const item = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	'name': "Marc Mayol",
+	"descriontion": t('home.seodescription'),
+	'alternativeName': "Marc Mayol Orell",
+	'knowsAbout': [
+		"python",
+		"google products",
+		"Generative AI",
+		"javascript",
+		"vertexai",
+		"OpenAi",
+		"Prompt Engineering",
+	]
+}
+---
+
+<!doctype html>
+<html lang={lang}>
+<head>
+	<BaseHead title={t('home.seotitle')} description={t('home.seodescription')} item={item} image="/perfil.png"/>
+</head>
+<body>
+<Header />
+<div class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+
+	<main class="container mx-auto px-6 py-16 max-w-4xl">
+		<section id="about" class="mb-24 text-center">
+			<img
+				src="/perfil.png"
+				alt={t('home.seodescription')}
+				class="block mx-auto mb-4 w-35 h-50 rounded-full"
+			/>
+			<h1 class="text-5xl font-bold mb-4 tracking-tight">{t('home.title')}</h1>
+			<h2 class="text-2xl text-gray-500 mb-8">{t('home.subtitle')}</h2>
+			<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+				{t('home.description')}
+			</p>
+		</section>
+
+		<section id="newsletter" class="mb-24">
+			<h2 class="text-3xl font-semibold mb-6 text-center">{t('home.newsllettertitle')}</h2>
+			<div
+				class="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
+				<div class="md:w-1/2 mb-6 md:mb-0">
+					<img
+						src="/newslleter.png"
+						alt="newsletter"
+						class="rounded-2xl shadow-lg"
+						width={400}
+						height={300}
+					/>
+				</div>
+				<div class="md:w-1/2 md:pl-10 text-center md:text-left">
+					<p class="mb-6 text-xl text-gray-700">
+						{t('home.newslletterdesription')}
+					</p>
+					<a
+						href="https://www.aedin.com/newsletters/7226589723593498624/"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg newsletter-a"
+						title={t('home.newslletterbutton')}
+					>
+						{t('home.newslletterbutton')}
+						<ArrowRight class="ml-2 h-5 w-5"/>
+					</a>
+				</div>
+			</div>
+		</section>
+		<section id="blog" class="mb-24">
+			<h2 class="text-3xl font-semibold mb-6 text-center">{t('home.blogtitle')}</h2>
+			<div
+				class="bg-gray-100 rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between">
+				<div class="md:w-1/2 mb-6 md:mb-0">
+					<img
+						src="/what-is-ai.jpg"
+						alt="medium logo"
+						class="rounded-2xl shadow-lg"
+						width={400}
+						height={300}
+					/>
+				</div>
+				<div class="md:w-1/2 md:pl-10 text-center md:text-left">
+					<p class="mb-6 text-xl text-gray-700">
+						{t('home.blogdesription')}
+					</p>
+					<a
+						href="/blog" title={t('home.blogbutton')}
+						class="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors duration-300 text-lg"
+					>
+						{t('home.blogbutton')}
+						<ArrowRight class="ml-2 h-5 w-5"/>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="speaks" class="mb-24">
+			<h2 class="text-3xl font-semibold mb-10 text-center">{t('home.speakertitle')}</h2>
+			<div class="space-y-8 pb-10">
+				<p class="text-xl leading-relaxed text-gray-700  mx-auto mb-4 text-balance">
+					{t('home.speakerdescription')}
+				</p>
+			</div>
+			<div class="space-y-8">
+				{speakerTopics[lang]
+					.map((talk, index) => (
+						<div key={index}
+							 class="bg-gray-50 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
+							<h3 class="text-2xl font-semibold mb-3">{talk.title}</h3>
+							<p class="mb-4 text-gray-700">{talk.description}</p>
+							<p class="text-sm text-gray-500">{t('home.speakerrecomend')} {talk.audience}</p>
+						</div>
+					))}
+			</div>
+		</section>
+	</main>
+	<PreFooter/>
+</div>
+<Footer />
+</body>
+</html>

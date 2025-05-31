@@ -1,10 +1,58 @@
+---
+import {changeroutelang, getLangFromUrl, useTranslations,} from '../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import {languages} from '../i18n/ui';
+import {Globe} from '@lucide/astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const route = changeroutelang(Astro.url, lang);
+interface Props {
+	customURL?: string;
+}
+const { customURL } = Astro.props as Props;
+---
+
 <div class="bg-white text-gray-900 font-sans antialiased">
-	<header class="flex justify-center space-x-5 text-lg font-bold mt-5 flex-wrap">
+	<header class="flex justify-center space-x-5 text-lg font-bold mt-5 flex-wrap border-b py-8">
 		<div class="w-full text-center mb-2"><strong class="text-3xl font-bold leading-tight mb-2">Marc Mayol</strong></div>
-		<a href="/" class="underline" title="home">Home</a>
-		<a href="/blog" class="underline blog-link" title="blog">Blog</a>
-		<a href="https://www.linkedin.com/newsletters/7226589723593498624/"
-		   class="underline newsletter-link" title="newsletter">newsletter</a>
-		<a href="/about" class="underline contact-link" title="about">Sobre mi</a>
+		<nav aria-label="Main Navigation">
+			<ul class="flex items-center space-x-4 text-sm md:text-base">
+				<li>
+					<a href={`/${lang}`} class="px-md-4 py-md-2 text-sm text-gray-700 hover:bg-gray-100 hover:underline  transition" title={t('nav.home')}>
+						{t('nav.home')}
+					</a>
+				</li>
+				<li>
+					<a href={`/blog/${lang}/`} class="px-md-4 py-md-2 text-sm text-gray-700 hover:bg-gray-100 hover:underline  transition" title={t('nav.blog')}>
+						{t('nav.blog')}
+					</a>
+				</li>
+				<li>
+					<a href="https://www.linkedin.com/newsletters/7226589723593498624/"
+					   class="px-md-4 py-md-2 text-sm text-gray-700 hover:bg-gray-100 hover:underline  transition" title={t('nav.newsletter')}>
+						{t('nav.newsletter')}
+					</a>
+				</li>
+				<li>
+					<a href={`/about/${lang}/`} class="px-md-4 py-md-2 text-sm text-gray-700 hover:bg-gray-100 hover:underline  transition" title={t('nav.about')}>
+						{t('nav.about')}
+					</a>
+				</li>
+				<li>
+					{
+						Object.entries(languages).filter(([code]) => code !== lang).map(([code, label]) => (
+						<a
+							href={changeroutelang(Astro.url, code, customURL)}
+							class="inline-flex items-center px-md-4 pt-md-2 text-sm  text-gray-700 hover:bg-gray-100 hover:bg-gray-100 hover:underline transition"
+							title={`Cambiar a ${label}`}
+						>
+							<Globe class="mt-2" /><span class="mt-2 pl-1"> {label}</span>
+						</a>
+					))
+					}
+				</li>
+			</ul>
+		</nav>
 	</header>
 </div>
