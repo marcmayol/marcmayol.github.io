@@ -20,12 +20,5 @@ export default defineConfig({
 			redirectToDefaultLocale: false
 		},
 	},
-	integrations: [mdx(), sitemap({
-		i18n: {
-			defaultLocale: 'en',
-			locales: {
-				en: 'en2-US',
-				es: 'es-ES',
-			},
-		}})],
+	integrations: [mdx(), sitemap()],
 });
