@@ -1,0 +1,99 @@
+---
+import {languages} from '../i18n/ui';
+const userLang = navigator.language || navigator.userLanguage;
+
+// Obtener solo el código principal del idioma (por ejemplo, "es" de "es-ES")
+const langCode = userLang.slice(0, 2).toLowerCase();
+// Verificar si el idioma está en la lista de idiomas soportados
+if (Object.keys(languages).includes(langCode)) {
+    // Redirigir a la página correspondiente del idioma
+    return Astro.redirect(`/en`);
+    // return Astro.redirect(`/${langCode}/`);
+}else
+    {
+        return Astro.redirect('/en');
+    }
+
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import {SITE_TITLE} from '../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import PreFooter from "../components/PreFooter.astro";
+
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const posts = (await getCollection('blog')).filter(post => post.id.startsWith(`${lang}/`)).sort(
+(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const t = useTranslations(lang);
+const item ={
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": t('about.seotitle'),
+    "publisher": {
+    "@type": "Person",
+    "name": "Marc Mayol Orell",
+    "url": "https://marcmayol.com/about"
+    }
+    }
+---
+
+<!doctype html>
+<html lang="es">a
+<head>
+    <BaseHead title={t('about.seotitle')}
+              description={t('about.seodescription')}
+              item={item}/>
+</head>
+<body>
+<Header />
+<div  class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+    <main class="container mx-auto px-6 py-16 max-w-4xl">
+        <section id="about" class="mb-24 text-center">
+            <img
+                    src="/perfil.png"
+                    alt="Marc Mayol"
+                    class="block mx-auto mb-4 w-35 h-50 rounded-full"
+            />
+            <h1 class="text-5xl font-bold mb-4 tracking-tight">{t("about.title")}</h1>
+            <h2 class="text-2xl text-gray-500 mb-8">{t("about.subtitle")}</h2>
+            <p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+                {t("about.description")}
+            </p>
+        </section>
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {
+                    posts.map((post) => (
+
+                            <div>
+                                <a href={`/blog/${post.id}/`} class="block group">
+                                    <img
+                                            width={720}
+                                            height={360}
+                                            src={post.data.heroImage}
+                                            alt=""
+                                            class="rounded-lg h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                    <h2 class="mt-4 text-xl font-semibold text-gray-900">{post.data.title}</h2>
+                                    <p class="mt-2 text-gray-600 line-clamp-3">
+                                        {post.data.description}
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        <FormattedDate date={post.data.pubDate}/>
+                                    </p>
+                                </a>
+                            </div>
+                    ))
+                }
+            </div>
+        </div>
+        <PreFooter/>
+    </main>
+</div>
+<Footer />
+</body>
+</html>
