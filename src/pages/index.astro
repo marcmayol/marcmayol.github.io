@@ -6,13 +6,7 @@ import PreFooter from '../components/PreFooter.astro';
 import {speakerTopics } from '../consts';
 import {ArrowRight} from '@lucide/astro';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-let langCode = Astro.currentLocale;
-console.log('Current locale:', Astro.currentLocale);
-if(langCode != "en" && langCode != "es") {
-    langCode = 'en';
-}
-const lang = langCode || getLangFromUrl(Astro.url);
-Astro.redirect('/'+lang);
+const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const inverse = lang === 'en' ? 'es' : 'en';
 
