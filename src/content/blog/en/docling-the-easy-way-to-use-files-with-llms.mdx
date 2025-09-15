@@ -1,0 +1,94 @@
+---
+title: 'Docling: the easy way to work with files and LLMs'
+description: 'Discover how Docling simplifies document processing and its integration with language models. An open-source IBM solution that combines text, images, and much more'
+pubDate: 'Sep 14, 2025'
+heroImage: '/dockling.jpg'
+customURL: '/blog/es/docling-la-forma-facil-de-usar-archivos-con-llms/'
+---
+
+Working with files and language models can easily turn into chaos. Different formats, the need to process both text and images, and integrating with models often make workflows inefficient. That’s where **Docling** comes in—an IBM library that brings a solid, unified way to handle files and LLMs.
+
+## What is Docling?
+
+<a href="https://docling-project.github.io/docling/" title="repo Docling">Docling</a> is an open-source library from IBM Research designed to make the interaction between documents and language models much simpler. Its main goal is to streamline file processing, letting developers integrate analysis, extraction, and data handling features powered by AI models directly into their projects. One of its key ideas is to provide a **common document representation format**, so you don’t need to juggle different data structures depending on the file type.
+<br/>
+
+### Supported file types
+
+Docling works with a wide range of files, making it very flexible. Among the most common:
+
+* PDF: with OCR, text, and image extraction. (Tip: if you don’t need OCR, turn it off—it’s the most resource-intensive part.)
+* Images (JPG, PNG)
+* Text files (TXT)
+* Word documents (DOCX)
+* Spreadsheets (XLSX): better stick to plain values, without formulas or macros.
+* Presentations (PPTX): includes table support
+* Markdown (MD)
+
+This wide coverage makes Docling especially useful for document analysis, data migration, or automating workflows.
+
+<br/>
+## Strengths
+
+One of Docling’s biggest strengths is how well it handles vision tasks. It doesn’t just process text—it also understands images inside documents, bringing a strong multimodal approach. With Hugging Face vision models under the hood, it can pull insights from charts, diagrams, and tables, integrating visuals seamlessly into the same flow as text analysis.
+
+It’s also very flexible: Docling plays nicely with existing AI pipelines and works well alongside tools like LangChain, langGraph, and Crew AI. That makes it a natural fit for RAG (Retrieval-Augmented Generation) setups or for agents that need to deal with structured knowledge.
+<br/>
+
+## Weaknesses
+
+The same thing that makes Docling powerful can also be a drawback. Since it relies on Hugging Face models, you’ll need to download them locally. That means your environment must have enough storage and compute resources—something that could be tricky for resource-limited setups or cloud deployments without strong infrastructure.
+
+And, as a relatively new project, its documentation and community are still growing. Expect a bit of a learning curve and possibly some time spent digging through code to figure things out.
+<br/>
+
+## MCP support
+
+Docling also supports the **Model Context Protocol (MCP)**, an effort to standardize how models interact with different sources and contexts. The idea is to create a common framework where models and systems can interoperate smoothly. While MCP is still in its early stages, Docling’s alignment with it positions the library as a forward-looking tool for enterprise AI.
+<br/>
+
+## Processing a document with Docling and sending it to an LLM
+
+Here’s a quick and practical example of extracting text from a PDF using Docling and then sending it to a language model for automatic summarization.
+
+### Requirements
+
+```
+    pip install docling openai
+```
+<br/>
+### Python example
+
+```
+    import os
+    from openai import OpenAI
+    from docling.parsers.pdf import PdfParser
+
+    parser = PdfParser()
+    doc = parser.parse("example.pdf")
+    text = doc.text
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    res = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an assistant that summarizes documents in Spanish."},
+            {"role": "user", "content": "Summarize the following text in 5 lines:"},
+            {"role": "user", "content": text[:6000]}
+        ],
+        temperature=0.2
+    )
+    print(res.choices[0].message.content)
+```
+
+#### Quick notes
+
+* Replace `example.pdf` with your actual file path.
+* Make sure you have the HuggingFace and, in this case, OpenAI keys defined in your environment.
+
+<br/>
+## Conclusion
+
+Docling is a promising library for anyone dealing with complex documents in AI workflows. Its multimodal capabilities, seamless integration with LLMs, and alignment with emerging standards make it a powerful tool. On the flip side, infrastructure requirements and its early stage mean you might face some hurdles in production.
+
+Overall, Docling is an exciting move from IBM that points toward more unified and efficient ways of working with files and LLMs—and it’s likely we’ll see it gain more traction as its community and ecosystem continue to grow.

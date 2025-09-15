@@ -1,0 +1,92 @@
+---
+title: 'Docling: la forma fácil de trabajar con archivos y LLMs'
+description: 'Descubre cómo Docling simplifica el procesamiento de documentos y su integración con modelos de lenguaje. Una solución open source de IBM que combina texto e imágenes y mucho más'
+pubDate: 'Sep 14, 2025'
+heroImage: '/dockling.jpg'
+customURL: '/blog/en/docling-the-easy-way-to-use-files-with-llms/'
+---
+
+Trabajar con archivos y modelos de lenguaje puede convertirse en un auténtico caos. Diferentes formatos, la necesidad de procesar tanto texto como imágenes, y la integración con modelos hacen que los flujos de trabajo sean poco eficientes. En este contexto surge **Docling**, una librería de IBM que ofrece una solución sólida para gestionar de forma unificada archivos y LLMs.
+
+## ¿Qué es Docling?
+
+<a href="https://docling-project.github.io/docling/" title="repo Docling"> Docling</a> es una librería open source desarrollada por IBM Research que facilita la interacción entre documentos y modelos de lenguaje. Su objetivo es simplificar el procesamiento de archivos, permitiendo a los desarrolladores integrar en sus proyectos funciones de análisis, extracción y tratamiento de datos con modelos de IA. Entre sus propuestas destaca la idea de ofrecer un **formato común de representación de documentos**, lo que elimina la complejidad de tener que trabajar con diferentes estructuras de datos según el tipo de archivo.
+<br/>
+### ¿Con qué archivos trabaja?
+
+Docling soporta múltiples tipos de archivos, lo que le da gran versatilidad. Entre los formatos más habituales encontramos:
+
+* PDF: incluye orc, texto y extracción de imágenes. Aun que si no necesitas OCR te recomeindo desactivalor porque es lo que más consume recursos.
+* Imágenes (JPG, PNG)
+* Archivos de texto (TXT)
+* Documentos de Word (DOCX)
+* Hojas de cálculo (XLSX): una pequeña recomendación usa hojas de cálculo solo con valores sin fórmulas o macros.
+* Presentaciones (PPTX): incluye la opción de tratar tablas
+* Markdown (MD)
+
+Gracias a esta amplitud de soporte, se convierte en una librería especialmente útil para proyectos de análisis documental, migraciones de datos y automatización de procesos.
+<br/>
+## Puntos fuertes
+
+Uno de los puntos más destacados de Docling es su facilidad para trabajar con temas de visión. Esto significa que no solo procesa texto, sino que también interpreta imágenes dentro de los documentos, ofreciendo un enfoque multimodal muy potente. De hecho, aprovecha modelos de visión de Hugging Face para extraer información de gráficos, diagramas y tablas, integrando la parte visual en el mismo flujo que el análisis textual.
+
+Otro aspecto positivo es que Docling ofrece un ecosistema flexible: puede integrarse con pipelines de IA ya existentes y combina bien con herramientas como LangChain,  langGraph y Crew Ai, lo que facilita su uso en aplicaciones de RAG (Retrieval-Augmented Generation) o en agentes que necesitan trabajar con conocimiento estructurado.
+<br/>
+
+## Puntos débiles
+
+Sin embargo, la misma característica que le otorga fuerza también se convierte en su mayor debilidad. Docling requiere descargar en local los modelos que utiliza desde Hugging Face. Esto implica que el sistema donde se despliegue debe tener una capacidad de almacenamiento y computación suficiente, lo cual puede limitar su uso en entornos con recursos reducidos o en despliegues cloud sin la infraestructura adecuada.
+
+Además, al ser una librería relativamente nueva, su documentación y comunidad aún están en fase de crecimiento. Esto puede suponer cierta curva de aprendizaje y la necesidad de explorar el código para resolver dudas específicas.
+<br/>
+
+##  MCP
+
+Docling también se suma al **Model Context Protocol (MCP)**, que busca estandarizar cómo los modelos interactúan con diferentes fuentes y contextos. Este planteamiento se centra en proporcionar un marco común que permita a diferentes modelos y sistemas interoperar sin fricciones. Aunque MCP está todavía en sus primeras fases, Docling se alinea con esta visión de interoperabilidad y flexibilidad, lo que la convierte en una pieza relevante para futuros desarrollos en IA empresarial.
+<br/>
+
+## Cómo Procesar un documento con Docling y enviarlo a un LLM
+
+Veamos un ejemplo práctico y muy sencillo que muestra cómo extraer el texto de un documento PDF con Docling y, a continuación, enviarlo a un modelo de lenguaje para obtener un resumen automático.
+<br/>
+
+### Requisitos
+
+```
+    pip install docling openai
+```
+<br/>
+
+### Ejemplo en Python
+
+```
+    import os
+    from openai import OpenAI
+    from docling.parsers.pdf import PdfParser
+
+    parser = PdfParser()
+    doc = parser.parse("ejemplo.pdf")
+    texto = doc.text
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    res = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Eres un asistente que resume documentos en español."},
+            {"role": "user", "content": "Resume en 5 líneas el siguiente texto:"},
+            {"role": "user", "content": texto[:6000]}
+        ],
+        temperature=0.2
+    )
+    print(res.choices[0].message.content)
+```
+<br/>
+
+#### Notas rápidas
+
+* Sustituye `ejemplo.pdf` por la ruta real.
+* Asegúrate de tener definidas en tu entorno las claves de HuggingFace y en este caso de OpenAI.
+
+## Conclusión
+
+Docling es una librería muy valiosa para quienes necesitan trabajar con documentos complejos en entornos de IA. Su capacidad multimodal, su integración con modelos de lenguaje y su planteamiento hacia estándares emergentes la convierten en una herramienta potente. No obstante, sus requisitos de infraestructura y su juventud suponen ciertos retos a la hora de adoptarla en producción. En definitiva, se trata de una apuesta interesante de IBM que abre camino hacia una gestión más unificada y eficiente de archivos y LLMs, y que probablemente veremos ganar relevancia en los próximos meses a medida que crezca su comunidad y ecosistema.
