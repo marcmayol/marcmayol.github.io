@@ -3,7 +3,7 @@ title: 'Arquitectura de eventos y LLMs: ¿qué tan eficaz es esta combinación?'
 description: 'Arquitectura de eventos y LLMs: ventajas, retos y claves para aplicar EDA en inteligencia artificial con escalabilidad y resiliencia.'
 pubDate: 'Oct 3, 2025'
 heroImage: '/inside-eda.png'
-customURL: '/blog/en/event-driven-architecture-and-LLMs/'
+customURL: '/blog/en/event-driven-architecture-and-llms/'
 ---
 ## Arquitectura basada en eventos: el motor oculto de los sistemas modernos
 
