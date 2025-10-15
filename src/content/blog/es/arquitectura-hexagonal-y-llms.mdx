@@ -1,0 +1,80 @@
+---
+title: 'Arquitectura hexagonal y modelos de lenguaje: flexibilidad y robustez en la IA'
+description: 'Descubre cómo la arquitectura hexagonal (Ports & Adapters) puede transformar la forma en que construyes sistemas de inteligencia artificial con modelos de lenguaje (LLMs). Aprende qué es, por qué se representa con un hexágono, cuáles son sus componentes y cómo este enfoque mejora la flexibilidad, el mantenimiento y la evolución de las aplicaciones basadas en IA generativa.'
+pubDate: 'Oct 15, 2025'
+heroImage: '/hexagonal_architecture.png'
+customURL: '/blog/en/hexagonal-architecture-and-llms/'
+---
+
+Cuando hablamos de sistemas con modelos de lenguaje (LLMs), casi siempre centramos la conversación en el modelo: qué tan potente es, cuántos parámetros tiene, cómo se entrena o cuánto cuesta usarlo. Pero hay algo igual de importante que solemos pasar por alto: la arquitectura que lo envuelve. Porque un buen modelo con una mala arquitectura puede acabar siendo un infierno de mantener. Y ahí es donde entra la arquitectura hexagonal, también conocida como **_Ports & Adapters_**.
+
+## ¿Qué es la arquitectura hexagonal?
+
+La arquitectura hexagonal fue propuesta por Alistair Cockburn con una idea muy simple, pero poderosa: una aplicación no debería depender directamente de su entorno (bases de datos, APIs, interfaces…), sino comunicarse con él a través de puertos e interfaces bien definidos. El objetivo es aislar la lógica central del sistema, lo que realmente le da valor, de cualquier detalle técnico o infraestructura que la rodee.
+En otras palabras: **tu aplicación debe poder seguir viva aunque cambies todo lo que hay a su alrededor**.
+
+## ¿Por qué un hexágono?
+
+El hexágono no es más que una metáfora visual. Cockburn lo eligió porque permite representar múltiples puntos de entrada y salida hacia el núcleo de la aplicación. Cada lado del hexágono simboliza un puerto, y a cada puerto se conectan adaptadores que traducen entre el mundo exterior y el interior. Así el núcleo permanece limpio, estable y protegido de los cambios tecnológicos.
+
+## Componentes principales
+
+Para entender cómo funciona, veamos sus tres elementos básicos:
+
+### 1. Núcleo de la aplicación
+
+**Es el corazón del sistema.**
+Aquí vive la lógica de negocio o, en el caso de la IA, **la lógica del agente o del flujo cognitivo**. Este núcleo no sabe nada sobre APIs, bases de datos o modelos. Solo define qué necesita hacer y cómo se organiza internamente.
+
+### 2. Puertos
+
+Son **interfaces abstractas** que definen cómo el núcleo se comunica con el exterior. Pueden ser:
+
+- **Puertos de entrada**: lo que recibe la aplicación (una solicitud, evento, mensaje…).
+
+- **Puertos de salida**: lo que la aplicación necesita hacer fuera (guardar datos, invocar un modelo, llamar a un servicio).
+
+### 3. Adaptadores
+
+Son las **implementaciones concretas** que actúan como los “traductores” entre el dominio del sistema y la tecnología externa y conectan esos puertos con el mundo real.
+Por ejemplo:
+
+- Un controlador HTTP que recibe una petición.
+
+- Un cliente que envía prompts a la API de OpenAI.
+
+- Un conector hacia una base de datos vectorial.
+
+
+
+## Ventajas generales de la arquitectura hexagonal
+
+- **Aislamiento total**: El núcleo no depende de ninguna tecnología. Puedes cambiar de base de datos, API o proveedor sin tocar la lógica interna.
+
+- **Facilidad para hacer pruebas**:Gracias a los puertos, puedes reemplazar adaptadores reales por simulaciones. Esto permite probar la lógica de tu aplicación sin gastar tokens ni depender de una conexión real.
+
+- **Evolución sin fricción**: Si mañana aparece una nueva herramienta, basta con crear un nuevo adaptador. El resto del sistema ni se entera ni sufre las consecuencias.
+
+- **Código más limpio**: Cada parte tiene su responsabilidad clara. Esto reduce el acoplamiento, mejora la mantenibilidad y facilita el trabajo en equipo.
+
+- **Resistencia al cambio**: Las tecnologías cambian constantemente, pero tu dominio no. La arquitectura hexagonal protege lo que de verdad importa: el núcleo de la solución, permitiéndote aprender nuevas tecnologías de una forma más cómoda y evolucionar junto con tu solución.
+
+## Ventajas de la arquitectura hexagonal en sistemas con LLMs
+
+Cuando llevamos este patrón al mundo de la inteligencia artificial generativa, las ventajas se vuelven aún más evidentes.
+
+- **Desacoplar el modelo de la aplicación**:El núcleo no necesita saber si estás usando GPT-4, Claude, Mistral, un modelo local... Solo define un puerto: “Generar texto”. Cada modelo es un adaptador diferente que implementa esa interfaz. ¿Quieres pasar de OpenAI a otro proveedor? Solo cambias el adaptador. El resto de tu aplicación sigue igual.
+
+- **Pruebas más sencillas**: Puedes crear adaptadores falsos que **simulen respuestas del modelo**.Así puedes testear tu lógica sin consumir tokens ni depender de la red.
+
+- **Modularidad en los flujos de IA**: Los sistemas con LLMs suelen tener muchos componentes: recuperación de contexto, generación, razonamiento, memoria, integración con APIs…
+Cada uno de estos módulos puede representarse como un puerto con sus adaptadores, lo que permite construir sistemas más organizados y robustos.
+
+- **Resiliencia y control**: Si el adaptador de un modelo falla, otro puede actuar como backup. Además, puedes registrar métricas, costes y tiempos sin tocar el núcleo.
+
+- **Evolución segura**:A medida que los modelos cambian o mejoran, puedes actualizar los adaptadores sin alterar el corazón del sistema. Esto hace que tu arquitectura sea sostenible en el tiempo.
+
+## Conclusión
+
+La arquitectura hexagonal no es solo una forma bonita de dibujar diagramas:es una filosofía de diseño que protege la esencia de tu sistema del caos exterior. En un mundo donde los modelos de lenguaje evolucionan a diario,este patrón te permite construir soluciones más flexibles, escalables y duraderas.
+ Aplicarla a proyectos de IA no es una moda: es una inversión en claridad, estabilidad y futuro.

@@ -1,0 +1,92 @@
+---
+title: 'Hexagonal architecture and language models: flexibility and robustness in AI'
+description: 'Discover how hexagonal architecture (Ports & Adapters) can transform the way you build artificial intelligence systems with language models (LLMs). Learn what it is, why it’s represented by a hexagon, what its components are, and how this approach enhances the flexibility, maintainability, and evolution of generative AI-based applications'
+pubDate: 'Oct 15, 2025'
+heroImage: '/hexagonal_architecture.png'
+customURL: '/blog/es/arquitectura-hexagonal-y-llms/'
+---
+
+When we talk about systems with language models (LLMs), we almost always focus the conversation on the model: how powerful it is, how many parameters it has, how it’s trained, or how much it costs to use. But there’s something equally important that we often overlook: the architecture that surrounds it. Because a good model with bad architecture can end up being a maintenance nightmare. And that’s where hexagonal architecture, also known as **_Ports & Adapters_**, comes in.
+## What is Hexagonal Architecture?
+
+Hexagonal architecture was proposed by Alistair Cockburn with a simple yet powerful idea: an application should not depend directly on its environment (databases, APIs, interfaces, etc.), but rather communicate with it through well-defined ports and interfaces. The goal is to isolate the system’s core logic, the part that truly provides value, from any technical or infrastructure details surrounding it.
+In other words: **your application should remain alive even if you change everything around it.**
+
+
+## Why a Hexagon?
+
+The hexagon is merely a visual metaphor. Cockburn chose it because it allows multiple entry and exit points to the core of the application. Each side of the hexagon represents a port, and each port connects to adapters that translate between the external and internal worlds.
+
+This way, the core remains clean, stable, and protected from technological changes.
+
+
+## Main Components
+
+To understand how it works, let’s look at its three basic elements:
+
+### 1. Core (Domain)
+
+**It’s the heart of the system.**
+This is where the business logic lives or, in the case of AI, **the logic of the agent or cognitive flow**.
+The core knows nothing about APIs, databases, or models. It only defines what needs to be done and how it’s organized internally.
+
+
+### 2. Ports
+
+These are **abstract interfaces** that define how the core communicates with the outside world. They can be:
+
+- **Input ports**: what the application receives (a request, event, message…).
+- **Output ports**: what the application needs to do externally (store data, invoke a model, call a service).
+
+
+### 3. Adapters
+
+These are the **concrete implementations** that act as “translators” between the system’s domain and the external technology, connecting those ports to the real world.
+For example:
+
+- An HTTP controller that receives a request.
+- A client that sends prompts to the OpenAI API.
+- A connector to a vector database.
+
+
+## General Advantages of Hexagonal Architecture
+
+- **Total Isolation**: The core doesn’t depend on any specific technology. You can change the database, API, or provider without touching the internal logic.
+
+- **Easy Testing**: Thanks to the ports, you can replace real adapters with mock ones. This allows you to test your application’s logic without spending tokens or relying on a real connection.
+
+- **Frictionless Evolution**: If a new tool appears tomorrow, all you need to do is create a new adapter. The rest of the system remains unaware and unaffected.
+
+- **Cleaner Code**: Each part has a clear responsibility. This reduces coupling, improves maintainability, and makes team collaboration easier.
+
+- **Resistance to Change**: Technologies evolve constantly, but your domain doesn’t. Hexagonal architecture protects what truly matters, the core of your solution, allowing you to adopt new technologies comfortably and evolve alongside your system.
+
+## Advantages of Hexagonal Architecture in LLM-Based Systems
+
+When we apply this pattern to the world of generative artificial intelligence, its advantages become even more apparent.
+
+- **Decoupling the Model from the Application**:
+The core doesn’t need to know whether you’re using GPT-4, Claude, Mistral, or a local model. It only defines a single port: “Generate text.” Each model is just a different adapter implementing that interface.
+Want to switch from OpenAI to another provider? Simply change the adapter, the rest of your application stays the same.
+
+- **Simpler Testing**:
+You can create fake adapters that **simulate model responses**.
+This lets you test your logic without consuming tokens or depending on the network.
+
+- **Modularity in AI Flows**:
+LLM-based systems often include many components, context retrieval, generation, reasoning, memory, API integration, and more. Each of these modules can be represented as a port with its own adapters, enabling more organized and robust systems.
+
+- **Resilience and Control**:
+If one model’s adapter fails, another can act as a backup.
+You can also track metrics, costs, and response times without touching the core.
+
+- **Safe Evolution**:
+As models evolve or improve, you can update the adapters without altering the system’s heart.
+This makes your architecture sustainable over time.
+
+## Conclusion
+
+Hexagonal architecture isn’t just a nice way to draw diagrams; it’s a design philosophy that protects the essence of your system from external chaos.
+In a world where language models evolve daily, this pattern allows you to build solutions that are more flexible, scalable, and durable.
+
+Applying it to AI projects isn’t a trend, it’s an investment in clarity, stability, and the future.
