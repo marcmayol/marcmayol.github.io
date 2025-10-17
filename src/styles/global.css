@@ -59,6 +59,17 @@
     color: #000000;
     text-decoration: underline;
 }
+#post-content table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #d3d3d3;
+}
+
+#post-content table th,
+#post-content table td {
+    border: 1px solid #d3d3d3;
+    padding: 8px;
+}
 #post-content figure figcaption{
     font-size: 0.875rem;
     color: #666666;

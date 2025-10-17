@@ -1,0 +1,64 @@
+---
+title: 'Chonkie: el arte de trocear texto con inteligencia'
+description: 'Chonkie es una herramienta open source que automatiza la fragmentación inteligente de textos para sistemas de inteligencia artificial y RAG. Con estrategias semánticas, estructurales y tokenizadas, permite dividir documentos largos sin perder coherencia ni contexto, mejorando la comprensión de los modelos y la calidad de las respuestas. Ideal para desarrolladores, investigadores y profesionales que trabajan con procesamiento del lenguaje natural.'
+pubDate: 'Oct 16, 2025'
+heroImage: '/chonkie_logo_br_transparent_bg.png'
+customURL: '/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-RAG/'
+---
+
+Cuando trabajamos con sistemas de **IA generativa** o **RAG (Retrieval-Augmented Generation)**, uno de los grandes retos es el contexto. Los modelos no pueden procesar textos infinitos, así que hay que dividirlos. Pero hacerlo bien no es tan trivial: si cortas demasiado, pierdes coherencia; si cortas poco, saturas el modelo.
+
+Ahí entra **Chonkie**, una herramienta open source que automatiza el *chunking*, es decir, la división inteligente de textos en fragmentos semánticos. Su objetivo es claro: que los modelos de IA comprendan mejor la información sin perder contexto ni estructura.
+
+<br/>
+
+## Cómo funciona
+
+Chonkie organiza el proceso en etapas modulares. Primero, elige una estrategia de fragmentación (los llamados *chunkers*), después puede refinar el texto con solapamientos o embeddings, y finalmente exportarlo o almacenarlo en una base vectorial.
+
+Entre sus estrategias más comunes están:
+
+* **TokenChunker**: corta por número de tokens, útil para tareas rápidas.
+* **SentenceChunker**: fragmenta por oraciones completas.
+* **RecursiveChunker**: sigue la estructura del texto (encabezados, párrafos).
+* **SemanticChunker**: agrupa fragmentos según su significado.
+
+Esta flexibilidad permite adaptar el troceado al tipo de contenido: artículos, código, documentación o incluso conversaciones.
+
+<br/>
+
+### Un ejemplo sencillo
+
+```python
+    from chonkie import RecursiveChunker
+
+    texto = "La inteligencia artificial transforma industrias enteras. Pero entenderla requiere precisión y contexto."
+
+    chunker = RecursiveChunker()
+    chunks = chunker(texto)
+
+    for c in chunks:
+        print(c.text)
+```
+
+Con unas pocas líneas, el texto se divide en fragmentos coherentes que pueden enviarse a un modelo de lenguaje o a una base vectorial.
+
+<br/>
+
+## Por qué importa
+
+Chonkie no es solo una librería de utilidades: es una pieza clave en la cadena de procesamiento de datos para IA. Permite que los sistemas comprendan documentos largos, mejorando la precisión de la recuperación y la calidad de las respuestas generadas.
+
+En pocas palabras, **Chonkie hace que los modelos lean mejor**. Y eso, en un mundo saturado de información, es casi magia.
+<br/>
+
+## Un paso más allá: inteligencia aplicada al texto
+
+Más allá de dividir textos, Chonkie representa una filosofía moderna en el tratamiento del lenguaje: la de **conservar el significado** en cada paso. Al permitir estrategias basadas en semántica, estructura y contexto, se convierte en una herramienta esencial para cualquier pipeline de IA que trabaje con información textual compleja.
+
+Ya sea para entrenar modelos, construir buscadores semánticos o alimentar chatbots corporativos, Chonkie facilita la base de todo: transformar texto desordenado en conocimiento utilizable.
+<br/>
+
+## Conclusión
+En definitiva, **Chonkie convierte el caos del texto en orden comprensible**. Una pieza discreta, pero esencial, para que la inteligencia artificial siga entendiendo el mundo palabra a palabra.
+Si quieres profundizar más este tipo de herramientas te recomiendo leer el artículo completo donde comparo <a href="https://marcmayol.com/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-RAG" title="Chonkie vs Docling"> Chonkie con Docling</a>, otra herramienta interesante para el procesamiento de documentos en arquitecturas RAG de la cual también tengo un <a href="https://marcmayol.com/blog/es/docling-la-forma-facil-de-usar-archivos-con-llms/ title="Docling">artículo completo</a>.

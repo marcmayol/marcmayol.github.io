@@ -1,0 +1,64 @@
+---
+title: 'Chonkie: the art of intelligently chunking text'
+description: 'Chonkie is an open-source tool that automates the intelligent fragmentation of text for artificial intelligence and RAG systems. Using semantic, structural, and token-based strategies, it divides long documents without losing coherence or context, improving model understanding and response quality. Ideal for developers, researchers, and professionals working with natural language processing.'
+pubDate: 'Oct 16, 2025'
+heroImage: '/chonkie_logo_br_transparent_bg.png'
+customURL: '/blog/es/chonkie-el-arte-de-trocear-texto-con-inteligencia'
+---
+
+
+When working with **generative AI** or **RAG (Retrieval-Augmented Generation)** systems, one of the biggest challenges is context. Models can’t process infinite text, so we need to split it. But doing it right isn’t trivial: cut too much, and you lose coherence; cut too little, and you overload the model.
+
+That’s where **Chonkie** comes in — an open-source tool that automates *chunking*, the intelligent division of text into semantic fragments. Its goal is simple: to help AI models better understand information without losing context or structure.
+
+<br/>
+
+## How it works
+
+Chonkie organizes the process into modular stages. First, it selects a chunking strategy (known as *chunkers*), then it can refine the text with overlaps or embeddings, and finally export or store it in a vector database.
+
+Its most common strategies include:
+
+* **TokenChunker**: splits by token count, useful for quick tasks.
+* **SentenceChunker**: divides by full sentences.
+* **RecursiveChunker**: follows the text structure (headings, paragraphs).
+* **SemanticChunker**: groups fragments by meaning.
+
+This flexibility allows chunking to adapt to different content types: articles, code, documentation, or even conversations.
+
+<br/>
+
+### A simple example
+
+```python
+    from chonkie import RecursiveChunker
+
+    text = "Artificial intelligence is transforming entire industries. But understanding it requires precision and context."
+
+    chunker = RecursiveChunker()
+    chunks = chunker(text)
+
+    for c in chunks:
+        print(c.text)
+```
+
+With just a few lines, the text is divided into coherent fragments that can be sent to a language model or a vector database.
+
+<br/>
+
+## Why it matters
+
+Chonkie isn’t just a utility library — it’s a key component in the AI data processing pipeline. It enables systems to understand long documents, improving retrieval accuracy and the quality of generated responses.
+
+In short, **Chonkie helps models read better**. And in a world overloaded with information, that’s almost magic. <br/>
+
+## A step further: intelligence applied to text
+
+Beyond text splitting, Chonkie represents a modern philosophy in language processing: **preserving meaning** at every step. By allowing strategies based on semantics, structure, and context, it becomes an essential tool for any AI pipeline working with complex textual information.
+
+Whether it’s for training models, building semantic search engines, or powering corporate chatbots, Chonkie provides the foundation for everything: turning messy text into usable knowledge. <br/>
+
+## Conclusion
+
+Ultimately, **Chonkie turns text chaos into understandable order**. A discreet yet essential piece that helps artificial intelligence keep understanding the world, word by word.
+If you want to dive deeper into this type of tool, I recommend reading the full article where I compare <a href="https://marcmayol.com/blog/en/chonkie-and-docling-two-complementary-approaches-to-processing-RAG-documents" title="Chonkie vs Docling">Chonkie with Docling</a>, another interesting tool for document processing in RAG architectures, for which I also have a <a href="https://marcmayol.com/blog/en/docling-the-easy-way-to-use-files-with-llms/" title="Docling">full article</a>.

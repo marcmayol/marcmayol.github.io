@@ -1,0 +1,175 @@
+---
+title: 'Chonkie and Docling: two complementary approaches to document processing in RAG pipelines'
+description: 'Comparison between Chonkie and Docling, two key tools for document processing in RAG pipelines. Discover their differences, advantages, and how to combine them to achieve better AI results.'
+pubDate: 'Oct 17, 2025'
+heroImage: '/doclingvschonkiepng.png'
+customURL: '/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-RAG/'
+---
+
+In the world of intelligent text organization and retrieval (for example, in **RAG** architectures — *retrieval-augmented generation*), one of the main challenges is preparing documents so that they are “digestible” by the retrieval and generation components. This is where **chunking** comes into play — that is, splitting text into coherent pieces — but also correctly interpreting the document itself (structure, tables, layout, etc.).
+
+Two recent tools stand out for their distinct yet potentially complementary approaches:
+
+* **Chonkie**: specialized in lightweight, modular, and efficient text fragmentation for AI pipelines.
+* **Docling**: focused on the ingestion and rich representation of multi-format documents, with awareness of structure, layout, tables, OCR, and more.
+
+Below we explore how they work, their key differences, and how to combine them to build more powerful RAG pipelines.
+
+<br/>
+## Chonkie: the lightweight hippo that elegantly slices your texts
+
+> *“CHONK your texts with Chonkie”* is the playful motto of this library, which aims to be “no-nonsense” and ultra-lightweight.
+> 👉 <a href="https://github.com/chonkie-inc/chonkie" title="Official Chonkie repository">[https://github.com/chonkie-inc/chonkie](https://github.com/chonkie-inc/chonkie)</a>
+
+### Why does Chonkie exist?
+
+In RAG systems or semantic search engines, one common issue is text fragmentation.
+Splitting large documents into coherent pieces without losing context is a delicate balance.
+
+Many libraries offer solutions, but they often include unnecessary dependencies or are too heavy. Chonkie focuses only on the essentials: **efficient chunking**, **refinement**, and **modular export**.
+
+According to its benchmarks, the base installation occupies around **15 MB**, compared to **80–170 MB** in alternative libraries, and its token-based chunking can be up to **33× faster**.
+
+<br/>
+### Key features
+
+* **Multiple chunkers**:
+
+* `TokenChunker`: splits by tokens
+
+* `SentenceChunker`: splits by sentences
+
+* `RecursiveChunker`: hierarchical division
+
+* `SemanticChunker`: based on semantic similarity (embeddings)
+
+* Others: `LateChunker`, `CodeChunker`, `SlumberChunker`, etc.
+
+* **Modular pipeline and refinement**:
+Chain stages: chunking → refinement (overlaps, embeddings) → export.
+
+* **Integrations**:
+Compatible with vector databases like **Chroma**, **Qdrant**, **Pinecone**, **pgvector**, among others.
+
+* **Multilingual support**:
+Supports over **50 languages**, making it easy to work with global content.
+
+* **Chonkie Cloud**:
+In addition to the local version, it offers a cloud service to offload chunking.
+
+<br/>
+### Basic example
+
+```python
+from chonkie import TokenChunker
+
+chunker = TokenChunker()
+chunks = chunker("This is a sample text I want to split into useful pieces.")
+for c in chunks:
+    print(c.text, c.token_count)
+```
+
+A more complex pipeline example:
+
+```python
+from chonkie import Pipeline
+
+pipe = (
+    Pipeline()
+    .chunk_with("recursive", tokenizer="gpt2", chunk_size=2048, recipe="markdown")
+    .chunk_with("semantic", chunk_size=512)
+    .refine_with("overlap", context_size=128)
+    .refine_with("embeddings", embedding_model="sentence-transformers/all-MiniLM-L6-v2")
+)
+
+doc = pipe.run(texts="Your long text here...")
+for ch in doc.chunks:
+    print(ch.text)
+```
+
+This modular system allows customization of each step according to project needs.
+
+<br/>
+### Current limitations
+
+* Dependency on external models for embeddings and semantic chunking.
+* Still a small community.
+* Maintenance risk: the repository was temporarily closed by its author for legal reasons but was later restored.
+* Some initial learning curve when configuring complex pipelines.
+
+<br/>
+## Docling: deep structural understanding of documents
+
+> *“From document chaos to structured knowledge”*
+> 👉 <a href="https://github.com/docling-project/docling" title="Docling on GitHub">[https://github.com/docling-project/docling](https://github.com/docling-project/docling)</a>
+
+### What is Docling?
+
+Developed by IBM’s *Deep Search* team, **Docling** is an open-source tool focused on **converting complex documents** (PDF, DOCX, PPTX, HTML, images, etc.) into a structured representation ready for AI.
+
+Its goal is not just text extraction, but **understanding the document’s visual and semantic structure**: tables, headers, columns, hierarchy, images, and more.
+
+<br/>
+### Main capabilities
+
+* **Advanced PDF parsing**: detects columns, headers, and reading order.
+* **Table extraction** using models such as *TableFormer*.
+* **Integrated OCR** for scanned documents.
+* **Rich document representation**: creates `DoclingDocument` objects with sections, tables, figures, and metadata.
+* **Integration with LangChain** via `DoclingLoader`.
+* **Support for Markdown, JSON, or custom chunks.**
+
+Example with LangChain:
+
+```python
+from langchain_community.document_loaders import DoclingLoader
+
+loader = DoclingLoader(file_path="document.pdf", output_format="MARKDOWN")
+docs = loader.load()
+```
+
+<br/>
+### Use cases
+
+* Conversion of reports, papers, and presentations into structured text.
+* Preprocessing of documents for QA and RAG.
+* Data extraction from semi-structured documents.
+* Large-scale ingestion of enterprise data (PDFs, scans, internal documents).
+
+## ⚖ Comparison: Chonkie vs Docling
+
+| Aspect                   | **Chonkie**                                       | **Docling**                                       |
+| ------------------------ | ------------------------------------------------- | ------------------------------------------------- |
+| **Purpose**              | Fragment text for RAG pipelines                   | Convert complex documents into structured text    |
+| **Input level**          | Plain text (already preprocessed)                 | Raw formats (PDF, DOCX, images, etc.)             |
+| **Structural awareness** | Does not analyze layout or design                 | Understands tables, columns, hierarchy, layout    |
+| **Chunking**             | Multiple strategies (tokens, sentences, semantic) | Has a basic module but focuses on structure       |
+| **Performance**          | Very fast and lightweight                         | Heavier due to vision/OCR models                  |
+| **AI / RAG integration** | Native with vector DBs and embeddings             | Compatible with LangChain and other loaders       |
+| **Maintenance**          | Young project with emerging community             | Backed by IBM, documentation, and research papers |
+| **Ideal use**            | Process clean text and fragment it optimally      | Ingest and structure complex documents            |
+
+<br/>
+## How to combine them for maximum results
+
+In reality, **Chonkie** and **Docling** are not competitors but natural allies.
+
+An ideal hybrid strategy could be:
+
+1. **Use Docling** to convert PDFs, DOCX, or scans into a structured representation (`DoclingDocument`).
+2. **Extract the text** from relevant sections or paragraphs.
+3. **Apply Chonkie** on those fragments to optimize chunking (by tokens, semantic, or recursive).
+4. **Index the resulting chunks** in a vector database for search or augmented retrieval.
+
+This way you get the best of both worlds: deep document structural understanding and efficient fragmentation optimized for language models.
+
+<br/>
+## Conclusion
+
+* **Docling** is the translator between document chaos and semantic structure.
+* **Chonkie** is the tuner that turns that clean text into optimal AI-ready fragments.
+
+Combining them allows you to build more accurate, faster, and robust RAG pipelines, especially when working with complex, multi-format documents.
+If you want to dive deeper into Docling, I have this <a href="https://marcmayol.com/blog/es/docling-la-forma-facil-de-usar-archivos-con-llms/" title="Docling: the easy way to work with files and LLMs">article</a> where I explain it in detail, or you can also check out the <a href="https://marcmayol.com/blog/es/chonkie-el-arte-de-trocear-texto-con-inteligencia" title="Chonkie">Chonkie</a> article.
+> Tip: if you’re building your own RAG system, try using Docling for ingestion and Chonkie for chunking. Your model will thank you.
+
