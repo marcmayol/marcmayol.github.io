@@ -165,6 +165,46 @@ Una estrategia híbrida ideal podría ser:
 2. **Extraer los textos** de secciones o párrafos relevantes.
 3. **Aplicar Chonkie** sobre esos fragmentos para optimizar el chunking (por tokens, semántico o recursivo).
 4. **Indexar los chunks** resultantes en una base vectorial para búsqueda o recuperación aumentada.
+```python
+    from docling import DocumentConverter
+    from chonkie import TextChunker
+    from langchain_community.vectorstores import FAISS
+    from langchain_openai import OpenAIEmbeddings
+
+    # 1. Convertir un PDF a estructura con Docling
+    converter = DocumentConverter()
+    doc = converter.convert("informe.pdf")
+    docling_doc = doc.to_docling_document()
+
+    # 2. Extraer secciones relevantes (por ejemplo, solo el cuerpo del texto)
+    textos_relevantes = [section.text for section in docling_doc.sections if section.title != "Anexos"]
+
+    # 3. Aplicar Chonkie sobre los fragmentos para un chunking semántico
+    chunker = TextChunker(mode="semantic", chunk_size=512)
+    chunks = []
+    for texto in textos_relevantes:
+        chunks.extend(chunker.chunk(texto))
+
+    # 4. Indexar los chunks en una base vectorial para recuperación aumentada
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    vector_store = FAISS.from_texts(chunks, embedding=embeddings)
+
+    # 5. Ejemplo de búsqueda
+    query = "principales conclusiones del informe"
+    results = vector_store.similarity_search(query, k=3)
+
+    for r in results:
+        print(r.page_content)
+
+
+```
+### Qué consigue esta combinación:
+
+- Docling convierte documentos complejos (PDF, DOCX, imágenes escaneadas) en una estructura limpia y jerarquizada.
+
+- Chonkie optimiza el tamaño y coherencia de los fragmentos para que sean adecuados para modelos de lenguaje.
+
+- FAISS (u otra base vectorial) permite búsquedas precisas sobre los fragmentos procesados.
 
 Así obtienes lo mejor de ambos mundos: comprensión profunda de estructura documental y fragmentación eficiente optimizada para modelos de lenguaje.
 

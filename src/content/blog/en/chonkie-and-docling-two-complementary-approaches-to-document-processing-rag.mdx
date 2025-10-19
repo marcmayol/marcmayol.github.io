@@ -161,6 +161,45 @@ An ideal hybrid strategy could be:
 3. **Apply Chonkie** on those fragments to optimize chunking (by tokens, semantic, or recursive).
 4. **Index the resulting chunks** in a vector database for search or augmented retrieval.
 
+```python
+    from docling import DocumentConverter
+    from chonkie import TextChunker
+    from langchain_community.vectorstores import FAISS
+    from langchain_openai import OpenAIEmbeddings
+
+    # 1. Convert a PDF into a structured representation with Docling
+    converter = DocumentConverter()
+    doc = converter.convert("report.pdf")
+    docling_doc = doc.to_docling_document()
+
+    # 2. Extract relevant sections (for example, only the main body)
+    relevant_texts = [section.text for section in docling_doc.sections if section.title != "Appendices"]
+
+    # 3. Apply Chonkie to the fragments for semantic chunking
+    chunker = TextChunker(mode="semantic", chunk_size=512)
+    chunks = []
+    for text in relevant_texts:
+        chunks.extend(chunker.chunk(text))
+
+    # 4. Index the chunks in a vector database for augmented retrieval
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    vector_store = FAISS.from_texts(chunks, embedding=embeddings)
+
+    # 5. Example query
+    query = "main conclusions of the report"
+    results = vector_store.similarity_search(query, k=3)
+
+    for r in results:
+        print(r.page_content)
+
+```
+### What this combination achieves:
+
+- Docling converts complex documents (PDF, DOCX, or scanned images) into a clean, hierarchical structure.
+
+- Chonkie optimizes the chunk size and coherence to make the fragments suitable for language models.
+
+- FAISS (or another vector database) enables precise retrieval and search over the processed fragments.
 This way you get the best of both worlds: deep document structural understanding and efficient fragmentation optimized for language models.
 
 <br/>
