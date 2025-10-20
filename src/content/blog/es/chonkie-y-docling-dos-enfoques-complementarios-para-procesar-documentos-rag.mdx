@@ -6,7 +6,7 @@ heroImage: '/doclingvschonkiepng.png'
 customURL: '/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag/'
 ---
 
-En el mundo del orden y la recuperación inteligente de textos (por ejemplo, en arquitecturas **RAG** — *retrieval-augmented generation*), uno de los retos fundamentales es preparar los documentos para que sean “digeribles” por los componentes de recuperación y generación. Aquí entra en juego el **chunking** — es decir, fragmentar el texto en pedazos coherentes —, pero también la correcta interpretación del documento en sí (estructura, tablas, diseño, etc.).
+En el mundo del orden y la recuperación inteligente de textos (por ejemplo, en arquitecturas **RAG**, *retrieval-augmented generation*), uno de los retos fundamentales es preparar los documentos para que sean “digeribles” por los componentes de recuperación y generación. Aquí entra en juego el **chunking**, es decir, fragmentar el texto en pedazos coherentes, pero también la correcta interpretación del documento en sí (estructura, tablas, diseño, etc.).
 
 Dos herramientas recientes destacan por sus enfoques distintos, pero potencialmente complementarios:
 
@@ -169,7 +169,7 @@ Una estrategia híbrida ideal podría ser:
     from docling import DocumentConverter
     from chonkie import TextChunker
     from langchain_community.vectorstores import FAISS
-    from langchain_openai import OpenAIEmbeddings
+    from chonkie import OpenAIEmbeddings
 
     # 1. Convertir un PDF a estructura con Docling
     converter = DocumentConverter()
