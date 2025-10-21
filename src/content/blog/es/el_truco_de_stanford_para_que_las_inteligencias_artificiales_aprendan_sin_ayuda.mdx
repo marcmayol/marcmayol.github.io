@@ -1,0 +1,97 @@
+---
+title: 'El truco de Stanford para que las inteligencias artificiales aprendan sin ayuda'
+description: 'Descubre cómo el marco ACE (Agentic Context Engineering) de Stanford permite que las inteligencias artificiales aprendan solas mediante reflexión y actualización de contexto, sin necesidad de reentrenamiento. Un enfoque innovador que transforma la forma en que las IAs evolucionan, se adaptan y mejoran con cada interacción.'
+pubDate: 'Oct 21, 2025'
+heroImage: '/ace-standford.png'
+customURL: '/blog/en/the_trick_from_stanford_that_makes_artificial_intelligences_learn_on_their_own/'
+---
+
+¿Te imaginas una inteligencia artificial que mejora sola?
+Que no necesita que nadie la reentrene ni que le metan nuevos datos para hacerlo mejor.
+Pues eso, justo eso, es lo que han conseguido en Stanford con algo que llaman **ACE**, o _**Agentic Context Engineering**_.
+
+## Una IA con cuaderno propio
+
+ACE parte de una idea sencilla pero poderosa: en lugar de cambiar el modelo, cambia lo que lo rodea.
+El contexto.
+Cada vez que la IA hace una tarea, **reflexiona sobre lo que ha hecho**, apunta lo que ha funcionado y lo que no, y guarda esas conclusiones para la próxima vez.
+
+Es como si tuviera un cuaderno de notas que va rellenando poco a poco.
+Y lo mejor es que ese “cuaderno” no es solo memoria: se convierte en una especie de guía práctica que la IA consulta antes de enfrentarse a un nuevo problema.
+
+## Un equipo de tres en la cabeza de la IA
+
+El truco funciona porque ACE divide el proceso en tres partes que trabajan juntas:
+
+1. **El generador**, que hace la tarea.
+2. **El reflector**, que analiza el resultado.
+3. **El curador**, que guarda solo lo útil y descarta el resto.
+
+Este bucle se repite una y otra vez. La IA va ajustando su comportamiento como quien afina un instrumento, **sin borrar lo que ya sabía**, sino mejorando paso a paso.
+## ejemplo de código con Gemini
+```python
+    import google.generativeai as genai
+
+    genai.configure(api_key="YOUR_API_KEY_HERE")
+
+    class ACEAgent:
+        def __init__(self, model_name="gemini-1.5-pro"):
+            self.model = genai.GenerativeModel(model_name)
+            self.context = []
+
+        def run_task(self, task):
+            context_text = "\n".join(self.context)
+            input_text = f"{context_text}\nTask: {task}\nRespond as effectively as possible."
+            result = self.model.generate_content(input_text).text
+
+            reflection = self.reflect(task, result)
+            delta = self.extract_lessons(reflection)
+            self.update_context(delta)
+            return result
+
+        def reflect(self, task, result):
+            input_text = f"Reflect on this task: {task}\nResponse: {result}\nWhat could be improved?"
+            return self.model.generate_content(input_text).text
+
+        def extract_lessons(self, review):
+            input_text = f"Summarize the key insights or useful lessons from this reflection:\n{review}"
+            return self.model.generate_content(input_text).text
+
+        def update_context(self, delta):
+            if delta not in self.context:
+                self.context.append(delta)
+
+    # Example of use
+    if __name__ == "__main__":
+        agent = ACEAgent()
+
+        tasks = [
+            "Explain how an electric motor works.",
+            "Write a short introduction about climate change."
+        ]
+
+        for task in tasks:
+            result = agent.run_task(task)
+            print("Result:", result)
+            print("Learned context:", agent.context)
+            print()
+
+```
+
+## Prompts más densos, resultados más inteligentes
+
+Durante años se ha dicho que las inteligencias artificiales prefieren prompts cortos y simples.
+Pero ACE demuestra lo contrario: **lo que realmente les gusta es el contexto denso, con significado, lleno de ejemplos y matices**.
+
+Cada reflexión añade capas de información útil, y con el tiempo el modelo **razona mejor y entiende más**.
+En cierto modo, aprende a pensar sobre cómo piensa.
+
+## El siguiente paso: IAs con memoria viva
+
+La idea detrás de ACE va más allá de mejorar el rendimiento.
+Lo que propone Stanford es un futuro donde **entrenemos contextos en lugar de modelos**.
+Sistemas que recuerdan lo que aprenden, se adaptan a cada persona y evolucionan con la experiencia.
+
+Ya no se trata solo de inteligencia artificial: **hablamos de inteligencia que aprende sola**, que crece con el uso y mejora sin que nadie toque su código.
+
+Quizá dentro de poco, cuando digamos “mi IA”, no estemos hablando de una herramienta, sino de un compañero que **aprende contigo**.

@@ -1,0 +1,96 @@
+---
+title: 'El truco de Stanford para que las inteligencias artificiales aprendan sin ayuda'
+description: 'Discover how Stanford’s ACE (Agentic Context Engineering) framework enables artificial intelligences to learn on their own through reflection and context updates, no retraining required. An innovative approach that transforms how AIs evolve, adapt, and improve with every interaction.'
+pubDate: 'Oct 21, 2025'
+heroImage: '/ace-standford.png'
+customURL: '/blog/es/el_truco_de_stanford_para_que_las_inteligencias_artificiales_aprendan_sin_ayuda/'
+---
+Can you imagine an artificial intelligence that improves by itself?
+One that doesn’t need to be retrained or fed new data to perform better.
+Well, that’s exactly what they’ve achieved at Stanford with something they call **ACE**, or _**Agentic Context Engineering**_.
+
+## An AI with its own notebook
+
+ACE starts from a simple but powerful idea: instead of changing the model, it changes what surrounds it.
+The context.
+Every time the AI performs a task, it **reflects on what it did**, notes what worked and what didn’t, and stores those conclusions for the next time.
+
+It’s as if it had a notebook that it fills little by little.
+And the best part is that this “notebook” isn’t just memory: it becomes a kind of practical guide that the AI consults before facing a new problem.
+
+## A team of three inside the AI’s head
+
+The trick works because ACE divides the process into three parts that work together:
+
+1. **The generator**, which performs the task.
+2. **The reflector**, which analyzes the result.
+3. **The curator**, which keeps only what’s useful and discards the rest.
+
+This loop repeats over and over again.
+The AI keeps adjusting its behavior like someone tuning an instrument, **without erasing what it already knew**, improving step by step.
+
+## code example with Gemini
+```python
+    import google.generativeai as genai
+
+    genai.configure(api_key="YOUR_API_KEY_HERE")
+
+    class ACEAgent:
+        def __init__(self, model_name="gemini-1.5-pro"):
+            self.model = genai.GenerativeModel(model_name)
+            self.context = []
+
+        def run_task(self, task):
+            context_text = "\n".join(self.context)
+            input_text = f"{context_text}\nTask: {task}\nRespond as effectively as possible."
+            result = self.model.generate_content(input_text).text
+
+            reflection = self.reflect(task, result)
+            delta = self.extract_lessons(reflection)
+            self.update_context(delta)
+            return result
+
+        def reflect(self, task, result):
+            input_text = f"Reflect on this task: {task}\nResponse: {result}\nWhat could be improved?"
+            return self.model.generate_content(input_text).text
+
+        def extract_lessons(self, review):
+            input_text = f"Summarize the key insights or useful lessons from this reflection:\n{review}"
+            return self.model.generate_content(input_text).text
+
+        def update_context(self, delta):
+            if delta not in self.context:
+                self.context.append(delta)
+
+    # Example of use
+    if __name__ == "__main__":
+        agent = ACEAgent()
+
+        tasks = [
+            "Explain how an electric motor works.",
+            "Write a short introduction about climate change."
+        ]
+
+        for task in tasks:
+            result = agent.run_task(task)
+            print("Result:", result)
+            print("Learned context:", agent.context)
+            print()
+```
+## Denser prompts, smarter results
+
+For years, it’s been said that artificial intelligences prefer short and simple prompts.
+But ACE proves the opposite: **what they really like is dense, meaningful context, full of examples and nuance**.
+
+Each reflection adds layers of useful information, and over time the model **reasons better and understands more**.
+In a way, it learns to think about how it thinks.
+
+## The next step: AIs with living memory
+
+The idea behind ACE goes beyond improving performance.
+What Stanford proposes is a future where we **train contexts instead of models**.
+Systems that remember what they learn, adapt to each person, and evolve with experience.
+
+It’s no longer just about artificial intelligence: **we’re talking about intelligence that learns on its own**, that grows with use and improves without anyone touching its code.
+
+Maybe soon, when we say “my AI,” we won’t be talking about a tool, but about a companion that **learns with you**.
