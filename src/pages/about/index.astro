@@ -1,0 +1,127 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PreFooter from '../../components/PreFooter.astro'
+	;
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const item = {
+	'@context': 'https://schema.org',
+	'@type': 'AboutPage',
+	"name": "t('about.seotitle')",
+	"alternativeName": "Sobre mí -Marc Mayol Orell",
+	"description": t('about.seodescription'),
+	"author": {
+		"@type": "Person",
+		"name": "Marc Mayol Orell",
+		"url": "https://marcmayol.com",
+		"sameAs": [
+			"https://www.linkedin.com/in/marc-mayol-orell/",
+			"https://github.com/marcmayol"
+		],
+		"knowsAbout": [
+			"python",
+			"google products",
+			"Generative AI",
+			"javascript",
+			"vertexai",
+			"OpenAi",
+			"Prompt Engineering",
+		]
+	},
+	"mainEntity": {
+		"@type": "Person",
+		"name": "Marc Mayol Orell",
+		"jobTitle": "IA engineer y profesor",
+		"image": "https://marcmayol.com/images/perfil.jpg",
+		"description": "Marc Mayol especialista en2 inteligencia artificial generativa, desarrollo de productos y formación en2 IA.",
+		"url": "https://marcmayol.com"
+	}
+}
+
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+	<BaseHead title={t('about.seotitle')}
+			  description={t('about.seodescription')}
+			  item={item} image="/perfil.png"/>
+</head>
+<body>
+<Header/>
+<div class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+	<main class="container mx-auto px-6 py-16 max-w-4xl">
+		<section id="about" class="mb-24 text-center">
+			<img
+				src="/perfil.png"
+				alt="Marc Mayol"
+				class="block mx-auto mb-4 w-35 h-50 rounded-full"
+			/>
+			<h1 class="text-5xl font-bold mb-4 tracking-tight">{t('about.title')}</h1>
+
+			<p class="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto">
+				{t('about.description')}
+			</p>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<img src="/fotoarearea.jpg" alt="foto aerea palma franciscogarvi" class="w-full rounded-lg shadow" />
+			</div>
+
+			<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">Mi historia</h3>
+				<p class="text-gray-700">
+					Desde que era pequeño en Mallorca, siempre sentí una curiosidad insaciable por entender cómo funcionaban las cosas. Desmontaba juguetes, aparatos electrónicos y cualquier cacharro que cayera en mis manos. No lo hacía por romper, sino por descubrir su lógica interna, por aprender. Esa misma curiosidad es la que, con los años, me llevó a formarme como ingeniero y, más adelante, a dedicarme al mundo de la inteligencia artificial.
+					<br/>
+					<br/>
+					Hoy soy programador de IA y profesor. Combino el desarrollo técnico con la docencia porque creo firmemente que el conocimiento, cuando se comparte, se multiplica. Me apasiona crear soluciones que realmente funcionen, que vayan más allá de lo llamativo para convertirse en herramientas útiles. Y al mismo tiempo, disfruto enseñando, explicando conceptos complejos de forma sencilla, y ayudando a otros a descubrir el potencial de la IA.
+				</p>
+			</div>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row-reverse items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<img src="/GitHub__headpic.webp" alt="github headpic" class="w-full rounded-lg shadow" />
+			</div>
+
+			<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">PromptSuite</h3>
+				<p class="text-gray-700">
+					Uno de los proyectos que más representa esta forma de trabajar es PromptSuite, una librería que desarrollé para gestionar prompts de manera estructurada, con versiones específicas para cada modelo, tanto en formatos como JSON como en SQL. Nació de una necesidad real y la he diseñado pensando en la versatilidad, la seguridad y la claridad para quienes la usen.
+				<br/>
+				<br/>
+					<span class="font-bold">Próximamente disponible</span>
+				</p>
+			</div>
+		</section>
+		<section class="flex flex-col-reverse md:flex-row items-center gap-8 py-12 px-4">
+			<!-- Imagen -->
+			<div class="w-full md:w-1/2">
+				<figure>
+					<img src="/20f5d489-5e90-4cd0-906a-e58353358e9b.png" alt="ia-chan" class="w-full rounded-lg shadow" />
+					<figcaption class="text-gray-500 text-sm mt-2">IA-chan la compañera que me ayuda en mis clases y articulos de ia</figcaption>
+				</figure>
+			</div>
+		<!-- Texto -->
+			<div class="w-full md:w-1/2 text-center md:text-left">
+				<h3 class="text-2xl font-semibold mb-4">Mis contenidos</h3>
+				<p class="text-gray-700">
+					Pero no me quedo ahí. Escribo artículos, preparo contenidos, y participo en iniciativas donde la IA no sea solo una moda, sino una herramienta con propósito. Me interesa especialmente cómo los agentes inteligentes pueden convertirse en productos útiles, valiosos y vendibles para las empresas. Estoy convencido de que ahí está una de las claves del futuro: en crear sistemas que no solo automaticen, sino que entiendan, propongan y evolucionen con nosotros.
+					<br/>
+					<br/>
+					Sigo aprendiendo cada día, explorando nuevos caminos, y compartiendo lo que descubro. Porque si algo he aprendido en este viaje, es que la tecnología solo tiene sentido cuando mejora la vida de las personas. Y en eso, sigo trabajando.
+			</div>
+
+		</section>
+	</main>
+	<PreFooter/>
+</div>
+<Footer/>
+</body>
+</html>
