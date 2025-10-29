@@ -6,8 +6,9 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
-
-const { title, description, pubDate, updatedDate, heroImage,customURL} = Astro.props;
+import { getLangFromUrl} from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const { title, description, pubDate, updatedDate, heroImage,customURL,faqs} = Astro.props;
 const image = "https://marcmayol.com/" + heroImage
 const datePublished = new Date(pubDate).toISOString()
 const currentURL = Astro.url
@@ -38,7 +39,7 @@ const item= {
 }
 ---
 
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<BaseHead title={title} description={description} image={heroImage} item={item}/>
 	</head>
@@ -63,6 +64,23 @@ const item= {
 
 					<div id="post-content" class="font-normal text-[rgb(var(--gray-dark))] text-lg leading-relaxed">
 						<slot/>
+						<script>console.log({faqs})</script>
+						{faqs && (
+							<script type="application/ld+json" is:inline>
+								{JSON.stringify({
+									"@context": "https://schema.org",
+									"@type": "FAQPage",
+									"mainEntity": faqs.map(i => ({
+										"@type": "Question",
+										"name": i.pregunta,
+										"acceptedAnswer": {
+											"@type": "Answer",
+											"text": i.respuesta
+										}
+									}))
+								})}
+								</script>
+						)}
 					</div>
 				</div>
 			</article>

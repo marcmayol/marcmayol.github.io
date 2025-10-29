@@ -1,0 +1,49 @@
+---
+import {Schema} from "astro-seo-schema";
+const {items = [], lang} = Astro.props
+const schemaOrgFAQ = items.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": items.map(i => ({
+            "@type": "Question",
+            "name": i.pregunta,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": i.respuesta
+            }
+        }))
+    }
+    : null;
+---
+<>
+    {items.length > 0 && (
+            <section id="faq" class="py-8 bg-gray-50">
+                <div class="max-w-3xl mx-auto text-center">
+                    {lang === 'es' ? (
+                            <h2 class="text-3xl font-bold mb-10 mb-5">Preguntas Frecuentes</h2>
+                    ) : (
+                            <h2 class="text-3xl font-bold mb-10">FAGS</h2>
+                    )}
+                    <div class="text-left space-y-4">
+                        {items.map(item => (
+                                <details
+                                        class="group p-5 mb-5 bg-white rounded-xl shadow-sm cursor-pointer transition-all duration-300 open:shadow-md">
+                                    <summary class="flex justify-between items-center font-semibold text-lg list-none">
+                                        {item.pregunta}
+                                        <span class="transition-transform duration-300 group-open:rotate-180">▼</span>
+                                    </summary>
+                                    <p class="mt-3 text-gray-600 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-open:max-h-40 group-open:opacity-100">
+                                        {item.respuesta}
+                                    </p>
+                                </details>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <Schema
+                    item={schemaOrgFAQ}
+            />
+    )}
+</>
+
