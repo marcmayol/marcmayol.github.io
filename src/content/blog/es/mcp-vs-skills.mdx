@@ -1,0 +1,97 @@
+---
+title: "MCP vs Claude Skills"
+description: "Descubre qué son las Agent Skills de Anthropic para Claude y cómo permiten crear agentes de IA capaces de ejecutar tareas reales en empresas. Ventajas, funcionamiento, casos de uso y preguntas frecuentes para entender su impacto en el futuro de la automatización inteligente."
+pubDate: "Nov 02, 2025"
+heroImage: "/skills-mcp.png"
+customURL: "/blog/en/mcp-vs-skills/"
+faqs:
+  - pregunta: "¿Qué es MCP?"
+    respuesta: >
+        Es un protocolo abierto que permite a los modelos de lenguaje conectarse con herramientas, recursos y sistemas externos de forma estandarizada.
+
+  - pregunta: "¿Qué son las Anthropic Skills?"
+    respuesta: >
+        Son funciones nativas de Claude que le permiten ejecutar acciones concretas de manera inteligente e integrada dentro del ecosistema Anthropic.
+
+  - pregunta: "Si solo trabajo con Claude, ¿qué es mejor, MCP o Skills?"
+    respuesta: >
+        Las Skills, porque ofrecen una integración más automática, mayor facilidad de uso y una mejor experiencia para el usuario final.
+
+  - pregunta: "¿Puedo usar las Skills fuera del ecosistema de Claude?"
+    respuesta: >
+        De momento no. Actualmente solo funcionan dentro de la plataforma de Anthropic.
+
+  - pregunta: "¿Podrían las Skills convertirse en un estándar como MCP?"
+    respuesta: >
+        Sí. Igual que MCP comenzó como algo minoritario y ahora es ampliamente adoptado, las Skills podrían convertirse en un futuro estándar si Anthropic las abre y la comunidad las adopta.
+
+---
+
+Anthropic, la empresa responsable de Claude, presentó recientemente las Anthropic Skills, una nueva forma de ampliar las capacidades del asistente para que pueda interactuar con datos, herramientas y servicios de forma nativa y más inteligente. Y aunque hoy funcionan solo dentro del ecosistema Claude, ya están llamando mucho la atención.
+
+He escrito este artículo porque mucha gente me ha preguntado cuál es la diferencia entre MCP y las Skills. Es normal que haya confusión: ambos conceptos permiten extender lo que Claude puede hacer, pero cada uno lo consigue de una forma distinta.
+
+Mi objetivo aquí es muy claro: explicarte qué es MCP, qué son las Skills y compararlos de manera precisa y fácil, para que elijas la opción que mejor se adapte a tu trabajo.
+
+
+### ¿Qué es MCP?
+
+MCP es un protocolo abierto que permite a los modelos de lenguaje conectarse con herramientas y sistemas externos de forma estándar. Es una tecnología más universal y pensada para funcionar con distintos modelos (no solo con Claude).
+
+**Ventaja principal**: interoperabilidad con otros modelos y proveedores.
+
+
+### ¿Qué son las Claude Skills?
+
+Son funciones diseñadas exclusivamente para Claude, que se integran directamente en su plataforma y se activan de manera inteligente según lo que necesite el usuario.
+
+**Ventaja principal**: máxima integración y facilidad si solo trabajas en el ecosistema Claude.
+
+
+
+## Comparativa rápida: MCP vs Anthropic Skills
+
+| Aspecto                          | MCP                               | Anthropic Skills            |
+| -------------------------------- | --------------------------------- | --------------------------- |
+| Naturaleza                       | Protocolo abierto estándar        | Funciones nativas de Claude |
+| Integración con Claude           | Media                             | Óptima                      |
+| Experiencia de usuario           | Menos fluida                      | Muy natural y automática    |
+| Configuración                    | Requiere servidor y mantenimiento | Muy sencilla                |
+| Seguridad                        | Depende del desarrollador         | Gestionada por Anthropic    |
+| Dependencia de proveedor         | Baja                              | Alta                        |
+| Compatibilidad con otros modelos | Sí                                | No                          |
+
+
+
+## Ejemplo práctico: análisis de un Excel con ventas
+
+Imagina que un usuario sube un archivo Excel y pide un análisis de ventas.
+
+**Con MCP**: tienes que decir a Claude cuándo usar cada herramienta, gestionar el servidor y controlar todo el flujo manualmente.
+
+**Con Anthropic Skills**: Claude detecta automáticamente lo que debe hacer, ejecuta la skill correcta y devuelve el resultado de forma directa y fluida.
+
+El usuario casi ni nota que se ha usado una herramienta externa.
+
+
+
+## Conclusión
+
+Si trabajas **100 por ciento con Claude**, las Anthropic Skills son la mejor elección. Te ofrecen:
+
+* Menos complejidad técnica
+* Mayor seguridad
+* Mejor experiencia para tus usuarios
+* Flujos multimodales listos, sin configuración extra
+
+En cambio, MCP es ideal si necesitas conectar tu sistema a **otros modelos**, mantener independencia del proveedor o trabajar con una arquitectura más abierta.
+
+Además, aunque hoy las Skills funcionan únicamente en el ecosistema Claude, mi visión es que tienen un gran potencial para convertirse en un futuro estándar. MCP empezó como una curiosidad y ahora es la referencia en la conexión con funciones. Skills podría seguir el mismo camino si Anthropic decide abrirlo y la comunidad lo adopta.
+
+En resumen, Si tu mundo es Claude, elige Skills. Si buscas libertad entre modelos, MCP es tu aliado. Y ojo a las Skills, porque pueden ser el próximo gran estándar.
+
+import FAQ from '../../../components/FAQ.astro'
+
+<br/>
+<FAQ items={frontmatter.faqs} lang="es"/>
+<br/>
