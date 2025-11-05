@@ -1,0 +1,213 @@
+---
+title: "Opik: Tu Copiloto para Dominar los LLMs en Producción"
+description: "Opik es la herramienta definitiva para LLMOps que necesitas para gestionar modelos de IA en producción. Monitoriza rendimiento, evalúa prompts, detecta alucinaciones y optimiza costes. Integración con LangGraph, ChatGPT y principales LLMs. Trazabilidad completa, A/B testing y observabilidad en tiempo real para tus aplicaciones de inteligencia artificial. "
+pubDate: "Nov 05, 2025"
+heroImage: "/opik.png"
+customURL: "/blog/en/opik_your_copilot_to_master_llms_in_production/"
+faqs:
+  - pregunta: "¿Qué es Opik?"
+    respuesta: >
+        Opik es una plataforma de LLMOps para evaluar, monitorizar y mejorar modelos de lenguaje y agentes en producción.
+  - pregunta: "¿Para qué sirve Opik?"
+    respuesta: >
+        Sirve para controlar calidad, coste, seguridad y rendimiento de las llamadas a modelos de lenguaje y analizar cómo evolucionan en el mundo real.
+  - pregunta: "¿Opik sustituye a herramientas como LangGraph o LangChain?"
+    respuesta: >
+        No. Opik no orquesta ni construye flujos. Se integra con ellas para observabilidad y evaluación.
+  - pregunta: "¿Se puede usar Opik con modelos de OpenAI y otros proveedores?"
+    respuesta: >
+        Sí. Se integra con cualquier modelo accesible vía API y con frameworks más usados en LLM.
+  - pregunta: "¿Opik ofrece evaluación automática de calidad?"
+    respuesta: >
+        Sí. Tiene métricas de alucinación, relevancia, toxicidad y herramientas para evaluación humana asistida.
+  - pregunta: "¿Se puede usar Opik en modo self-hosted?"
+    respuesta: >
+        Sí. Es código abierto y permite instalación local sin enviar datos a la nube si lo necesitas.
+  - pregunta: "¿Opik guarda trazabilidad completa de prompts y respuestas?"
+    respuesta: >
+        Sí. Guarda todos los prompts, versiones, respuestas, tokens, latencia, costes y metadatos asociados a cada llamada.
+  - pregunta: "¿Se puede hacer A/B testing con Opik?"
+    respuesta: >
+        Sí. Puedes comparar distintos modelos o versiones de prompts y ver cuál rinde mejor según métricas.
+  - pregunta: "¿Opik detecta degradación del modelo en producción?"
+    respuesta: >
+        Sí. Puedes monitorizar cambios negativos de calidad, latencia o coste y recibir alertas.
+  - pregunta: "¿Cuál es su modelo de precios?"
+    respuesta: >
+        Tiene plan gratuito limitado y planes de pago según volumen de llamadas y retención de datos, además del modo self-hosted sin coste de licencia.
+---
+Si trabajas con modelos de lenguaje, seguro que has vivido ese momento mágico cuando tu chatbot responde perfectamente en desarrollo... y ese otro momento (no tan mágico) cuando en producción empieza a decir cosas raras, se disparan los costes o simplemente falla sin que sepas por qué.
+
+Bienvenido al mundo real de los LLMs. Y bienvenido a **Opik**, la herramienta que viene a poner orden en ese caos.
+
+## ¿Qué es Opik y por qué debería importarte?
+
+Opik es una plataforma diseñada específicamente para **LLMOps** (operaciones con modelos de lenguaje). Piensa en ello como el panel de control que necesitas para gestionar, monitorizar y mejorar tus modelos de IA una vez que salen del laboratorio y se enfrentan a usuarios reales.
+
+Porque seamos sinceros: desarrollar un prompt no es el final del camino. Es apenas el principio.
+
+Los modelos cambian. Los usuarios hacen preguntas inesperadas. Los proveedores actualizan sus APIs. Y mientras tanto, tú necesitas saber si tu sistema está funcionando bien, costando demasiado o generando respuestas problemáticas.
+
+## Las superpotencias de Opik
+
+### 1. Evaluación continua de tus modelos
+
+¿Deberías usar GPT-4o o GPT-4o mini para tu caso de uso? ¿Ese nuevo prompt funciona mejor que el anterior? Con Opik puedes comparar modelos, versiones y configuraciones usando métricas automáticas o evaluación humana.
+
+Ya no más decisiones a ciegas.
+
+### 2. Trazabilidad completa
+
+Imagina que un cliente se queja de una respuesta extraña. Con Opik, puedes buscar esa interacción exacta, ver qué prompt se usó, qué modelo respondió y qué parámetros estaban activos en ese momento.
+
+Es como tener la caja negra de un avión, pero para tu chatbot.
+
+### 3. Observabilidad en tiempo real
+
+Paneles donde ver todo lo importante: rendimiento, latencia, costes, tasas de fallo... Todo lo que necesitas para dormir tranquilo sabiendo que tu sistema está bajo control.
+
+### 4. A/B testing sin dramas
+
+Prueba ese prompt nuevo con el 20% de tus usuarios. Compara resultados. Toma decisiones basadas en datos reales, no en intuiciones.
+
+### 5. Control de calidad y seguridad
+
+Detecta alucinaciones, contenido tóxico o respuestas fuera de lugar antes de que se conviertan en problemas. Porque prevenir siempre es mejor que apagar fuegos.
+
+### 6. Integración natural en tu pipeline
+
+Opik se conecta fácilmente con APIs de modelos, repositorios de código y sistemas CI/CD. No tienes que rehacer tu arquitectura: se adapta a tu forma de trabajar.
+
+## El ciclo virtuoso del LLMOps
+
+Aquí está la clave: trabajar con LLMs no es un proceso lineal. Es un ciclo continuo:
+
+**Desarrollo → Evaluación → Despliegue → Monitorización → Mejora continua**
+
+Opik te ayuda a cerrar ese ciclo. Cada dato que recoges alimenta la siguiente iteración. Cada problema detectado es una oportunidad de mejora.
+
+## Ejemplos del mundo real
+
+**Caso 1: Optimización de costes**
+Tu servicio de atención al cliente usa GPT-4o. Decides probar GPT-4o mini en preguntas sencillas. Opik te muestra que ahorras un 70% de costes manteniendo el 95% de calidad. Decisión tomada.
+
+**Caso 2: Detección de degradación**
+Actualizas un prompt y de repente las quejas aumentan. Opik te alerta de que la tasa de alucinaciones subió un 30%. Reviertes el cambio en minutos.
+
+**Caso 3: Auditoría regulatoria**
+Un cliente pregunta por qué la IA le dio determinada respuesta. Con Opik, localizas la traza exacta: prompt, modelo, contexto y resultado. Transparencia total.
+
+## ¿Qué datos recoge Opik?
+
+Por cada interacción con tu modelo, Opik registra:
+
+- **Nombre del nodo** que ejecutó la acción
+- **Prompt completo** con todos sus parámetros
+- **Modelo usado** y su configuración
+- **Respuesta generada** por el modelo
+- **Coste y latencia** de la operación
+- **Señales de calidad** como indicadores de alucinación o toxicidad
+
+Todo esto se visualiza como una traza del flujo completo, permitiéndote entender exactamente qué pasó en cada momento.
+
+## Integrándolo con LangGraph
+
+Si trabajas con LangGraph para orquestar tus flujos de IA, integrar Opik es sorprendentemente sencillo. Imagina tu grafo:
+
+```
+Nodo A ──▶ Nodo B ──▶ Nodo C ──▶ Resultado final
+   │          │          │
+   └─ Opik ───┴─ Opik ───┴─ Opik
+```
+
+Cada nodo notifica a Opik lo que hace. Si mañana decides cambiar el nodo B para que use un modelo diferente, Opik te dirá inmediatamente:
+
+- Si mejoró la calidad de las respuestas
+- Si bajó el coste operativo
+- Si aumentó la latencia
+- Si generó más errores
+
+Y podrás revertir el cambio en segundos si algo salió mal.
+
+## Ejemplo práctico en código
+
+Aquí tienes un ejemplo funcional de cómo integrar Opik con LangGraph. Este flujo simple tiene tres nodos, cada uno registrando su actividad en Opik:
+
+```python
+from langchain_openai import ChatOpenAI
+from langgraph.graph import StateGraph, END
+from opik import Opik
+import os
+from typing import Dict
+
+opik = Opik(api_key=os.getenv("OPIK_API_KEY"))
+
+model = ChatOpenAI(model="gpt-4o-mini")
+
+def nodo_system(state: Dict):
+    input_text = state.get("contenido", "")
+    response = model.invoke(input_text)
+    result = {"rol": "System", "contenido": response.content}
+    opik.log_event(data={"nodo": "system", "input": input_text, "output": result})
+    return result
+
+def nodo_user(state: Dict):
+    input_text = state.get("contenido", "")
+    response = model.invoke(input_text)
+    result = {"rol": "User", "contenido": response.content}
+    opik.log_event(data={"nodo": "user", "input": input_text, "output": result})
+    return result
+
+def nodo_assistant(state: Dict):
+    input_text = state.get("contenido", "")
+    response = model.invoke(input_text)
+    result = {"rol": "Assistant", "contenido": response.content}
+    opik.log_event(data={"nodo": "assistant", "input": input_text, "output": result})
+    return result
+
+builder = StateGraph(dict)
+builder.add_node("system", nodo_system)
+builder.add_node("user", nodo_user)
+builder.add_node("assistant", nodo_assistant)
+builder.set_entry_point("system")
+builder.add_edge("system", "user")
+builder.add_edge("user", "assistant")
+builder.add_edge("assistant", END)
+app = builder.compile()
+
+if __name__ == "__main__":
+    entrada = {"rol": "User", "contenido": "Escribe algo sobre IA"}
+    resultado = app.invoke(entrada)
+    print(resultado)
+```
+
+Cuando ejecutes este código, cada nodo quedará registrado en Opik como un evento individual con su entrada y salida. Así de simple.
+
+## Lo que ganas con Opik
+
+Al final del día, Opik te da cuatro cosas fundamentales:
+
+**Mayor control de costes**: Sabrás exactamente cuánto gastas y podrás optimizar sin sacrificar calidad.
+
+**Mejor calidad continua**: Detectarás problemas antes de que tus usuarios los noten.
+
+**Auditoría completa**: Podrás explicar cada decisión que tomó tu IA.
+
+**Experimentación rápida**: Probar nuevos prompts y modelos deja de ser un acto de fe para convertirse en ciencia.
+
+## Conclusión
+
+Los LLMs son potentes, pero también impredecibles. Opik no los hace perfectos, pero sí te da las herramientas para entenderlos, controlarlos y mejorarlos continuamente.
+
+En un mundo donde cada vez más empresas dependen de la IA para operaciones críticas, tener visibilidad y control sobre tus modelos no es un lujo: es una necesidad.
+
+Porque al final, no se trata solo de hacer que funcione. Se trata de hacer que funcione bien, que sea sostenible y que puedas confiar en ello.
+
+Y eso, precisamente, es lo que Opik te ayuda a conseguir.
+
+
+import FAQ from '../../../components/FAQ.astro'
+
+<br/>
+<FAQ items={frontmatter.faqs} lang="en"/>
+<br/>
