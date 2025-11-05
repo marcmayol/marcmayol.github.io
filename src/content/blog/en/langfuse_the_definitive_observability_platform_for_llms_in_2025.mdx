@@ -1,0 +1,143 @@
+---
+title: "Langfuse: The Definitive LLM Observability Platform in 2025"
+description: "Discover Langfuse, the open source observability platform for LLM. Complete traceability, automatic metrics and self-hosting. Integration with LangGraph and LangChain."
+pubDate: "Nov 05, 2025"
+heroImage: "/langfluse.png"
+customURL: "/blog/es/langfuse_la_plataforma_definitiva_de_observabilidad_para_llm_en_2025/"
+faqs:
+  - pregunta: "What is Langfuse"
+    respuesta: >
+        It is an observability platform for LLM that allows you to trace, measure, evaluate and debug flows with language models in production.
+  - pregunta: "What is Langfuse for"
+    respuesta: >
+        It is used to monitor LLM calls, view latency, cost, tokens, conditional routes and analyze the behavior of graph-based systems like LangGraph.
+
+  - pregunta: "Does it integrate with LangChain and LangGraph"
+    respuesta: >
+        Yes. It has SDKs and callbacks that automatically register spans and metrics per node.
+
+  - pregunta: "Does Langfuse have a local visual interface"
+    respuesta: >
+        Yes. The web console works both in its cloud version and in self-hosted mode with all features.
+
+  - pregunta: "What data does Langfuse automatically record"
+    respuesta: >
+        Node duration, relationships between spans, errors, execution status and basic metadata of calls.
+
+  - pregunta: "Can it store tokens and cost per call"
+    respuesta: >
+        Yes, as long as the model client provides that information or it is passed manually as metadata.
+  - pregunta: "Can Langfuse be self-hosted"
+    respuesta: >
+        Yes. It is open source with MIT license and can be deployed locally with Docker and PostgreSQL or on Kubernetes.
+
+  - pregunta: "Does it allow observing branching and dynamic routes"
+    respuesta: >
+        Yes. Flow decisions can be recorded and you can see which path of the graph each execution has followed.
+
+  - pregunta: "Can it detect bottlenecks in nodes"
+    respuesta: >
+        Yes. It records the latency of each node and allows you to see which are the slowest steps in the system.
+  - pregunta: "Is Langfuse free"
+    respuesta: >
+        It has a free open source version and cloud plans with volume and storage limits according to project needs.
+---
+
+## What is Langfuse and why does it revolutionize LLM development?
+
+Langfuse is an open source observability platform specialized in applications with language models that allows you to trace, measure and optimize complex LLM flows. With an MIT license, it offers granular traceability of each call, automatic metrics for latency, cost and tokens, native integration with LangChain and LangGraph, and complete self-hosting capability in your infrastructure. Ideal for teams developing production applications with generative artificial intelligence, Langfuse provides visual dashboards, route analysis in complex graphs, prompt versioning and proactive alerts. Available in a free cloud version with 50k monthly units or self-hostable without limits using Docker and PostgreSQL.
+
+## Main features of Langfuse
+
+The platform provides complete traceability of LLM flows by automatically recording each call to language models. This creates a visual trace that shows the exact duration of each execution node, relationships between sequential and parallel calls, routes taken in flows with conditional branching, and customized metadata for each step of the process.
+
+Advanced metrics are captured without manual configuration. Langfuse automatically records latency per node to identify bottlenecks in milliseconds, tokens consumed to optimize costs knowing real usage, cost per call calculated with precision, and error rate to detect failures before they impact production.
+
+Native integration with LangChain and LangGraph is one of Langfuse's strongest points. The platform provides specialized callbacks that integrate seamlessly with these popular frameworks. Each node of your graph in LangGraph is automatically instrumented, allowing granular observability without modifying your business logic. This transparent instrumentation means you can start collecting detailed metrics by simply adding a few lines of code to your existing implementation.
+
+## Why Langfuse surpasses generic solutions
+
+Traditional tools like Prometheus or Grafana are not designed to understand the specific nature of language models. Langfuse, on the contrary, automatically groups related conversation sessions, allowing you to follow the complete context of an interaction with the user. Integrated prompt versioning makes it easy to compare results between different versions of instructions, something fundamental when iterating on response quality.
+
+Quality evaluation is another differentiating feature. Langfuse includes integrated metrics to detect hallucinations and moderation problems, critical aspects in production applications. Route analysis allows you to visualize which graph paths generate better results, thus optimizing both the architecture and performance of your system.
+
+For high-volume flows, Langfuse offers a particularly attractive scalability model. The free plan is generous and unlimited self-hosting eliminates concerns about artificial limits when your application grows. This flexibility is especially valuable for teams building products where the volume of interactions can grow rapidly.
+
+## Langfuse plans and options
+
+The free plan called Hobby is ideal for development and prototypes. It includes fifty thousand units per month in the cloud, access to thirty days of historical data, complete basic functionalities and unlimited free self-hosting. This generosity in the free tier allows teams to fully validate their architecture before committing budget.
+
+Paid plans start from approximately twenty-nine dollars monthly for one hundred thousand units, scaling according to needs. The pricing model is transparent and predictable, with no hidden costs for premium features. For many teams, especially those who choose to self-host, the real operational cost can be significantly lower than closed alternatives.
+
+## Use cases where Langfuse shines
+
+Complex graphs with LangGraph represent the ideal scenario for Langfuse. When your application has multiple hyperconnected nodes with conditional branching, you need to see which node each execution comes from and understand why a specific route was taken. Langfuse allows you to detect which paths generate more errors or excessive costs, facilitating flow optimization based on real data rather than assumptions.
+
+For engineers developing custom LLM libraries that combine prompts, SQL and language models, Langfuse offers total control through self-hosting. The traceability of each component and metrics per module allow surgical optimization. Complete audit capability is invaluable when you need to explain system decisions or debug unexpected behaviors in production.
+
+Regulated enterprise environments find in self-hosting with PostgreSQL the answer to strict compliance requirements. Sensitive data never leaves your infrastructure, granular access control with users and roles guarantees security, complete auditing facilitates regulatory compliance, and integration with existing security systems maintains the coherence of your corporate policies.
+
+## Practical implementation of Langfuse
+
+Basic installation requires importing the necessary libraries and creating a Langfuse instance. This instance will automatically read the environment variables with your credentials. For each execution flow, a uniquely identified global trace is created that groups all related spans. This structure allows maintaining the complete context of an execution, even when it traverses multiple nodes and branches.
+
+Recording nodes with metadata significantly enriches the information available for analysis. Each node can create its own span within the global trace, including metadata about the origin edge, the model used, configuration parameters or any information relevant to your use case. At the end of the node execution, the span is closed with the generated output. This pattern repeats consistently throughout your graph, building a complete picture of the execution flow.
+
+Traceability of conditional branching deserves special attention. In flows with multiple possible routes, it is essential to record not only which path was taken, but why that decision was made. The node that evaluates the condition must add information to the state about the origin, the reason for the decision and optionally a confidence level. The destination node reads this information and includes it in its span, allowing the complete path to be reconstructed with total explainability. This detailed audit trail capability is invaluable for both debugging and system behavior analysis.
+
+## Self-hosting Langfuse in your infrastructure
+
+Technical requirements to self-host Langfuse are modest. You need Docker and Docker Compose to orchestrate services, PostgreSQL as a database although it comes included in the compose, a minimum of two gigabytes of RAM and port three thousand available for the web interface. Most modern development environments meet these requirements without problems.
+
+Deployment with Docker is surprisingly simple. The complete stack is launched with a docker-compose file that includes preconfigured backend and database. Once executed, you access the complete visual interface at localhost port three thousand. You don't need additional configuration to start capturing traces of your applications.
+
+The advantages of self-hosting are multiple and significant. You eliminate any volume limit, being able to process millions of spans without artificial restrictions. Latency is minimal by keeping everything on your local or private network, which is critical when you need real-time debugging. Data remains completely private, guaranteeing GDPR compliance and other data protection regulations. Costs become predictable, without surprises in monthly billing based on consumption.
+
+## Professional dashboard and visualization
+
+Langfuse's complete web interface provides an execution timeline showing the duration of each span visually. The dependency tree between nodes allows understanding the complete flow of an execution. Filters by user, session, date and route make it easy to find specific executions when you are investigating particular behaviors. Comparison between executions is fundamental for A/B testing of different prompt versions or model configurations.
+
+Real-time metrics are automatic and accurate. You can instantly visualize that node one took two point thirteen seconds, node two one second forty-two, while node three required ten point seventy-seven seconds. This information emerges automatically without the need for manual instrumentation or timestamp calculations in your code. Identifying bottlenecks becomes trivial when you can sort nodes by average duration and immediately see where the problem is.
+
+Export and advanced analysis complement interactive visualization. Langfuse allows exporting data to CSV or JSON on demand, facilitating custom analysis with your preferred tools. The complete API allows integration with existing analytics systems, data pipelines or corporate dashboards. This flexibility guarantees that Langfuse can integrate into your technological ecosystem without forcing disruptive changes.
+
+## Best practices for production
+
+Avoiding CSV for metrics storage is a fundamental recommendation. Although it is tempting to export to CSV during initial development, in production Langfuse should be your single source of truth for observability. CSV files are flat, static and don't scale well with complex branching or high volume of executions. Additionally, you lose the dynamic query and interactive analysis capability that Langfuse provides natively.
+
+Enriching spans with relevant context maximizes the value of your observability. Take advantage of the metadata field to include the version of the model used, generation parameters such as temperature or top_p, business information such as user type or geographic region, and calculated metrics such as confidence or quality score. This contextual information transforms simple execution traces into business analysis tools.
+
+State structure for traceability in complex graphs requires planning. Keep in the state edge information including the origin node, the reason why that path was chosen and optionally a timestamp. The node that receives the flow can then record this information in its span, building a complete narrative of why the system made the decisions it made.
+
+Configuring proactive alerts prevents problems before they affect users. Define thresholds to receive notifications when a node has latency greater than five seconds, the error rate exceeds two percent, daily cost exceeds the allocated budget, or the system takes a graph route never seen before. These alerts transform Langfuse from a reactive debugging tool to a proactive monitoring system.
+
+## Langfuse for artificial intelligence teams
+
+The collaboration and roles system allows different team members to access the information they need. Developers get complete access to traces and detailed metrics for deep debugging. Product managers access high-level dashboards showing trends and patterns without being overwhelmed by technical details. The finance team receives cost and consumption reports for budget control. Compliance has access to complete execution auditing to guarantee regulatory compliance.
+
+Experiment versioning facilitates tracking iterative improvements so common in LLM development. You can compare results between prompt versions seeing exactly how each change affects key metrics. Measuring the impact of changes on latency and cost avoids inadvertent regressions. Automatically detecting quality regressions by comparing with established baseline protects user experience. Documenting design decisions with real data instead of intuitions improves the team's institutional memory.
+
+## Compatibility with the complete ecosystem
+
+Universal compatibility with model providers means that Langfuse works equally well with OpenAI including GPT-4 and GPT-3.5, Anthropic with Claude, Azure OpenAI Service, HuggingFace both hosted and self-hosted, and local models exposed via API. This provider independence protects your investment in observability when evaluating or changing models.
+
+Supported frameworks go beyond LangChain and LangGraph. Langfuse works perfectly with direct API calls without intermediary frameworks, with custom frameworks developed internally, with data pipelines orchestrated through Airflow, and with interactive applications built in Streamlit or Gradio. This flexibility allows instrumenting any type of LLM application regardless of your technology stack.
+
+## Why Langfuse is the right choice
+
+Langfuse represents the natural evolution of observability toward the specific needs of applications with language models. The combination of granular traceability capturing each system decision, automatic metrics without manual instrumentation overhead, complete visual interface accessible locally, and self-hosting capability for total data control makes it the reference tool for serious teams about putting LLMs in production.
+
+If you are developing complex applications with LangGraph where understanding execution flow is critical, you need complete visibility on costs and latency for continuous optimization, or you simply want total control over your observability data without depending on cloud services, Langfuse provides exactly what you need. The time investment in implementing it is quickly recovered through more efficient debugging, optimizations based on real data, and confidence in your system's stability.
+
+The open source model with optional self-hosting eliminates the vendor lock-in risk so common in proprietary observability tools. You can start with the free cloud version to validate the value, migrate to self-hosting when your volume grows, and maintain complete control over your observability roadmap. This flexibility is invaluable for rapidly growing startups and for established companies that prioritize control over their critical tools.
+
+The active community and continuous development guarantee that Langfuse evolves alongside the LLM ecosystem. New model providers receive support quickly, emerging best practices are incorporated into the platform, and complex use cases find documented and proven solutions. Adopting Langfuse means joining a community of professionals who are building the most sophisticated LLM applications on the market.
+
+Langfuse is not simply a glorified logging tool. It is a complete LLMOps platform that enables evidence-based iterative development, continuous performance and cost optimization, efficient debugging of complex behaviors, and confidence in your system's quality in production. For any serious team about building LLM applications that scale and are maintainable, Langfuse is not optional, it is essential.
+
+
+import FAQ from '../../../components/FAQ.astro'
+
+<br/>
+<FAQ items={frontmatter.faqs} lang="en"/>
+<br/>
