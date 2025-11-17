@@ -1,0 +1,407 @@
+---
+import Header from "../../components/Header.astro";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import PreFooter from "../../components/PreFooter.astro";
+export interface Props {
+    initialLang?: "es" | "en"
+}
+import {getLangFromUrl} from '../../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const inverse = lang === 'en' ? 'es' : 'en';
+const initialLangValue = lang
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+    <BaseHead title={""} description={""} item={""} image="/perfil.png"/>
+</head>
+<body>
+<Header customURL={'/' + inverse + '/archjourney'}/>
+<div class="min-h-screen bg-white text-gray-900 font-sans antialiased">
+    <div id="architecture-root" data-lang={lang} class="bg-white shadow-xl rounded-2xl p-8 max-w-4xl w-full mx-auto">
+
+        <div id="architecture-intro"
+             class="mb-6 p-4 bg-gray-50 rounded-xl transition-all duration-300 opacity-0 translate-y-4">
+            <button id="intro-toggle" class="mb-3 text-left text-blue-700 font-bold text-lg w-full">
+                <span id="intro-title"></span>
+            </button>
+            <p id="intro-text" class="text-lg leading-relaxed"></p>
+        </div>
+
+        <h1 id="architecture-title" class="text-3xl font-bold text-center mb-6"></h1>
+
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
+            <div id="architecture-progress" class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                 style="width:0"></div>
+        </div>
+
+        <div id="architecture-question-container" class="space-y-4 opacity-100 translate-y-0"></div>
+
+        <div id="architecture-explanation"
+             class="mt-6 p-4 bg-gray-100 rounded-xl opacity-0 translate-y-4 transition-all duration-300"></div>
+
+        <button id="architecture-restart"
+                class="hidden mt-6 w-full bg-gray-800 text-white py-3 rounded-xl text-center text-lg"></button>
+    </div>
+
+    <script>
+        const root = document.getElementById("architecture-root")
+        const langs = root.dataset.lang
+
+        const introContent = {
+            es: {
+                title: "Punto de partida del árbol de decisiones",
+                text: "Este árbol parte de una situación muy habitual en la evolución de productos de software. Ya existe un monolito multicapa funcional, que no es un MVP sino una solución formalizada y en uso. Tu producto ha superado la etapa de prueba de concepto y funciona de manera estable. A partir de aquí llega la evolución natural de cualquier sistema conforme crece el equipo, aumenta la complejidad, cambian los requisitos o la escala de uso. Este árbol ayuda a decidir cuál es el siguiente paso arquitectónico correcto en la evolución del sistema, sin asumir que hay que hacer microservicios desde el principio y sin promover cambios innecesarios."
+            },
+            en: {
+                title: "Starting point of the decision tree",
+                text: "This decision tree assumes a very common situation in software evolution. There is already a functional multilayer monolith, not an MVP but a formalised and actively used solution. Your product has moved past the proof of concept phase and is stable. From this point on, the system will naturally evolve as the team grows, complexity increases, requirements shift or usage scales up. This tree helps determine the next correct architectural step in the system’s evolution, without assuming microservices from the beginning and without promoting unnecessary changes."
+            }
+        }
+
+        const explanations = {
+            start: {
+                es: "Las transacciones fuertes entre dominios suelen indicar un acoplamiento natural que puede favorecer arquitecturas monolíticas bien organizadas.",
+                en: "Strong transactions across domains often indicate natural coupling that may favour well structured monolithic architectures."
+            },
+            producto_largo: {
+                es: "Los productos de larga vida requieren enfoques que permitan testear, refactorizar y evolucionar sin deuda excesiva.",
+                en: "Long lived products require approaches that allow testing, refactoring and evolving without excessive debt."
+            },
+            equipo_5_12: {
+                es: "Los equipos medianos requieren coordinación, control de cambios y sincronía de módulos interna.",
+                en: "Medium sized teams need coordination, change control and internal module synchronisation."
+            },
+            clean_hex: {
+                es: "Clean y Hexagonal separan dominio y lógica de infraestructura, facilitando cambios controlados.",
+                en: "Clean and Hexagonal separate domain and infrastructure logic, enabling controlled change."
+            },
+            monolito: {
+                es: "Un monolito bien modularizado puede ofrecer simplicidad, velocidad de desarrollo y menos costes operativos.",
+                en: "A well modularised monolith can offer simplicity, development speed and lower operational cost."
+            },
+            cicd: {
+                es: "CI CD más observabilidad más tracing es fundamental antes de escalar hacia arquitecturas distribuidas.",
+                en: "CI CD plus observability plus tracing is essential before scaling into distributed architectures."
+            },
+            equipo_15: {
+                es: "Los equipos grandes o releases independientes por dominio suelen ser una señal de necesidad de separación.",
+                en: "Large teams or independent domain releases often indicate a need for separation."
+            },
+            modular_monolith: {
+                es: "Un monolito modular separa los dominios de forma estricta dentro del mismo despliegue.",
+                en: "A modular monolith strictly separates domains inside a single deployment."
+            },
+            modular_monolith_final: {
+                es: "El monolito modular permite escalar equipos sin arquitecturas distribuidas complejas.",
+                en: "A modular monolith enables team scaling without complex distributed architectures."
+            },
+            extrae_dominio: {
+                es: "Extraer un dominio aislado es el camino más seguro hacia una arquitectura evolutiva.",
+                en: "Extracting a single isolated domain is the safest path toward an evolutionary architecture."
+            },
+            microservicios: {
+                es: "Los microservicios por dominio permiten escalar equipos y despliegues, pero añaden complejidad operativa.",
+                en: "Domain microservices allow scaling teams and deployments but introduce operational complexity."
+            },
+            serverless: {
+                es: "Serverless parcial es ideal para cargas altamente irregulares o impredecibles.",
+                en: "Partial serverless is ideal for highly irregular or unpredictable workloads."
+            },
+            consistencia: {
+                es: "La consistencia eventual es común en sistemas distribuidos donde se busca escalabilidad alta.",
+                en: "Eventual consistency is common in distributed systems seeking high scalability."
+            },
+            eda_cqrs: {
+                es: "EDA y CQRS ayudan a separar lectura y escritura y manejan eventos de dominio.",
+                en: "EDA and CQRS help separate read and write paths and manage domain events."
+            },
+            simple: {
+                es: "La arquitectura simple es válida si no necesitas complejidad distribuida.",
+                en: "Simple architecture is valid if distributed complexity is unnecessary."
+            }
+        }
+
+        const images = {
+            start: "/arquitectura/start.png",
+            producto_largo: "/arquitectura/producto_largo.png",
+            equipo_5_12: "/arquitectura/equipo_5_12.png",
+            clean_hex: "/arquitectura/clean_hex.png",
+            monolito: "/arquitectura/monolito.png",
+            cicd: "/arquitectura/cicd.png",
+            equipo_15: "/arquitectura/equipo_15.png",
+            modular_monolith: "/arquitectura/modular_monolith.png",
+            modular_monolith_final: "/arquitectura/modular_monolith.png",
+            extrae_dominio: "/arquitectura/equipo_15.png",
+            microservicios: "/arquitectura/microservicios.png",
+            serverless: "/arquitectura/serverless.png",
+            consistencia: "/arquitectura/consistencia.png",
+            eda_cqrs: "/arquitectura/eda_cqrs.png",
+            simple: "/arquitectura/simple.png"
+        }
+
+        const introRoot = document.getElementById("architecture-intro")
+        const introTextEl = document.getElementById("intro-text")
+        const introTitleEl = document.getElementById("intro-title")
+
+        introTitleEl.textContent = introContent[langs].title
+        introTextEl.textContent = introContent[langs].text
+
+        requestAnimationFrame(() => {
+            introRoot.classList.remove("opacity-0", "translate-y-4")
+            introRoot.classList.add("opacity-100", "translate-y-0")
+        })
+
+        let introOpen = true
+        document.getElementById("intro-toggle").onclick = () => {
+            introOpen = !introOpen
+            if (introOpen) {
+                introTextEl.style.maxHeight = "2000px"
+                introTextEl.style.opacity = "1"
+            } else {
+                introTextEl.style.maxHeight = "0"
+                introTextEl.style.opacity = "0"
+            }
+        }
+
+        const tree = {
+            start: {
+                es: {
+                    question: "¿Transacciones fuertes y frecuentes entre dominios?",
+                    options: [{text: "Sí", next: "producto_largo"}, {text: "No", next: "clean_hex"}]
+                },
+                en: {
+                    question: "Strong and frequent cross domain transactions?",
+                    options: [{text: "Yes", next: "producto_largo"}, {text: "No", next: "clean_hex"}]
+                }
+            },
+            clean_hex: {
+                es: {result: "Aplica Clean o Hexagonal dentro del monolito"},
+                en: {result: "Apply Clean or Hexagonal inside the monolith"}
+            },
+            producto_largo: {
+                es: {
+                    question: "¿Producto de larga vida con foco en mantenibilidad y tests?",
+                    options: [{text: "Sí", next: "equipo_5_12"}, {text: "No", next: "equipo_5_12"}]
+                },
+                en: {
+                    question: "Long lived product focused on maintainability and tests?",
+                    options: [{text: "Yes", next: "equipo_5_12"}, {text: "No", next: "equipo_5_12"}]
+                }
+            },
+            equipo_5_12: {
+                es: {
+                    question: "¿5 a 12 ingenieros trabajando en paralelo?",
+                    options: [{text: "Sí", next: "monolito"}, {text: "No", next: "cicd"}]
+                },
+                en: {
+                    question: "5 to 12 engineers working in parallel?",
+                    options: [{text: "Yes", next: "monolito"}, {text: "No", next: "cicd"}]
+                }
+            },
+            monolito: {
+                es: {result: "Mantén monolito"},
+                en: {result: "Keep monolith"}
+            },
+            cicd: {
+                es: {
+                    question: "¿Tienes CI CD más observabilidad más tracing sólidos?",
+                    options: [{text: "Sí", next: "equipo_15"}, {text: "No", next: "modular_monolith"}]
+                },
+                en: {
+                    question: "Do you have solid CI CD plus observability plus tracing?",
+                    options: [{text: "Yes", next: "equipo_15"}, {text: "No", next: "modular_monolith"}]
+                }
+            },
+            equipo_15: {
+                es: {
+                    question: "¿Más de 15 ingenieros o releases independientes por dominio?",
+                    options: [{text: "Sí", next: "microservicios"}, {text: "No", next: "modular_monolith"}]
+                },
+                en: {
+                    question: "More than 15 engineers or independent domain releases?",
+                    options: [{text: "Yes", next: "microservicios"}, {text: "No", next: "modular_monolith"}]
+                }
+            },
+            modular_monolith: {
+                es: {
+                    question: "¿Un dominio tiene ritmo o escala distinta?",
+                    options: [{text: "Sí", next: "extrae_dominio"}, {text: "No", next: "modular_monolith_final"}]
+                },
+                en: {
+                    question: "Does one domain have a different pace or scale?",
+                    options: [{text: "Yes", next: "extrae_dominio"}, {text: "No", next: "modular_monolith_final"}]
+                }
+            },
+            modular_monolith_final: {
+                es: {result: "Modular Monolith"},
+                en: {result: "Modular Monolith"}
+            },
+            extrae_dominio: {
+                es: {result: "Extrae solo ese dominio"},
+                en: {result: "Extract only that domain"}
+            },
+            microservicios: {
+                es: {
+                    question: "¿Tráfico muy irregular o global?",
+                    options: [{text: "Sí", next: "serverless"}, {text: "No", next: "consistencia"}]
+                },
+                en: {
+                    question: "Very irregular or global traffic?",
+                    options: [{text: "Yes", next: "serverless"}, {text: "No", next: "consistencia"}]
+                }
+            },
+            serverless: {
+                es: {result: "Serverless parcial"},
+                en: {result: "Partial serverless"}
+            },
+            consistencia: {
+                es: {
+                    question: "¿Aceptas consistencia eventual?",
+                    options: [{text: "Sí", next: "eda_cqrs"}, {text: "No", next: "simple"}]
+                },
+                en: {
+                    question: "Do you accept eventual consistency?",
+                    options: [{text: "Yes", next: "eda_cqrs"}, {text: "No", next: "simple"}]
+                }
+            },
+            eda_cqrs: {
+                es: {result: "Aplica EDA o CQRS"},
+                en: {result: "Apply EDA or CQRS"}
+            },
+            simple: {
+                es: {result: "Mantén arquitectura simple"},
+                en: {result: "Keep simple architecture"}
+            }
+        }
+
+        let current = "start"
+        let progressIndex = 0
+        const totalSteps = 6
+
+        function updateProgress() {
+            document.getElementById("architecture-progress").style.width = (progressIndex / totalSteps) * 100 + "%"
+        }
+
+        function fadeInExplanation() {
+            const el = document.getElementById("architecture-explanation")
+            el.classList.remove("opacity-0", "translate-y-4")
+            void el.offsetWidth
+            el.classList.add("opacity-0", "translate-y-4")
+            requestAnimationFrame(() => {
+                el.classList.remove("opacity-0", "translate-y-4")
+                el.classList.add("opacity-100", "translate-y-0")
+            })
+        }
+
+        function renderExplanation() {
+            const exp = explanations[current][langs]
+            const img = images[current]
+            const box = document.getElementById("architecture-explanation")
+            box.innerHTML = `
+    <p class="text-lg mb-4">${exp}</p>
+    <img src="${img}" class="w-full rounded-xl shadow">
+  `
+            fadeInExplanation()
+        }
+
+        function fadeIn() {
+            const el = document.getElementById("architecture-question-container")
+            el.classList.remove("opacity-0", "translate-y-4")
+            void el.offsetWidth
+            el.classList.add("opacity-0", "translate-y-4")
+            requestAnimationFrame(() => {
+                el.classList.remove("opacity-0", "translate-y-4")
+                el.classList.add("opacity-100", "translate-y-0")
+            })
+        }
+
+        function renderTree() {
+            const title = document.getElementById("architecture-title")
+            const restart = document.getElementById("architecture-restart")
+            const container = document.getElementById("architecture-question-container")
+
+            title.textContent = langs === "es" ? "Árbol de decisiones de Arquitectura" : "Architecture Decision Tree"
+            restart.textContent = langs === "es" ? "Reiniciar" : "Restart"
+
+            container.innerHTML = ""
+            restart.classList.add("hidden")
+
+            const node = tree[current][langs]
+
+            if (node.result) {
+                container.innerHTML = `<p class="text-2xl text-center font-medium">${node.result}</p>`
+                restart.classList.remove("hidden")
+                progressIndex = totalSteps
+                updateProgress()
+                renderExplanation()
+                fadeIn()
+                return
+            }
+
+            const q = document.createElement("p")
+            q.className = "text-2xl font-medium text-center"
+            q.textContent = node.question
+            container.appendChild(q)
+
+            node.options.forEach(opt => {
+                const btn = document.createElement("button")
+                btn.className = "mt-4 w-full bg-blue-600 text-white py-3 rounded-xl text-lg"
+                btn.textContent = opt.text
+                btn.onclick = () => {
+                    current = opt.next
+                    progressIndex += 1
+                    updateProgress()
+                    renderTree()
+                }
+                container.appendChild(btn)
+            })
+
+            fadeIn()
+            renderExplanation()
+        }
+
+        if (typeof window !== "undefined") {
+            document.getElementById("architecture-restart").onclick = () => {
+                current = "start"
+                progressIndex = 0
+                updateProgress()
+                renderTree()
+            }
+
+            updateProgress()
+            renderTree()
+        }
+    </script>
+
+    <style>
+        .opacity-0 {
+            opacity: 0
+        }
+
+        .opacity-100 {
+            opacity: 1
+        }
+
+        .translate-y-4 {
+            transform: translateY(1rem)
+        }
+
+        .translate-y-0 {
+            transform: translateY(0)
+        }
+
+        #intro-text {
+            transition: all 300ms ease;
+            overflow: hidden;
+            max-height: 2000px;
+            opacity: 1;
+        }
+    </style>
+
+    <PreFooter/>
+</div>
+<Footer/>
+</body>
+</html>
