@@ -13,6 +13,70 @@ export const talkAudienceTags = {
     en: ['DEVS · STUDENTS', 'GENERAL PUBLIC', 'LEADERS · HR', 'TECHNICAL', 'ALL AUDIENCES'],
 } as const;
 
+// Proyectos personales (rejilla en la página "Sobre mí")
+export const projects = {
+    es: [
+        {
+            name: 'Exercise API',
+            tag: 'API · GITHUB PAGES',
+            desc: 'API abierta, gratuita y multiidioma de ejercicios de gimnasio: 104 ejercicios con ilustraciones por género, mapas musculares e instrucciones ES/EN. Datos estáticos, sin claves ni límites.',
+            repo: 'https://github.com/marcmayol/exercise-api',
+            demo: 'https://marcmayol.com/exercise-api',
+        },
+        {
+            name: 'PromptSuite',
+            tag: 'LIBRERÍA · PROMPTS',
+            desc: 'Librería para gestionar prompts de forma estructurada, con versiones específicas por modelo, en formatos JSON y SQL. Diseñada para la versatilidad, la seguridad y la claridad.',
+            repo: 'https://github.com/marcmayol/promptSuite',
+            demo: '',
+        },
+        {
+            name: 'LLM-Trace',
+            tag: 'LIBRERÍA · OBSERVABILIDAD',
+            desc: 'Librería ligera de observabilidad para LLMs: trazado basado en SQLite y sin infraestructura. Integración directa con LangGraph, LangChain, OpenAI, Anthropic, OpenTelemetry y cualquier cliente HTTP.',
+            repo: 'https://github.com/llm-trace/llm-trace',
+            demo: '',
+        },
+        {
+            name: 'Claude Code Meter',
+            tag: 'WINDOWS · PYTHON',
+            desc: 'Widget flotante para Windows que muestra el consumo de tokens de Claude Code (hoy, semana y mes) sobre la barra de tareas, con presupuesto propio.',
+            repo: 'https://github.com/marcmayol/claude-code-meter',
+            demo: '',
+        },
+    ],
+    en: [
+        {
+            name: 'Exercise API',
+            tag: 'API · GITHUB PAGES',
+            desc: 'Open, free and multilingual gym-exercise API: 104 exercises with per-gender illustrations, muscle maps and ES/EN instructions. Static data, no keys, no limits.',
+            repo: 'https://github.com/marcmayol/exercise-api',
+            demo: 'https://marcmayol.com/exercise-api',
+        },
+        {
+            name: 'PromptSuite',
+            tag: 'LIBRARY · PROMPTS',
+            desc: 'A library to manage prompts in a structured way, with model-specific versions in both JSON and SQL formats. Built for versatility, security and clarity.',
+            repo: 'https://github.com/marcmayol/promptSuite',
+            demo: '',
+        },
+        {
+            name: 'LLM-Trace',
+            tag: 'LIBRARY · OBSERVABILITY',
+            desc: 'Lightweight LLM observability library: SQLite-based tracing with zero infrastructure. Drop-in support for LangGraph, LangChain, OpenAI, Anthropic, OpenTelemetry and any HTTP client.',
+            repo: 'https://github.com/llm-trace/llm-trace',
+            demo: '',
+        },
+        {
+            name: 'Claude Code Meter',
+            tag: 'WINDOWS · PYTHON',
+            desc: 'A floating Windows widget that shows Claude Code token usage (today, this week and this month) above the taskbar, with its own budget.',
+            repo: 'https://github.com/marcmayol/claude-code-meter',
+            demo: '',
+        },
+    ],
+} as const;
+
 export const SITE_TITLE = 'Marc Mayol';
 export const SITE_DESCRIPTION = 'Marc Mayol Gen AI Developer & Researcher conocimientos sobre IA Generativa, productos de Google y desarrollo de inteligencia artificial';
 export const  APPLICATION_NAME = 'Marc Mayol personal blog site';
