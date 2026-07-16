@@ -12,6 +12,7 @@ const { title, description, pubDate, updatedDate, heroImage,customURL,faqs} = As
 const image = "https://marcmayol.com/" + heroImage
 const datePublished = new Date(pubDate).toISOString()
 const currentURL = Astro.url
+const backLabel = lang === 'es' ? '← VOLVER AL BLOG' : '← BACK TO BLOG';
 const item= {
 	"@context": "https://schema.org",
 	"@type": "BlogPosting",
@@ -44,48 +45,63 @@ const item= {
 		<BaseHead title={title} description={description} image={heroImage} item={item}/>
 	</head>
 
-	<body>
-		<Header  customURL={customURL}/>
-		<main class="mt-10 mb-16">
-			<article class="w-[calc(100%-2em)] max-w-full m-0">
-				<div class="hero-image w-full">
-					{heroImage &&
-						<img width={1020} height={510} src={heroImage} class="block mx-auto rounded-[12px] h-[510px] shadow-lg"
-							 alt={title} title={title}/>}
-				</div>
-				<div class="text-sm text-center text-[rgb(var(--gray))] mt-5 mb-2">
-					<FormattedDate date={pubDate}/>
-				</div>
+	<body class="mm-body">
+		<Header customURL={customURL}/>
+		<article class="mm-article">
+			<div class="mm-article-head">
+				<a class="mm-article-back" href={`/blog/${lang}/`}>{backLabel}</a>
+				<h1 class="mm-article-title">{title}</h1>
+				<div class="mm-article-meta"><FormattedDate date={pubDate}/></div>
+			</div>
 
-				<div class="prose max-w-[calc(100%-2em)] w-[720px] mx-auto p-4 text-[rgb(var(--gray-dark))]">
-					<div class="title text-center py-4 mb-4 leading-none">
-						<h1  class="text-3xl font-bold leading-tight mb-2">{title}</h1>
-					</div>
+			{heroImage &&
+				<img class="mm-article-hero" width={1020} height={510} src={heroImage} alt={title} title={title}/>}
 
-					<div id="post-content" class="font-normal text-[rgb(var(--gray-dark))] text-lg leading-relaxed">
-						<slot/>
-						<script>console.log({faqs})</script>
-						{faqs && (
-							<script type="application/ld+json" is:inline>
-								{JSON.stringify({
-									"@context": "https://schema.org",
-									"@type": "FAQPage",
-									"mainEntity": faqs.map(i => ({
-										"@type": "Question",
-										"name": i.pregunta,
-										"acceptedAnswer": {
-											"@type": "Answer",
-											"text": i.respuesta
-										}
-									}))
-								})}
-								</script>
-						)}
-					</div>
-				</div>
-			</article>
-		</main>
-		<hr/>
+			<div id="post-content" class="mm-article-body">
+				<slot/>
+				{faqs && (
+					<script type="application/ld+json" is:inline set:html={JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "FAQPage",
+						"mainEntity": faqs.map(i => ({
+							"@type": "Question",
+							"name": i.pregunta,
+							"acceptedAnswer": { "@type": "Answer", "text": i.respuesta }
+						}))
+					})} />
+				)}
+			</div>
+		</article>
 		<Footer />
 	</body>
 </html>
+
+<style is:global>
+	body.mm-body{margin:0;background:#f2f0eb}
+</style>
+
+<style>
+	.mm-article{
+		max-width:860px;margin:0 auto;background:#f2f0eb;color:#141110;
+		border-left:2px solid #141110;border-right:2px solid #141110;
+		font-family:'Archivo',sans-serif;
+	}
+	.mm-article-head{padding:48px 44px 32px;border-bottom:2px solid #141110}
+	.mm-article-back{
+		font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+		color:#d62828;text-decoration:none;display:inline-block;margin-bottom:22px;
+	}
+	.mm-article-back:hover{text-decoration:underline}
+	.mm-article-title{font-size:40px;font-weight:900;line-height:1.06;letter-spacing:-.02em;margin:0 0 16px}
+	.mm-article-meta{font-family:'Space Mono',monospace;font-size:12px;color:#888}
+	.mm-article-hero{display:block;width:100%;height:auto;border-bottom:2px solid #141110}
+	.mm-article-body{
+		padding:40px 44px 56px;
+		font-size:17px;line-height:1.78;color:#2a2724;
+	}
+	@media (max-width:760px){
+		.mm-article-head{padding:36px 22px 26px}
+		.mm-article-title{font-size:30px}
+		.mm-article-body{padding:30px 22px 44px;font-size:16px}
+	}
+</style>
