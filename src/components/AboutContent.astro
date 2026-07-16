@@ -1,0 +1,139 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div class="mm-about">
+
+	<!-- HERO -->
+	<section class="mm-ab-hero">
+		<div class="mm-ab-photo"></div>
+		<div class="mm-ab-copy">
+			<span class="mm-badge">{t('about.badge')}</span>
+			<h1 class="mm-ab-h1">{t('about.hello')}<br /><span class="mm-red">{t('about.name')}</span></h1>
+			<p class="mm-ab-p" set:html={t('about.introp1')}></p>
+			<p class="mm-ab-p" set:html={t('about.introp2')}></p>
+		</div>
+	</section>
+
+	<!-- STATS -->
+	<div class="mm-stats">
+		<div class="mm-stat"><div class="mm-stat-num">+6</div><div class="mm-stat-lbl">{t('home.statyears')}</div></div>
+		<div class="mm-stat"><div class="mm-stat-num">10+</div><div class="mm-stat-lbl">{t('home.stattalks')}</div></div>
+		<div class="mm-stat mm-stat--news"><div class="mm-stat-news">GENAI</div><div class="mm-stat-lbl mm-stat-lbl--news">GOOGLE · HUGGING FACE</div></div>
+	</div>
+
+	<!-- EN QUÉ TRABAJO -->
+	<section class="mm-work">
+		<div class="mm-sec-tag mm-work-tag">{t('about.worktag')}</div>
+		<div class="mm-work-grid">
+			<div class="mm-work-cell"><div class="mm-work-title">{t('about.work1t')}</div><div class="mm-work-desc">{t('about.work1d')}</div></div>
+			<div class="mm-work-cell"><div class="mm-work-title">{t('about.work2t')}</div><div class="mm-work-desc">{t('about.work2d')}</div></div>
+			<div class="mm-work-cell"><div class="mm-work-title">{t('about.work3t')}</div><div class="mm-work-desc">{t('about.work3d')}</div></div>
+			<div class="mm-work-cell"><div class="mm-work-title">{t('about.work4t')}</div><div class="mm-work-desc">{t('about.work4d')}</div></div>
+		</div>
+	</section>
+
+	<!-- HISTORIA (contenido propio) -->
+	<section class="mm-story">
+		<div class="mm-sec-tag mm-story-tag">{t('about.storytag')}</div>
+		<slot />
+	</section>
+
+	<!-- CONTACTO -->
+	<section id="contacto" class="mm-contact">
+		<div class="mm-contact-title" set:html={t('about.ctatitle')}></div>
+		<div class="mm-contact-btns">
+			<a href="mailto:marcmayolorell@gmail.com" class="mm-cbtn mm-cbtn--red">EMAIL</a>
+			<a href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer" class="mm-cbtn">LINKEDIN</a>
+			<a href="https://github.com/marcmayol" target="_blank" rel="noopener noreferrer" class="mm-cbtn">GITHUB</a>
+		</div>
+	</section>
+
+</div>
+
+<style>
+	.mm-about{
+		max-width:1180px;margin:0 auto;background:#f2f0eb;color:#141110;
+		border-left:2px solid #141110;border-right:2px solid #141110;
+		font-family:'Archivo',sans-serif;
+	}
+	.mm-red{color:#d62828}
+	.mm-badge{font-family:'Space Mono',monospace;font-size:12px;background:#141110;color:#fff;display:inline-block;padding:5px 11px;margin-bottom:24px}
+	.mm-sec-tag{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+
+	/* HERO */
+	.mm-ab-hero{display:grid;grid-template-columns:1fr 1.3fr;border-bottom:2px solid #141110}
+	.mm-ab-photo{background:#141110 url('/perfil.png') center/cover no-repeat;min-height:460px;border-right:2px solid #141110}
+	.mm-ab-copy{padding:56px 40px}
+	.mm-ab-h1{font-size:60px;line-height:.96;font-weight:900;letter-spacing:-.03em;margin:0 0 22px;text-transform:uppercase}
+	.mm-ab-p{font-family:'Space Mono',monospace;font-size:14.5px;line-height:1.7;color:#333;max-width:520px;margin:0 0 18px}
+	.mm-ab-p:last-child{margin-bottom:0}
+
+	/* STATS */
+	.mm-stats{display:flex;border-bottom:2px solid #141110;font-family:'Space Mono',monospace;text-align:center}
+	.mm-stat{flex:1;padding:22px;border-right:2px solid #141110}
+	.mm-stat:last-child{border-right:none}
+	.mm-stat-num{font-size:34px;font-weight:700}
+	.mm-stat-lbl{font-size:11px;color:#555}
+	.mm-stat--news{background:#d62828;color:#fff}
+	.mm-stat-news{font-size:22px;font-weight:700;margin-top:5px}
+	.mm-stat-lbl--news{color:#fff;opacity:.85}
+
+	/* WORK GRID */
+	.mm-work{padding:56px 40px;border-bottom:2px solid #141110}
+	.mm-work-tag{margin-bottom:28px}
+	.mm-work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:2px solid #141110}
+	.mm-work-cell{padding:26px;border-right:2px solid #141110;border-bottom:2px solid #141110}
+	.mm-work-cell:nth-child(2n){border-right:none}
+	.mm-work-cell:nth-last-child(-n+2){border-bottom:none}
+	.mm-work-title{font-weight:800;font-size:18px;margin-bottom:8px;text-transform:uppercase}
+	.mm-work-desc{font-family:'Space Mono',monospace;font-size:12.5px;color:#444;line-height:1.6}
+
+	/* STORY (contenido propio) */
+	.mm-story{padding:56px 40px;border-bottom:2px solid #141110}
+	.mm-story-tag{margin-bottom:8px}
+
+	/* CONTACTO */
+	.mm-contact{padding:52px 40px;background:#141110;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+	.mm-contact-title{font-size:34px;font-weight:900;text-transform:uppercase;line-height:.98;max-width:520px}
+	.mm-contact-btns{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+	.mm-cbtn{text-decoration:none;background:#fff;color:#141110;padding:15px 22px;border:2px solid #fff;border-left:none}
+	.mm-cbtn:first-child{border-left:2px solid}
+	.mm-cbtn--red{background:#d62828;color:#fff;border-color:#d62828}
+
+	@media (max-width:860px){
+		.mm-ab-hero{grid-template-columns:1fr}
+		.mm-ab-photo{border-right:none;border-bottom:2px solid #141110;min-height:320px}
+		.mm-ab-copy{padding:40px 24px}
+		.mm-ab-h1{font-size:46px}
+		.mm-work,.mm-story{padding:40px 24px}
+		.mm-work-grid{grid-template-columns:1fr}
+		.mm-work-cell{border-right:none}
+		.mm-work-cell:nth-last-child(-n+2){border-bottom:2px solid #141110}
+		.mm-work-cell:last-child{border-bottom:none}
+		.mm-contact{padding:40px 24px}
+		.mm-contact-title{font-size:28px}
+	}
+</style>
+
+<!-- Estilos de las secciones de historia (contenido en el slot) -->
+<style is:global>
+	.mm-about .mm-story-block{
+		display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;
+		padding:36px 0;border-top:1px solid #d9d3c8;
+	}
+	.mm-about .mm-story-block:first-of-type{border-top:none;padding-top:20px}
+	.mm-about .mm-story-block--rev .mm-story-media{order:2}
+	.mm-about .mm-story-media img{width:100%;height:auto;display:block;border:2px solid #141110}
+	.mm-about .mm-story-media figcaption{font-family:'Space Mono',monospace;font-size:11px;color:#777;margin-top:8px}
+	.mm-about .mm-story-h{font-weight:800;font-size:24px;margin:0 0 12px;text-transform:uppercase;line-height:1.05}
+	.mm-about .mm-story-t{font-family:'Space Mono',monospace;font-size:13.5px;line-height:1.75;color:#333;margin:0}
+	.mm-about .mm-story-t strong{color:#141110}
+	@media (max-width:860px){
+		.mm-about .mm-story-block{grid-template-columns:1fr;gap:20px;padding:28px 0}
+		.mm-about .mm-story-block--rev .mm-story-media{order:0}
+	}
+</style>

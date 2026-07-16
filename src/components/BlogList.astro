@@ -1,0 +1,98 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+}
+const { posts } = Astro.props as Props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const ym = (d: Date) => `${d.getFullYear()}·${String(d.getMonth() + 1).padStart(2, '0')}`;
+---
+
+<div class="mm-blog">
+
+	<!-- HERO -->
+	<section class="mm-bl-hero">
+		<span class="mm-badge">{t('blog.badge')}</span>
+		<h1 class="mm-bl-h1">{t('blog.h1pre')}<br /><span class="mm-red">{t('blog.h1accent')}</span></h1>
+		<p class="mm-bl-intro">{t('blog.intro')}</p>
+	</section>
+
+	<!-- POSTS -->
+	<div class="mm-bl-list">
+		{posts.length === 0 ? (
+			<div class="mm-bl-empty">{t('blog.empty')}</div>
+		) : posts.map((post) => (
+			<a href={`/blog/${post.id}/`} class="mm-post">
+				<div class="mm-post-date">{ym(post.data.pubDate)}</div>
+				<div class="mm-post-body">
+					<div class="mm-post-title">{post.data.title}</div>
+					<div class="mm-post-desc">{post.data.description}</div>
+				</div>
+				<div class="mm-post-read">{t('blog.read')}</div>
+			</a>
+		))}
+	</div>
+
+	<!-- NEWSLETTER -->
+	<div class="mm-bl-news">
+		<div>
+			<div class="mm-sec-tag mm-red mm-bl-news-tag">{t('blog.newslettertag')}</div>
+			<div class="mm-bl-news-title">{t('blog.newslettertitle')}</div>
+		</div>
+		<a href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer" class="mm-bl-news-btn">{t('blog.newsletterbtn')}</a>
+	</div>
+
+</div>
+
+<style>
+	.mm-blog{
+		max-width:1180px;margin:0 auto;background:#f2f0eb;color:#141110;
+		border-left:2px solid #141110;border-right:2px solid #141110;
+		font-family:'Archivo',sans-serif;
+	}
+	.mm-red{color:#d62828}
+	.mm-badge{font-family:'Space Mono',monospace;font-size:12px;background:#141110;color:#fff;display:inline-block;padding:5px 11px;margin-bottom:24px}
+	.mm-sec-tag{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+
+	/* HERO */
+	.mm-bl-hero{padding:60px 40px;border-bottom:2px solid #141110}
+	.mm-bl-h1{font-size:64px;line-height:.94;font-weight:900;letter-spacing:-.03em;margin:0 0 20px;text-transform:uppercase}
+	.mm-bl-intro{font-family:'Space Mono',monospace;font-size:15px;line-height:1.65;color:#333;max-width:560px;margin:0}
+
+	/* POSTS */
+	.mm-bl-list{border-bottom:2px solid #141110}
+	.mm-post{
+		text-decoration:none;color:#141110;display:grid;grid-template-columns:110px 1fr 130px;
+		border-bottom:1px solid #d9d3c8;transition:background .12s;
+	}
+	.mm-post:last-child{border-bottom:none}
+	.mm-post:hover{background:#fff}
+	.mm-post:hover .mm-post-read,.mm-post:hover .mm-post-title{color:#d62828}
+	.mm-post-date{padding:26px 20px;font-family:'Space Mono',monospace;font-size:11px;color:#888;border-right:1px solid #d9d3c8}
+	.mm-post-body{padding:24px 26px}
+	.mm-post-title{font-weight:800;font-size:21px;text-transform:uppercase;line-height:1.08}
+	.mm-post-desc{font-family:'Space Mono',monospace;font-size:12px;color:#666;line-height:1.6;margin-top:8px;
+		display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+	.mm-post-read{padding:26px;font-family:'Space Mono',monospace;font-size:12px;color:#888;display:flex;align-items:center;justify-content:flex-end}
+	.mm-bl-empty{padding:40px;font-family:'Space Mono',monospace;font-size:13px;color:#888;text-align:center}
+
+	/* NEWSLETTER */
+	.mm-bl-news{padding:40px;border-bottom:2px solid #141110;background:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+	.mm-bl-news-tag{margin-bottom:8px}
+	.mm-bl-news-title{font-weight:800;font-size:24px;text-transform:uppercase;line-height:1.05;max-width:460px}
+	.mm-bl-news-btn{text-decoration:none;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;background:#141110;color:#fff;padding:15px 24px}
+
+	@media (max-width:860px){
+		.mm-bl-hero{padding:44px 24px}
+		.mm-bl-h1{font-size:46px}
+		.mm-post{grid-template-columns:80px 1fr}
+		.mm-post-read{display:none}
+		.mm-post-body{padding:22px 20px}
+		.mm-post-date{padding:22px 14px}
+		.mm-bl-news{padding:28px 24px}
+	}
+</style>
