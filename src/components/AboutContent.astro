@@ -44,6 +44,28 @@ const projectList = projects[lang] ?? projects.es;
 		<slot />
 	</section>
 
+	<!-- MODELO DESTACADO: ES DRAC -->
+	<section class="mm-esdrac">
+		<div class="mm-sec-tag mm-esdrac-tag">{t('about.esdractag')}</div>
+		<a class="mm-esdrac-imgwrap" href="https://huggingface.co/natzx94/EsDrac-v1-7B" target="_blank" rel="noopener noreferrer">
+			<img class="mm-esdrac-img" src="/esdrac.jpg" alt="EsDrac — modelo de lenguaje en mallorquí" loading="lazy" />
+		</a>
+		<div class="mm-esdrac-body">
+			<div class="mm-esdrac-head">
+				<h3 class="mm-esdrac-name">EsDrac-v1-7B</h3>
+				<span class="mm-esdrac-chip">HUGGING&nbsp;FACE</span>
+			</div>
+			<p class="mm-esdrac-desc" set:html={t('about.esdracdesc')}></p>
+			<div class="mm-esdrac-meta">MALLORQUÍ · QWEN2.5-7B · APACHE-2.0 · 583&nbsp;↓</div>
+			<div class="mm-esdrac-links">
+				<a href="https://huggingface.co/natzx94/EsDrac-v1-7B" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link mm-esdrac-link--main">MODELO ↗</a>
+				<a href="https://huggingface.co/natzx94/EsDrac-v1-7B-GGUF" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link">GGUF ↗</a>
+				<a href="https://huggingface.co/datasets/natzx94/EsDrac-mallorqui" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link">DATASET ↗</a>
+			</div>
+			<a class="mm-esdrac-profile" href="https://huggingface.co/natzx94" target="_blank" rel="noopener noreferrer">{t('about.esdracprofile')}</a>
+		</div>
+	</section>
+
 	<!-- MIS PROYECTOS -->
 	<section class="mm-projects">
 		<div class="mm-sec-tag mm-projects-tag">{t('about.projectstag')}</div>
@@ -120,6 +142,27 @@ const projectList = projects[lang] ?? projects.es;
 	.mm-story{padding:56px 40px;border-bottom:2px solid #141110}
 	.mm-story-tag{margin-bottom:8px}
 
+	/* MODELO DESTACADO: ES DRAC */
+	.mm-esdrac{padding:56px 40px;border-bottom:2px solid #141110}
+	.mm-esdrac-tag{margin-bottom:24px}
+	.mm-esdrac-imgwrap{display:block;border:2px solid #141110;line-height:0}
+	.mm-esdrac-img{width:100%;height:auto;display:block}
+	.mm-esdrac-body{border:2px solid #141110;border-top:none;padding:28px;background:#fff}
+	.mm-esdrac-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+	.mm-esdrac-name{font-weight:800;font-size:26px;margin:0;text-transform:uppercase;line-height:1.05}
+	.mm-esdrac-chip{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;background:#d62828;color:#fff;padding:5px 9px;white-space:nowrap}
+	.mm-esdrac-desc{font-family:'Space Mono',monospace;font-size:13px;color:#333;line-height:1.7;margin:0 0 16px}
+	.mm-esdrac-desc strong{color:#d62828}
+	.mm-esdrac-meta{font-family:'Space Mono',monospace;font-size:11px;color:#888;font-weight:700;margin-bottom:20px}
+	.mm-esdrac-links{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;flex-wrap:wrap}
+	.mm-esdrac-link{text-decoration:none;color:#141110;padding:11px 16px;border:2px solid #141110;border-right:none}
+	.mm-esdrac-link:last-child{border-right:2px solid #141110}
+	.mm-esdrac-link:hover{background:#141110;color:#fff}
+	.mm-esdrac-link--main{background:#141110;color:#fff}
+	.mm-esdrac-link--main:hover{background:#d62828;border-color:#d62828}
+	.mm-esdrac-profile{display:inline-block;margin-top:16px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#d62828;text-decoration:none}
+	.mm-esdrac-profile:hover{text-decoration:underline}
+
 	/* MIS PROYECTOS */
 	.mm-projects{padding:56px 40px;border-bottom:2px solid #141110}
 	.mm-projects-tag{margin-bottom:28px}
@@ -153,7 +196,9 @@ const projectList = projects[lang] ?? projects.es;
 		.mm-ab-photo{border-right:none;border-bottom:2px solid #141110;min-height:320px}
 		.mm-ab-copy{padding:40px 24px}
 		.mm-ab-h1{font-size:46px}
-		.mm-work,.mm-story,.mm-projects{padding:40px 24px}
+		.mm-work,.mm-story,.mm-projects,.mm-esdrac{padding:40px 24px}
+		.mm-esdrac-body{padding:22px}
+		.mm-esdrac-name{font-size:22px}
 		.mm-work-grid{grid-template-columns:1fr}
 		.mm-work-cell{border-right:none}
 		.mm-work-cell:nth-last-child(-n+2){border-bottom:2px solid #141110}
