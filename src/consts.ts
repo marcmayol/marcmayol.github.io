@@ -1,6 +1,18 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
+// Marquee de la home (palabras clave que giran en la barra oscura)
+export const marqueeItems = {
+    es: ['IA GENERATIVA', 'RAG & AGENTES', 'FORMACIÓN IN-COMPANY', 'LLMS EN PRODUCCIÓN', 'CHARLAS', 'HUGGING FACE'],
+    en: ['GENERATIVE AI', 'RAG & AGENTS', 'IN-COMPANY TRAINING', 'LLMS IN PRODUCTION', 'TALKS', 'HUGGING FACE'],
+} as const;
+
+// Etiqueta corta de audiencia por charla (mismo orden que speakerTopics)
+export const talkAudienceTags = {
+    es: ['DEVS · ESTUDIANTES', 'PÚBLICO GENERAL', 'LÍDERES · RRHH', 'TÉCNICO', 'TODOS LOS PÚBLICOS'],
+    en: ['DEVS · STUDENTS', 'GENERAL PUBLIC', 'LEADERS · HR', 'TECHNICAL', 'ALL AUDIENCES'],
+} as const;
+
 export const SITE_TITLE = 'Marc Mayol';
 export const SITE_DESCRIPTION = 'Marc Mayol Gen AI Developer & Researcher conocimientos sobre IA Generativa, productos de Google y desarrollo de inteligencia artificial';
 export const  APPLICATION_NAME = 'Marc Mayol personal blog site';

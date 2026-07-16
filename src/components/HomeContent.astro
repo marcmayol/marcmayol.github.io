@@ -1,0 +1,249 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { speakerTopics, marqueeItems, talkAudienceTags } from '../consts';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const talks = speakerTopics[lang];
+const tags = talkAudienceTags[lang];
+// Duplicamos las palabras para que el marquee haga bucle sin costuras
+const marquee = [...marqueeItems[lang], ...marqueeItems[lang]];
+---
+
+<div class="mm-home">
+
+	<!-- HERO -->
+	<section id="top" class="mm-hero">
+		<div class="mm-hero-copy">
+			<span class="mm-badge">{t('home.herobadge')}</span>
+			<h1 class="mm-h1">
+				{t('home.heroline1')}<br />
+				{t('home.heroline2')}<br />
+				<span class="mm-red">{t('home.heroline3')}</span>
+			</h1>
+			<p class="mm-hero-desc">{t('home.herodesc')}</p>
+			<div class="mm-hero-cta">
+				<a href="#contacto" class="mm-btn mm-btn--ink">{t('home.cta1')}</a>
+				<a href="#charlas" class="mm-btn mm-btn--red">{t('home.cta2')}</a>
+			</div>
+		</div>
+		<div class="mm-hero-photo">
+			<div class="mm-whoami">$ whoami<span class="mm-cursor"></span></div>
+			<div class="mm-stackbar">{t('home.herostack')}</div>
+		</div>
+	</section>
+
+	<!-- MARQUEE -->
+	<div class="mm-marquee">
+		<div class="mm-marquee-track">
+			{marquee.map((w) => (
+				<><span class="mm-marquee-item">{w}</span><span class="mm-star">★</span></>
+			))}
+		</div>
+	</div>
+
+	<!-- STATS -->
+	<div class="mm-stats">
+		<div class="mm-stat"><div class="mm-stat-num">+6</div><div class="mm-stat-lbl">{t('home.statyears')}</div></div>
+		<div class="mm-stat"><div class="mm-stat-num">10+</div><div class="mm-stat-lbl">{t('home.stattalks')}</div></div>
+		<div class="mm-stat"><div class="mm-stat-num">∞</div><div class="mm-stat-lbl">{t('home.statcuriosity')}</div></div>
+		<a class="mm-stat mm-stat--news" href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer">
+			<div class="mm-stat-news">NEWSLETTER</div><div class="mm-stat-lbl mm-stat-lbl--news">{t('home.statnews')}</div>
+		</a>
+	</div>
+
+	<!-- SERVICIOS -->
+	<section id="servicios" class="mm-services">
+		<div class="mm-sec-head">
+			<div class="mm-sec-tag">/ SERVICIOS_DE_CONSULTORIA</div>
+			<div class="mm-sec-sub">{t('home.servintro')}</div>
+		</div>
+		<div class="mm-serv-grid">
+			<div class="mm-serv">
+				<div class="mm-serv-num">[01]</div>
+				<div class="mm-serv-title">{t('home.serv1title')}</div>
+				<div class="mm-serv-desc">{t('home.serv1desc')}</div>
+			</div>
+			<div class="mm-serv">
+				<div class="mm-serv-num">[02]</div>
+				<div class="mm-serv-title">{t('home.serv2title')}</div>
+				<div class="mm-serv-desc">{t('home.serv2desc')}</div>
+			</div>
+			<div class="mm-serv">
+				<div class="mm-serv-num">[03]</div>
+				<div class="mm-serv-title">{t('home.serv3title')}</div>
+				<div class="mm-serv-desc">{t('home.serv3desc')}</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- CHARLAS -->
+	<section id="charlas" class="mm-talks">
+		<div class="mm-sec-tag mm-talks-tag">/ CHARLAS_Y_CONFERENCIAS</div>
+		<p class="mm-talks-intro">{t('home.talksintro')}</p>
+		<div class="mm-talks-list">
+			{talks.map((talk, i) => (
+				<a href="#contacto" class="mm-talk">
+					<span class="mm-talk-title">{String(i + 1).padStart(2, '0')}&nbsp;&nbsp;{talk.title}</span>
+					<span class="mm-talk-aud">{tags[i]} →</span>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<!-- NEWSLETTER + BLOG -->
+	<div class="mm-split">
+		<div class="mm-split-cell mm-split-cell--news">
+			<div class="mm-sec-tag mm-red">/ NEWSLETTER</div>
+			<div class="mm-split-title">{t('home.newsblocktitle')}</div>
+			<p class="mm-split-desc">{t('home.newsblockdesc')}</p>
+			<a href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer" class="mm-btn mm-btn--ink mm-btn--inline">{t('home.newsblockbtn')}</a>
+		</div>
+		<div class="mm-split-cell">
+			<div class="mm-sec-tag mm-red">/ BLOG</div>
+			<div class="mm-split-title">{t('home.blogblocktitle')}</div>
+			<p class="mm-split-desc">{t('home.blogblockdesc')}</p>
+			<a href={`/blog/${lang}/`} class="mm-btn mm-btn--outline mm-btn--inline">{t('home.blogblockbtn')}</a>
+		</div>
+	</div>
+
+	<!-- CONTACTO -->
+	<section id="contacto" class="mm-contact">
+		<div>
+			<div class="mm-contact-title" set:html={t('home.contactbigtitle')}></div>
+			<div class="mm-contact-desc">{t('home.contactbigdesc')}</div>
+		</div>
+		<div class="mm-contact-btns">
+			<a href="mailto:marcmayolorell@gmail.com" class="mm-cbtn mm-cbtn--red">EMAIL</a>
+			<a href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer" class="mm-cbtn">LINKEDIN</a>
+			<a href="https://github.com/marcmayol" target="_blank" rel="noopener noreferrer" class="mm-cbtn">GITHUB</a>
+		</div>
+	</section>
+
+</div>
+
+<style>
+	.mm-home{
+		max-width:1180px;margin:0 auto;background:#f2f0eb;color:#141110;
+		border-left:2px solid #141110;border-right:2px solid #141110;
+		font-family:'Archivo',sans-serif;
+	}
+	.mm-red{color:#d62828}
+
+	/* HERO */
+	.mm-hero{display:grid;grid-template-columns:1.4fr 1fr;border-bottom:2px solid #141110}
+	.mm-hero-copy{padding:64px 36px;border-right:2px solid #141110}
+	.mm-badge{
+		font-family:'Space Mono',monospace;font-size:12px;background:#141110;color:#fff;
+		display:inline-block;padding:5px 11px;margin-bottom:26px;
+	}
+	.mm-h1{
+		font-size:74px;line-height:.94;font-weight:900;letter-spacing:-.03em;
+		margin:0 0 24px;text-transform:uppercase;
+	}
+	.mm-hero-desc{
+		font-family:'Space Mono',monospace;font-size:15px;line-height:1.65;color:#333;
+		max-width:470px;margin:0 0 32px;
+	}
+	.mm-hero-cta{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+	.mm-btn{text-decoration:none;padding:16px 26px;color:#fff}
+	.mm-btn--ink{background:#141110}
+	.mm-btn--red{background:#d62828;border:2px solid #141110;border-left:none}
+	.mm-btn--outline{background:transparent;color:#141110;border:2px solid #141110}
+	.mm-btn--inline{display:inline-block}
+	.mm-hero-photo{
+		background:#141110 url('/perfil.png') center/cover no-repeat;
+		position:relative;min-height:400px;
+	}
+	.mm-whoami{
+		position:absolute;top:14px;right:14px;font-family:'Space Mono',monospace;font-size:11px;
+		color:#fff;background:rgba(20,17,16,.6);padding:4px 8px;
+	}
+	.mm-cursor{display:inline-block;width:7px;height:13px;background:#d62828;margin-left:5px;vertical-align:middle;animation:mm-blink 1.1s steps(1) infinite}
+	.mm-stackbar{
+		position:absolute;bottom:0;left:0;right:0;background:#d62828;color:#fff;
+		font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:8px 14px;border-top:2px solid #141110;
+	}
+
+	/* MARQUEE */
+	.mm-marquee{overflow:hidden;background:#141110;color:#f2f0eb;border-bottom:2px solid #141110;white-space:nowrap}
+	.mm-marquee-track{display:inline-block;font-family:'Space Mono',monospace;font-weight:700;font-size:14px;padding:12px 0;animation:mm-marquee 22s linear infinite}
+	.mm-marquee-item{padding:0 24px}
+	.mm-star{color:#f2f0eb}
+
+	/* STATS */
+	.mm-stats{display:flex;border-bottom:2px solid #141110;font-family:'Space Mono',monospace;text-align:center}
+	.mm-stat{flex:1;padding:22px;border-right:2px solid #141110;text-decoration:none;color:#141110}
+	.mm-stat:last-child{border-right:none}
+	.mm-stat-num{font-size:34px;font-weight:700}
+	.mm-stat-lbl{font-size:11px;color:#555}
+	.mm-stat--news{background:#d62828;color:#fff}
+	.mm-stat-news{font-size:22px;font-weight:700;margin-top:5px}
+	.mm-stat-lbl--news{color:#fff;opacity:.85}
+
+	/* SECTION HEADS */
+	.mm-sec-tag{font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+	.mm-sec-sub{font-family:'Space Mono',monospace;font-size:11px;color:#888}
+
+	/* SERVICIOS */
+	.mm-services{padding:56px 36px;border-bottom:2px solid #141110;scroll-margin-top:70px}
+	.mm-sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;flex-wrap:wrap;gap:8px}
+	.mm-serv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:2px solid #141110}
+	.mm-serv{padding:28px;border-right:2px solid #141110}
+	.mm-serv:last-child{border-right:none}
+	.mm-serv-num{font-family:'Space Mono',monospace;color:#d62828;font-weight:700;font-size:13px;margin-bottom:12px}
+	.mm-serv-title{font-weight:800;font-size:20px;margin-bottom:10px;text-transform:uppercase}
+	.mm-serv-desc{font-family:'Space Mono',monospace;font-size:12.5px;color:#444;line-height:1.6}
+
+	/* CHARLAS */
+	.mm-talks{padding:56px 36px;border-bottom:2px solid #141110;scroll-margin-top:70px}
+	.mm-talks-tag{margin-bottom:8px}
+	.mm-talks-intro{font-family:'Space Mono',monospace;font-size:12.5px;color:#555;max-width:620px;margin:0 0 24px;line-height:1.6}
+	.mm-talks-list{font-family:'Space Mono',monospace}
+	.mm-talk{
+		text-decoration:none;color:#141110;display:flex;justify-content:space-between;align-items:center;gap:16px;
+		padding:18px 0;border-top:1px solid #d9d3c8;
+	}
+	.mm-talk:last-child{border-bottom:1px solid #d9d3c8}
+	.mm-talk:hover .mm-talk-title{color:#d62828}
+	.mm-talk-title{font-weight:700;font-size:17px}
+	.mm-talk-aud{color:#666;font-size:12px;white-space:nowrap}
+
+	/* SPLIT NEWSLETTER + BLOG */
+	.mm-split{display:grid;grid-template-columns:1fr 1fr;border-bottom:2px solid #141110}
+	.mm-split-cell{padding:44px 36px}
+	.mm-split-cell--news{border-right:2px solid #141110;background:#fff}
+	.mm-split-title{font-weight:800;font-size:26px;margin:14px 0 10px;text-transform:uppercase;line-height:1.05}
+	.mm-split-desc{font-family:'Space Mono',monospace;font-size:12.5px;color:#444;line-height:1.6;margin:0 0 20px}
+	.mm-split .mm-btn--inline{font-family:'Space Mono',monospace;font-weight:700;font-size:13px;padding:14px 22px}
+
+	/* CONTACTO */
+	.mm-contact{padding:52px 36px;background:#141110;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;scroll-margin-top:70px}
+	.mm-contact-title{font-size:38px;font-weight:900;text-transform:uppercase;line-height:.98;max-width:520px}
+	.mm-contact-desc{font-family:'Space Mono',monospace;font-size:13px;color:#b8b2ae;margin-top:16px}
+	.mm-contact-btns{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:13px;font-weight:700}
+	.mm-cbtn{text-decoration:none;background:#fff;color:#141110;padding:15px 22px;border:2px solid #fff;border-left:none}
+	.mm-cbtn:first-child{border-left:2px solid}
+	.mm-cbtn--red{background:#d62828;color:#fff;border-color:#d62828}
+
+	/* RESPONSIVE */
+	@media (max-width:860px){
+		.mm-hero{grid-template-columns:1fr}
+		.mm-hero-copy{border-right:none;border-bottom:2px solid #141110;padding:44px 24px}
+		.mm-h1{font-size:52px}
+		.mm-serv-grid{grid-template-columns:1fr}
+		.mm-serv{border-right:none;border-bottom:2px solid #141110}
+		.mm-serv:last-child{border-bottom:none}
+		.mm-split{grid-template-columns:1fr}
+		.mm-split-cell--news{border-right:none;border-bottom:2px solid #141110}
+		.mm-services,.mm-talks{padding:44px 24px}
+		.mm-contact{padding:40px 24px}
+		.mm-contact-title{font-size:30px}
+	}
+	@media (max-width:520px){
+		.mm-h1{font-size:42px}
+		.mm-hero-cta,.mm-contact-btns{flex-wrap:wrap}
+		.mm-talk{flex-direction:column;align-items:flex-start;gap:4px}
+	}
+</style>
