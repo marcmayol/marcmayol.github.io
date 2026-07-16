@@ -1,0 +1,126 @@
+---
+title: "Exercise API: an open, free, bilingual database of gym exercises"
+description: "How Exercise API was born, a side project that turned into an open, free, no-limits API of over 100 gym exercises, with illustrations, muscle maps, and everything served as static files from GitHub Pages."
+pubDate: "Jul 16, 2026"
+heroImage: "/exercise-api.jpg"
+customURL: "/blog/es/exercise-api-base-de-datos-abierta-de-ejercicios/"
+faqs:
+  - pregunta: "What is Exercise API?"
+    respuesta: >
+        Exercise API is an open, free, bilingual (Spanish/English) database and API of gym exercises. Each exercise includes its name, muscle group, equipment, worked muscles, step-by-step instructions, illustrations, and an SVG muscle map. Everything is served as static files, with no keys and no limits.
+
+  - pregunta: "Do I need to sign up or pay to use it?"
+    respuesta: >
+        No. There's no authentication, no request limits, and CORS is wide open. You just make a GET request to a URL and get JSON (or an image) back. It's completely free and free to use, including commercial use, as long as you credit the author.
+
+  - pregunta: "How is it built technically?"
+    respuesta: >
+        Starting from a single seed file (exercises_seed.json) that acts as the source of truth, a Python script generates the whole API: the ES/EN instructions, the SVG muscle maps, and every JSON file in the catalog. The illustrations are generated with text-to-image models, and everything is served statically from GitHub Pages' CDN.
+
+  - pregunta: "Can I download the whole dataset at once?"
+    respuesta: >
+        Yes. Besides the individual endpoints, there's a ZIP with the complete dataset (all JSON files, images, and muscle maps) and a single dataset.json that bundles every exercise card and taxonomy into one file.
+---
+
+Almost every project I end up loving starts the same way: by solving a problem of my own. **Exercise API** is no exception.
+
+I had a gym plan —I called it *Building My Future*— and I wanted to document each exercise properly: its name in two languages, the muscles it works, a clear illustration, and step-by-step instructions. When I went looking for an open database that would give me all of that, I ran into the usual: either it was paid, or it needed an API key, or it was English-only, or it simply didn't exist. So I did what we developers do when something doesn't exist: **I built it myself**.
+
+What started as a folder full of notes turned into a public API of over **100 exercises**, free, no limits, and bilingual. Here's what it is, how it's made, and why I think it might be useful to you.
+
+## What it actually is
+
+Exercise API is an **open database + API of gym exercises**. Each exercise comes with:
+
+- Name in **Spanish and English**.
+- **Muscle group** and **equipment type**.
+- **Primary and secondary muscles**.
+- **Step-by-step instructions** in both languages.
+- **Male and female illustrations** (two frames: start and end of the movement).
+- **SVG muscle map**, with male and female silhouettes, the primary muscle in orange and the secondary one in light orange.
+
+There's nothing to install or sign up for. You make a `GET` request to a URL and get JSON back. Or an image. That's it.
+
+The current catalog has **104 exercises** (still growing), across **7 groups** (Chest, Back, Shoulders, Arms, Legs, Core, and Cardio), with **15 muscles** and **6 equipment types**.
+
+- **Web / demo:** [marcmayol.com/exercise-api](https://marcmayol.com/exercise-api)
+- **Documentation:** [marcmayol.com/exercise-api/docs.html](https://marcmayol.com/exercise-api/docs.html)
+
+## The design decision that makes it so simple: everything is static
+
+Here's the part I most enjoy telling. **Exercise API has no server.**
+
+There's no backend running, no database to maintain, no endpoint that falls over at three in the morning. It's all **static files served by GitHub Pages' CDN**. Each "endpoint" is literally a JSON file living at a specific path.
+
+That has some very nice consequences:
+
+- **No authentication**: no keys, no tokens.
+- **No limits**: there's no rate limiting because there's no server to protect.
+- **Open CORS** (`*`): you can consume it straight from the browser, no proxy needed.
+- **Fast and cheap to maintain**: GitHub's CDN does the heavy lifting and it doesn't cost me a cent.
+
+The "trick" is that a well-designed REST API, for data that's read a lot and written rarely, **doesn't need to run code on every request**. If you can precompute every response, a CDN gives you infinite scalability for free. And an exercise catalog is exactly that: constantly queried, changed only once in a while.
+
+Versioning goes through a `/v1/` prefix. If I ever have to break compatibility, it'll live under `/v2/` and `/v1/` will keep working for anyone already using it.
+
+## The endpoints
+
+Since it's all static, the list of endpoints is the list of files:
+
+| Endpoint | What it returns |
+|---|---|
+| `GET /v1/exercises.json` | Index of all exercises (summarized) |
+| `GET /v1/exercises/{slug}.json` | Full card for one exercise |
+| `GET /v1/dataset.json` | Everything in one file (cards + taxonomies) |
+| `GET /v1/groups.json` | Groups + count |
+| `GET /v1/muscles.json` | Muscle taxonomy |
+| `GET /v1/equipment.json` | Equipment types + count |
+| `GET /v1/by-group/{group}.json` | Exercises by group |
+| `GET /v1/by-muscle/{muscle}.json` | Exercises by muscle |
+| `GET /v1/by-equipment/{type}.json` | Exercises by equipment |
+| `GET /images/{slug}-m.jpg` · `-f.jpg` | Illustration (male / female) |
+| `GET /muscle-maps/{slug}.svg` · `-f.svg` | Muscle map (male / female) |
+| `GET /exercise-api-dataset.zip` | **Everything** in a ZIP (dataset + images + maps) |
+
+Since these are files, asking for something that doesn't exist returns an honest **HTTP 404**. No surprises.
+
+A full card looks like this:
+
+```json
+{
+  "slug": "leg-press",
+  "name":  { "es": "Prensa de piernas", "en": "Leg press" },
+  "group": { "id": "legs", "es": "Piernas", "en": "Legs" },
+  "equipment": { "id": "machine", "es": "Máquina", "en": "Machine" },
+  "primaryMuscles":   [ { "id": "quadriceps", "es": "Cuádriceps", "en": "Quadriceps" } ],
+  "secondaryMuscles": [ { "id": "gluteal", "es": "Glúteo", "en": "Glutes" } ],
+  "instructions": { "es": [ "..." ], "en": [ "..." ] },
+  "images": { "male": ".../leg-press-m.jpg", "female": ".../leg-press-f.jpg" },
+  "muscleMaps": { "male": ".../leg-press.svg", "female": ".../leg-press-f.svg" }
+}
+```
+
+## How it's built: one seed and a pipeline
+
+Behind the API's simplicity there's a piece I had a lot of fun building: the **generator**.
+
+Everything starts from a single file, `exercises_seed.json`, which is the **source of truth**. One entry per exercise: slug, names, group, equipment, and muscles. From there, a Python script (`build_api.py`) does all the magic:
+
+1. **Writes the instructions** in Spanish and English using an OpenAI model, and **caches** them so I don't pay twice for what's already generated.
+2. **Draws the SVG muscle maps** from the paths of an open source library (*react-native-body-highlighter*, MIT), coloring the primary and secondary muscles, in both male and female versions.
+3. **Copies the illustrations**, which are generated separately with a **text-to-image** model following a fixed canonical style (flat vector, white background, two frames of the movement) so all images match each other.
+4. **Emits every JSON file**: the index, the cards, the taxonomies, and the cross-references by group, muscle, and equipment.
+
+Adding a new exercise is basically: write its entry in the seed, generate its two images, run the generator, and commit. GitHub Pages publishes on its own. I like working this way because **the data lives in one place and everything else is derived from it**. No editing twenty files by hand and praying you didn't miss one.
+
+## License and credits
+
+The API is **free to use, including commercially**, with a single condition: credit the author and link back to the repository. It's an MIT-style license with attribution.
+
+And since the muscle maps are built from the vector paths of *react-native-body-highlighter* (© 2022 ELABBASSI Hicham, MIT), its license notice travels inside the repo and the ZIP. Giving credit to someone who saved you weeks of work isn't just a legal duty: it's the bare minimum.
+
+## What's next
+
+The plan is to keep **growing the catalog** in batches —there are always exercises missing— and to polish a couple of details in the muscle taxonomy. But the important part is already there: an open, free, bilingual, friction-free exercise database that anyone can use to build their fitness app, their workout tracker, or whatever they come up with.
+
+If you build something with it, I'd love to see it. And if you're missing an exercise, tell me: it's probably already on the to-do list.
