@@ -1,0 +1,47 @@
+---
+import BaseHead from '../../../components/BaseHead.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import ContactContent from '../../../components/ContactContent.astro';
+import { getLangFromUrl, useTranslations } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const item = {
+	'@context': 'https://schema.org',
+	'@type': 'ContactPage',
+	'name': t('contact.seotitle'),
+	'description': t('contact.seodescription'),
+	'url': 'https://marcmayol.com/contacto/en/',
+	'mainEntity': {
+		'@type': 'Person',
+		'name': 'Marc Mayol Orell',
+		'jobTitle': 'AI engineer and teacher',
+		'email': 'marcmayolorell@gmail.com',
+		'url': 'https://marcmayol.com',
+		'sameAs': [
+			'https://www.linkedin.com/in/marc-mayol-orell/',
+			'https://github.com/marcmayol'
+		]
+	}
+}
+---
+
+<!doctype html>
+<html lang={lang}>
+<head>
+	<BaseHead title={t('contact.seotitle')}
+			  description={t('contact.seodescription')}
+			  item={item} image="/perfil.png"/>
+</head>
+<body class="mm-body">
+<Header customURL="/contacto/es/" />
+<ContactContent />
+<Footer/>
+</body>
+</html>
+
+<style is:global>
+	body.mm-body{margin:0;background:#f2f0eb}
+</style>

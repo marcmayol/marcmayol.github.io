@@ -1,0 +1,194 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { CONTACT_ENDPOINT } from '../consts';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const topics = [
+	{ id: 'consultoria', label: t('form.topicconsulting') },
+	{ id: 'charla', label: t('form.topictalk') },
+	{ id: 'formacion', label: t('form.topictraining') },
+	{ id: 'otro', label: t('form.topicother') },
+];
+
+const texts = {
+	sending: t('form.sending'),
+	send: t('form.send'),
+	ok: t('form.ok'),
+	errRequired: t('form.errrequired'),
+	errEmail: t('form.erremail'),
+	errNet: t('form.errnet'),
+};
+---
+
+<form class="mm-form" novalidate>
+	<div class="mm-form-title">{t('form.title')}</div>
+
+	<div class="mm-form-grid">
+		<div class="mm-field">
+			<label class="mm-flabel" for="mm-name">{t('form.name')}</label>
+			<input class="mm-in" id="mm-name" type="text" name="name" placeholder={t('form.nameph')} maxlength="80" autocomplete="name" required />
+		</div>
+		<div class="mm-field">
+			<label class="mm-flabel" for="mm-email">{t('form.email')}</label>
+			<input class="mm-in" id="mm-email" type="email" name="email" placeholder="tu@email.com" maxlength="120" autocomplete="email" required />
+		</div>
+	</div>
+
+	<div class="mm-field">
+		<label class="mm-flabel" for="mm-company">{t('form.company')}</label>
+		<input class="mm-in" id="mm-company" type="text" name="companyName" placeholder={t('form.companyph')} maxlength="80" autocomplete="organization" />
+	</div>
+
+	<div class="mm-field">
+		<span class="mm-flabel">{t('form.need')}</span>
+		<div class="mm-topics" role="group">
+			{topics.map((topic) => (
+				<button type="button" class="mm-topic" data-topic={topic.id} aria-pressed="false">{topic.label}</button>
+			))}
+		</div>
+		<input type="hidden" name="topic" value="" />
+	</div>
+
+	<div class="mm-field">
+		<label class="mm-flabel" for="mm-message">{t('form.message')}</label>
+		<textarea class="mm-in mm-textarea" id="mm-message" name="message" rows="5" placeholder={t('form.messageph')} maxlength="2000" required></textarea>
+	</div>
+
+	{/* Trampa para bots: invisible y fuera del foco. Un humano nunca lo rellena. */}
+	<div class="mm-hp" aria-hidden="true">
+		<label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+	</div>
+
+	<button class="mm-submit" type="submit">{t('form.send')}</button>
+	<p class="mm-status" role="status" aria-live="polite"></p>
+</form>
+
+<script define:vars={{ endpoint: CONTACT_ENDPOINT, texts }}>
+	document.querySelectorAll('.mm-form').forEach((form) => {
+		const status = form.querySelector('.mm-status');
+		const button = form.querySelector('.mm-submit');
+		const topicInput = form.querySelector('input[name="topic"]');
+		const openedAt = Date.now();
+
+		const setStatus = (message, kind) => {
+			status.textContent = message;
+			status.dataset.kind = kind;
+		};
+
+		form.querySelectorAll('.mm-topic').forEach((chip) => {
+			chip.addEventListener('click', () => {
+				const isOn = topicInput.value === chip.dataset.topic;
+				topicInput.value = isOn ? '' : chip.dataset.topic;
+				form.querySelectorAll('.mm-topic').forEach((other) => {
+					const active = !isOn && other === chip;
+					other.dataset.active = active ? '1' : '0';
+					other.setAttribute('aria-pressed', String(active));
+				});
+			});
+		});
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+
+			const data = new FormData(form);
+			const name = (data.get('name') || '').trim();
+			const email = (data.get('email') || '').trim();
+			const message = (data.get('message') || '').trim();
+
+			if (!name || !email || !message) {
+				setStatus(texts.errRequired, 'err');
+				return;
+			}
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+				setStatus(texts.errEmail, 'err');
+				return;
+			}
+			// Bot: fingimos éxito para no enseñarle qué le ha delatado.
+			if ((data.get('website') || '') !== '') {
+				setStatus(texts.ok, 'ok');
+				form.reset();
+				return;
+			}
+
+			button.disabled = true;
+			button.textContent = texts.sending;
+			setStatus('', '');
+
+			// urlencoded en vez de JSON: es una petición "simple" y el navegador
+			// se ahorra el preflight OPTIONS contra el webhook.
+			const body = new URLSearchParams({
+				name,
+				email,
+				message,
+				company: (data.get('companyName') || '').trim(),
+				topic: data.get('topic') || 'otro',
+				lang: document.documentElement.lang || '',
+				page: location.pathname,
+				elapsed: String(Math.round((Date.now() - openedAt) / 1000)),
+			});
+
+			try {
+				const response = await fetch(endpoint, { method: 'POST', body });
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+				setStatus(texts.ok, 'ok');
+				form.reset();
+				form.querySelectorAll('.mm-topic').forEach((chip) => {
+					chip.dataset.active = '0';
+					chip.setAttribute('aria-pressed', 'false');
+				});
+				topicInput.value = '';
+			} catch {
+				setStatus(texts.errNet, 'err');
+			} finally {
+				button.disabled = false;
+				button.textContent = texts.send;
+			}
+		});
+	});
+</script>
+
+<style>
+	.mm-form{display:flex;flex-direction:column;gap:14px;font-family:'Archivo',sans-serif}
+	.mm-form-title{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;margin-bottom:10px}
+	.mm-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+	.mm-field{display:flex;flex-direction:column;min-width:0}
+	.mm-flabel{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;margin-bottom:6px;text-transform:uppercase}
+	.mm-in{
+		width:100%;font-family:'Space Mono',monospace;font-size:14px;
+		padding:14px 16px;border:2px solid #141110;border-radius:0;
+		background:#fff;color:#141110;outline:none;
+	}
+	.mm-in::placeholder{color:#999}
+	.mm-in:focus{border-color:#d62828}
+	.mm-textarea{resize:vertical;min-height:120px;line-height:1.5}
+	.mm-topics{display:flex;gap:0;flex-wrap:wrap;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;margin-top:2px}
+	.mm-topic{
+		cursor:pointer;padding:9px 15px;border:2px solid #141110;border-left:none;
+		background:#fff;color:#141110;font:inherit;border-radius:0;
+		transition:background .12s,color .12s;
+	}
+	.mm-topic:first-child{border-left:2px solid #141110}
+	.mm-topic:hover{background:#f2f0eb}
+	.mm-topic[data-active="1"]{background:#d62828;color:#fff;border-color:#d62828}
+	.mm-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+	.mm-submit{
+		cursor:pointer;font-family:'Space Mono',monospace;font-weight:700;font-size:14px;
+		background:#141110;color:#fff;border:2px solid #141110;border-radius:0;
+		padding:16px 28px;width:100%;margin-top:4px;
+		transition:background .12s,border-color .12s;
+	}
+	.mm-submit:hover:not(:disabled){background:#d62828;border-color:#d62828}
+	.mm-submit:disabled{opacity:.6;cursor:progress}
+	.mm-status{
+		font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+		margin:0;min-height:18px;line-height:1.5;
+	}
+	.mm-status[data-kind="ok"]{color:#1b7a3d}
+	.mm-status[data-kind="err"]{color:#d62828}
+	@media (max-width:560px){
+		.mm-form-grid{grid-template-columns:1fr}
+		.mm-topic{border-left:2px solid #141110}
+	}
+</style>

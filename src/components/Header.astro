@@ -17,7 +17,7 @@ const { customURL } = Astro.props as Props;
 		<a href={`/about/${lang}/`} class="mm-navlink" title={t('nav.about')}>{t('nav.about')}</a>
 		<a href={`/${lang}#servicios`} class="mm-navlink" title={t('nav.services')}>{t('nav.services')}</a>
 		<a href={`/blog/${lang}/`} class="mm-navlink" title={t('nav.blog')}>{t('nav.blog')}</a>
-		<a href={`/${lang}#contacto`} class="mm-navlink mm-navlink--cta" title={t('nav.contact')}>{t('nav.contact')}</a>
+		<a href={`/contacto/${lang}/`} class="mm-navlink mm-navlink--cta" title={t('nav.contact')}>{t('nav.contact')}</a>
 		<span class="mm-lang">
 			{Object.entries(languages).map(([code, label]) => (
 				code === lang ? (

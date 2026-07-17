@@ -110,12 +110,12 @@ const marquee = [...marqueeItems[lang], ...marqueeItems[lang]];
 
 	<!-- CONTACTO -->
 	<section id="contacto" class="mm-contact">
-		<div>
+		<div class="mm-contact-copy">
 			<div class="mm-contact-title" set:html={t('home.contactbigtitle')}></div>
 			<div class="mm-contact-desc">{t('home.contactbigdesc')}</div>
 		</div>
 		<div class="mm-contact-btns">
-			<a href="mailto:marcmayolorell@gmail.com" class="mm-cbtn mm-cbtn--red">EMAIL</a>
+			<a href={`/contacto/${lang}/`} class="mm-cbtn mm-cbtn--red">{t('nav.contact')}</a>
 			<a href="https://www.linkedin.com/in/marc-mayol-orell/" target="_blank" rel="noopener noreferrer" class="mm-cbtn">LINKEDIN</a>
 			<a href="https://github.com/marcmayol" target="_blank" rel="noopener noreferrer" class="mm-cbtn">GITHUB</a>
 		</div>
@@ -220,6 +220,7 @@ const marquee = [...marqueeItems[lang], ...marqueeItems[lang]];
 
 	/* CONTACTO */
 	.mm-contact{padding:52px 36px;background:#141110;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;scroll-margin-top:70px}
+	.mm-contact-copy{min-width:0}
 	.mm-contact-title{font-size:38px;font-weight:900;text-transform:uppercase;line-height:.98;max-width:520px}
 	.mm-contact-desc{font-family:'Space Mono',monospace;font-size:13px;color:#b8b2ae;margin-top:16px}
 	.mm-contact-btns{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:13px;font-weight:700}

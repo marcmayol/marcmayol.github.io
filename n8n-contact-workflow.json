@@ -1,0 +1,56 @@
+{
+  "name": "marcmayol.com · Formulario de contacto",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f028a859-132f-41fc-ae80-7fa359c1f8a1",
+        "responseMode": "onReceived",
+        "options": {
+          "allowedOrigins": "https://marcmayol.com, http://localhost:4321"
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-220, 0],
+      "webhookId": "f028a859-132f-41fc-ae80-7fa359c1f8a1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Descarta spam y normaliza. Devolver [] corta el flujo sin avisar al bot.\nconst b = $input.first().json.body ?? {};\n\n// 1. Honeypot: 'website' es un campo invisible en el form; solo lo rellenan los bots.\n//    OJO: 'company' es la Empresa REAL del formulario, no es el cebo.\nif ((b.website ?? '') !== '') return [];\n\n// 2. Rellenado en menos de 3s: nadie escribe tan rapido.\nif (Number(b.elapsed ?? 0) < 3) return [];\n\nconst clean = (v, max) => String(v ?? '').trim().slice(0, max);\nconst name = clean(b.name, 80);\nconst email = clean(b.email, 120);\nconst message = clean(b.message, 2000);\n\nif (!name || !email || !message) return [];\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return [];\n\nreturn [{ json: {\n  name,\n  email,\n  message,\n  company: clean(b.company, 80),\n  topic: clean(b.topic, 20) || 'otro',\n  lang: clean(b.lang, 5),\n  page: clean(b.page, 120),\n} }];"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Antispam y validacion",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "PEGA_AQUI_TU_WEBHOOK_DE_DISCORD",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ username: 'marcmayol.com', embeds: [{ title: '📬 ' + $json.name + ($json.company ? ' · ' + $json.company : ''), description: $json.message.slice(0, 1500), color: 14034984, fields: [ { name: 'Email', value: $json.email, inline: true }, { name: 'Motivo', value: $json.topic, inline: true } ], footer: { text: ($json.lang || '?') + ' · ' + ($json.page || '/') }, timestamp: new Date().toISOString() }] }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Avisar en Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [220, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Antispam y validacion", "type": "main", "index": 0 }]]
+    },
+    "Antispam y validacion": {
+      "main": [[{ "node": "Avisar en Discord", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}

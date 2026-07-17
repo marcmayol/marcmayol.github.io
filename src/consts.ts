@@ -77,6 +77,11 @@ export const projects = {
     ],
 } as const;
 
+// Webhook de n8n que recibe el formulario de contacto (VPS propio).
+// La URL es pública por definición: viaja en el HTML. La protección es el
+// honeypot del formulario + la validación en el propio workflow.
+export const CONTACT_ENDPOINT = 'https://vps24874.cubepath.net/webhook/f028a859-132f-41fc-ae80-7fa359c1f8a1';
+
 export const SITE_TITLE = 'Marc Mayol';
 export const SITE_DESCRIPTION = 'Marc Mayol Gen AI Developer & Researcher conocimientos sobre IA Generativa, productos de Google y desarrollo de inteligencia artificial';
 export const  APPLICATION_NAME = 'Marc Mayol personal blog site';
