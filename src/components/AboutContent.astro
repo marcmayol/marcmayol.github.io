@@ -66,6 +66,24 @@ const projectList = projects[lang] ?? projects.es;
 		</div>
 	</section>
 
+	<!-- PROYECTO: BALÙA (visión + comida) -->
+	<section class="mm-balua">
+		<div class="mm-sec-tag mm-esdrac-tag">{t('about.baluatag')}</div>
+		<div class="mm-esdrac-body mm-balua-body">
+			<div class="mm-esdrac-head">
+				<h3 class="mm-esdrac-name">Balùa</h3>
+				<span class="mm-esdrac-chip">HUGGING&nbsp;FACE</span>
+			</div>
+			<p class="mm-esdrac-desc" set:html={t('about.baluadesc')}></p>
+			<div class="mm-esdrac-meta">VISIÓN · QWEN2.5-VL-3B · NUTRITION5K · APACHE-2.0</div>
+			<div class="mm-esdrac-links">
+				<a href="https://huggingface.co/natzx94/balua-qwen25vl-3b-food-lora" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link mm-esdrac-link--main">MODELO ↗</a>
+				<a href="https://huggingface.co/natzx94/balua-qwen3b-food-gguf" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link">GGUF ↗</a>
+				<a href="https://huggingface.co/datasets/natzx94/balua-food-es" target="_blank" rel="noopener noreferrer" class="mm-esdrac-link">DATASET ↗</a>
+			</div>
+		</div>
+	</section>
+
 	<!-- MIS PROYECTOS -->
 	<section class="mm-projects">
 		<div class="mm-sec-tag mm-projects-tag">{t('about.projectstag')}</div>
@@ -163,6 +181,10 @@ const projectList = projects[lang] ?? projects.es;
 	.mm-esdrac-profile{display:inline-block;margin-top:16px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#d62828;text-decoration:none}
 	.mm-esdrac-profile:hover{text-decoration:underline}
 
+	/* BALÙA */
+	.mm-balua{padding:56px 40px;border-bottom:2px solid #141110}
+	.mm-balua-body{border-top:2px solid #141110}
+
 	/* MIS PROYECTOS */
 	.mm-projects{padding:56px 40px;border-bottom:2px solid #141110}
 	.mm-projects-tag{margin-bottom:28px}
@@ -196,7 +218,7 @@ const projectList = projects[lang] ?? projects.es;
 		.mm-ab-photo{border-right:none;border-bottom:2px solid #141110;min-height:320px}
 		.mm-ab-copy{padding:40px 24px}
 		.mm-ab-h1{font-size:46px}
-		.mm-work,.mm-story,.mm-projects,.mm-esdrac{padding:40px 24px}
+		.mm-work,.mm-story,.mm-projects,.mm-esdrac,.mm-balua{padding:40px 24px}
 		.mm-esdrac-body{padding:22px}
 		.mm-esdrac-name{font-size:22px}
 		.mm-work-grid{grid-template-columns:1fr}
