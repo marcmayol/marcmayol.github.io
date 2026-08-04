@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-08-04",
+    "macrostructure": "Marquee Hero",
+    "theme": "custom (neo-brutalist editorial)",
+    "theme_axes": "light / grotesk-heavy / warm",
+    "vibe": "editorial neo-brutalist, tinta y papel, rojo de marca",
+    "enrichment": "none (typography + retrato real)",
+    "brief": "marcmayol.com · audit + arreglo de críticos y mayores: sistema de tokens único, jerarquía de encabezados, contraste AA, foco visible, reduced-motion, FAQ y archjourney fuera del Tailwind genérico"
+  }
+]

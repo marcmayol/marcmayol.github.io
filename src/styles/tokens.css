@@ -1,0 +1,79 @@
+/* Hallmark · macrostructure: Marquee Hero · genre: editorial · theme: custom (neo-brutalist editorial)
+ * tone: técnico + directo · anchor hue: warm (27°)
+ * axes → paper band: light (95.5%) · display: grotesk-heavy (Archivo 900) · accent: warm red
+ * pre-emit critique: P5 H5 E4 S5 R4 V4
+ *
+ * Fuente única de color, tipografía, espacio y motion. Nada de hex sueltos fuera de aquí.
+ */
+:root {
+    /* ── Color ─────────────────────────────────────────────
+       Contrastes verificados sobre papel (#f2f0eb) y blanco.  */
+    --mm-ink: oklch(18.09% 0.0054 39.3);          /* tinta · 16.5:1 sobre papel */
+    --mm-ink-soft: oklch(27.49% 0.0070 67.5);     /* cuerpo de artículo · 13.0:1 */
+    --mm-paper: oklch(95.53% 0.0070 88.6);        /* papel */
+    --mm-paper-2: oklch(100% 0 0);                /* papel elevado (celdas) */
+
+    --mm-accent: oklch(56.76% 0.2084 27.1);       /* rojo de marca · fondos y display */
+    --mm-accent-ink: oklch(53.95% 0.2009 27.3);   /* mismo rojo, legible como texto · 4.9:1 */
+    --mm-accent-hi: oklch(76.15% 0.1421 20.9);    /* rojo sobre tinta · 8.3:1 */
+
+    --mm-body: oklch(32.11% 0 0);                 /* texto secundario · 11.1:1 */
+    --mm-body-2: oklch(38.67% 0 0);               /* descripciones · 8.6:1 */
+    --mm-muted: oklch(49.89% 0.0113 72.6);        /* metadatos · 5.3:1 papel / 6.0:1 blanco */
+
+    --mm-on-ink: oklch(100% 0 0);
+    --mm-on-ink-muted: oklch(76.73% 0.0089 56.3); /* 9.0:1 sobre tinta */
+    --mm-ok: oklch(51.13% 0.1274 150.4);          /* éxito · 4.7:1 papel */
+
+    --mm-rule: oklch(86.86% 0.0163 82.8);         /* filete suave sobre papel */
+    --mm-rule-soft: oklch(89.87% 0.0145 84.6);    /* filete sobre blanco */
+
+    /* ── Trazo ── */
+    --mm-border: 2px;
+    --mm-hair: 1px;
+
+    /* ── Tipografía ── */
+    --mm-font-display: 'Archivo', 'Archivo Fallback', system-ui, sans-serif;
+    --mm-font-mono: 'Space Mono', ui-monospace, 'Courier New', monospace;
+
+    --text-2xs: 0.6875rem;  /* 11 */
+    --text-xs: 0.75rem;     /* 12 */
+    --text-sm: 0.8125rem;   /* 13 */
+    --text-base: 0.9375rem; /* 15 */
+    --text-md: 1.0625rem;   /* 17 */
+    --text-lg: 1.25rem;     /* 20 */
+    --text-xl: 1.5rem;      /* 24 */
+    --text-2xl: 2.125rem;   /* 34 */
+    --text-3xl: 2.875rem;   /* 46 */
+    --text-4xl: 3.75rem;    /* 60 */
+    --text-display: 4.625rem; /* 74 */
+
+    /* ── Espacio · rejilla de 4pt ── */
+    --space-3xs: 0.25rem;  /* 4  */
+    --space-2xs: 0.5rem;   /* 8  */
+    --space-xs: 0.75rem;   /* 12 */
+    --space-sm: 1rem;      /* 16 */
+    --space-md: 1.5rem;    /* 24 */
+    --space-lg: 2rem;      /* 32 */
+    --space-xl: 2.5rem;    /* 40 */
+    --space-2xl: 3.5rem;   /* 56 */
+    --space-3xl: 4rem;     /* 64 */
+
+    /* ── Layout ── */
+    --mm-maxw: 1180px;
+    --mm-pad-x: var(--space-md);   /* padding lateral de sección · móvil */
+    --mm-pad-y: var(--space-2xl);
+
+    /* ── Motion ── */
+    --mm-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --mm-ease-in: cubic-bezier(0.6, 0, 0.9, 0.3);
+    --mm-ease-in-out: cubic-bezier(0.5, 0, 0.2, 1);
+    --mm-dur-1: 120ms;
+    --mm-dur-2: 200ms;
+}
+
+@media (min-width: 861px) {
+    :root {
+        --mm-pad-x: var(--space-xl);
+    }
+}

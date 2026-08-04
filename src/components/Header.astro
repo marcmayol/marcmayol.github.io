@@ -32,36 +32,41 @@ const { customURL } = Astro.props as Props;
 
 <style>
 	.mm-header{
-		max-width:1180px;margin:0 auto;
-		display:flex;justify-content:space-between;align-items:center;
-		padding:16px 32px;
-		background:#fff;color:#141110;
-		border-bottom:2px solid #141110;border-left:2px solid #141110;border-right:2px solid #141110;
+		max-width:var(--mm-maxw);margin:0 auto;
+		display:flex;justify-content:space-between;align-items:center;gap:var(--space-xs);
+		padding:var(--space-sm) var(--space-lg);
+		background:var(--mm-paper-2);color:var(--mm-ink);
+		border-bottom:var(--mm-border) solid var(--mm-ink);
+		border-left:var(--mm-border) solid var(--mm-ink);
+		border-right:var(--mm-border) solid var(--mm-ink);
 		position:sticky;top:0;z-index:50;
-		font-family:'Space Mono',monospace;
+		font-family:var(--mm-font-mono);
 	}
 	.mm-logo{
-		text-decoration:none;font-weight:700;font-size:15px;letter-spacing:.02em;color:#141110;
+		text-decoration:none;font-weight:700;font-size:var(--text-base);letter-spacing:.02em;color:var(--mm-ink);
 	}
-	.mm-red{color:#d62828}
-	.mm-nav{display:flex;align-items:center;gap:0;font-size:12px}
+	.mm-nav{display:flex;align-items:center;gap:0;font-size:var(--text-xs)}
 	.mm-navlink{
-		text-decoration:none;padding:6px 14px;color:#141110;
-		border-left:1px solid #e2ddd3;transition:background .15s;
+		text-decoration:none;padding:var(--space-3xs) var(--space-sm);color:var(--mm-ink);
+		border-left:var(--mm-hair) solid var(--mm-rule-soft);
+		transition:background var(--mm-dur-1) var(--mm-ease-out),color var(--mm-dur-1) var(--mm-ease-out);
 		text-transform:uppercase;white-space:nowrap;
 	}
-	.mm-navlink:hover{background:#f2f0eb}
-	.mm-navlink--cta{background:#d62828;color:#fff}
-	.mm-navlink--cta:hover{background:#141110}
-	.mm-lang{display:inline-flex;margin-left:14px;font-weight:700;border:1px solid #141110}
+	.mm-navlink:hover{background:var(--mm-paper)}
+	.mm-navlink--cta{background:var(--mm-accent);color:var(--mm-on-ink)}
+	.mm-navlink--cta:hover{background:var(--mm-ink);color:var(--mm-on-ink)}
+	.mm-lang{display:inline-flex;margin-left:var(--space-xs);font-weight:700;border:var(--mm-hair) solid var(--mm-ink)}
 	.mm-lang-btn{
-		border:none;background:none;padding:6px 9px;cursor:pointer;font:inherit;
-		color:#141110;text-decoration:none;
+		border:none;background:none;padding:var(--space-3xs) var(--space-2xs);cursor:pointer;font:inherit;
+		color:var(--mm-ink);text-decoration:none;
+		transition:background var(--mm-dur-1) var(--mm-ease-out),color var(--mm-dur-1) var(--mm-ease-out);
 	}
-	.mm-lang-btn + .mm-lang-btn{border-left:1px solid #141110}
-	.mm-lang-btn[data-active="1"]{background:#141110;color:#fff}
+	.mm-lang-btn:hover{background:var(--mm-paper)}
+	.mm-lang-btn + .mm-lang-btn{border-left:var(--mm-hair) solid var(--mm-ink)}
+	.mm-lang-btn[data-active="1"]{background:var(--mm-ink);color:var(--mm-on-ink)}
 	@media (max-width:760px){
-		.mm-header{flex-direction:column;gap:12px;padding:14px 16px}
+		/* Apilado ocupa demasiado alto para dejarlo fijo: en móvil se queda quieto. */
+		.mm-header{flex-direction:column;gap:var(--space-xs);padding:var(--space-xs) var(--space-sm);position:static}
 		.mm-nav{flex-wrap:wrap;justify-content:center}
 	}
 </style>

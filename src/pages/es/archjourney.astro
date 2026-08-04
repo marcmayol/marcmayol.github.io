@@ -10,39 +10,58 @@ import {getLangFromUrl} from '../../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 const inverse = lang === 'en' ? 'es' : 'en';
 const initialLangValue = lang
+
+const seo = lang === 'en'
+    ? {
+        title: 'Architecture decision tree · Marc Mayol',
+        description: 'An interactive decision tree to work out the next architectural step for a multilayer monolith: modular monolith, clean/hexagonal or microservices.'
+    }
+    : {
+        title: 'Árbol de decisiones de arquitectura · Marc Mayol',
+        description: 'Un árbol de decisiones interactivo para averiguar cuál es el siguiente paso arquitectónico de un monolito multicapa: monolito modular, clean/hexagonal o microservicios.'
+    };
+
+const seoItem = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: seo.title,
+    description: seo.description,
+    inLanguage: lang,
+    author: { '@type': 'Person', name: 'Marc Mayol Orell', url: 'https://marcmayol.com/about' }
+};
 ---
 <!doctype html>
 <html lang={lang}>
 <head>
-    <BaseHead title={""} description={""} item={""} image="/perfil.png"/>
+    <BaseHead title={seo.title} description={seo.description} item={seoItem} image="/perfil.png"/>
 </head>
-<body>
+<body class="mm-body">
 <Header customURL={'/' + inverse + '/archjourney'}/>
-<div class="min-h-screen bg-white text-gray-900 font-sans antialiased">
-    <div id="architecture-root" data-lang={lang} class="bg-white shadow-xl rounded-2xl p-8 max-w-4xl w-full mx-auto">
+<div class="mm-aj-page">
+    <div id="architecture-root" data-lang={lang} class="mm-aj-card">
 
         <div id="architecture-intro"
-             class="mb-6 p-4 bg-gray-50 rounded-xl transition-all duration-300 opacity-0 translate-y-4">
-            <button id="intro-toggle" class="mb-3 text-left text-blue-700 font-bold text-lg w-full">
+             class="mm-aj-intro mm-aj-fade">
+            <button id="intro-toggle" class="mm-aj-introbtn">
                 <span id="intro-title"></span>
             </button>
-            <p id="intro-text" class="text-lg leading-relaxed"></p>
+            <p id="intro-text" class="mm-aj-introtext"></p>
         </div>
 
-        <h1 id="architecture-title" class="text-3xl font-bold text-center mb-6"></h1>
+        <h1 id="architecture-title" class="mm-aj-h1"></h1>
 
-        <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
-            <div id="architecture-progress" class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+        <div class="mm-aj-bar">
+            <div id="architecture-progress" class="mm-aj-barfill"
                  style="width:0"></div>
         </div>
 
-        <div id="architecture-question-container" class="space-y-4 opacity-100 translate-y-0"></div>
+        <div id="architecture-question-container" class="mm-aj-questions mm-aj-fade is-in"></div>
 
         <div id="architecture-explanation"
-             class="mt-6 p-4 bg-gray-100 rounded-xl opacity-0 translate-y-4 transition-all duration-300"></div>
+             class="mm-aj-exp mm-aj-fade"></div>
 
         <button id="architecture-restart"
-                class="hidden mt-6 w-full bg-gray-800 text-white py-3 rounded-xl text-center text-lg"></button>
+                class="mm-aj-restart is-hidden"></button>
     </div>
 
     <script>
@@ -149,8 +168,8 @@ const initialLangValue = lang
         introTextEl.textContent = introContent[langs].text
 
         requestAnimationFrame(() => {
-            introRoot.classList.remove("opacity-0", "translate-y-4")
-            introRoot.classList.add("opacity-100", "translate-y-0")
+            introRoot.classList.remove("is-in")
+            introRoot.classList.add("is-in")
         })
 
         let introOpen = true
@@ -286,12 +305,12 @@ const initialLangValue = lang
 
         function fadeInExplanation() {
             const el = document.getElementById("architecture-explanation")
-            el.classList.remove("opacity-0", "translate-y-4")
+            el.classList.remove("is-in")
             void el.offsetWidth
-            el.classList.add("opacity-0", "translate-y-4")
+            el.classList.remove("is-in")
             requestAnimationFrame(() => {
-                el.classList.remove("opacity-0", "translate-y-4")
-                el.classList.add("opacity-100", "translate-y-0")
+                el.classList.remove("is-in")
+                el.classList.add("is-in")
             })
         }
 
@@ -300,20 +319,20 @@ const initialLangValue = lang
             const img = images[current]
             const box = document.getElementById("architecture-explanation")
             box.innerHTML = `
-    <p class="text-lg mb-4">${exp}</p>
-    <img src="${img}" class="w-full rounded-xl shadow">
+    <p class="mm-aj-exptext">${exp}</p>
+    <img src="${img}" class="mm-aj-img" alt="">
   `
             fadeInExplanation()
         }
 
         function fadeIn() {
             const el = document.getElementById("architecture-question-container")
-            el.classList.remove("opacity-0", "translate-y-4")
+            el.classList.remove("is-in")
             void el.offsetWidth
-            el.classList.add("opacity-0", "translate-y-4")
+            el.classList.remove("is-in")
             requestAnimationFrame(() => {
-                el.classList.remove("opacity-0", "translate-y-4")
-                el.classList.add("opacity-100", "translate-y-0")
+                el.classList.remove("is-in")
+                el.classList.add("is-in")
             })
         }
 
@@ -326,13 +345,13 @@ const initialLangValue = lang
             restart.textContent = langs === "es" ? "Reiniciar" : "Restart"
 
             container.innerHTML = ""
-            restart.classList.add("hidden")
+            restart.classList.add("is-hidden")
 
             const node = tree[current][langs]
 
             if (node.result) {
-                container.innerHTML = `<p class="text-2xl text-center font-medium">${node.result}</p>`
-                restart.classList.remove("hidden")
+                container.innerHTML = `<p class="mm-aj-result">${node.result}</p>`
+                restart.classList.remove("is-hidden")
                 progressIndex = totalSteps
                 updateProgress()
                 renderExplanation()
@@ -341,13 +360,13 @@ const initialLangValue = lang
             }
 
             const q = document.createElement("p")
-            q.className = "text-2xl font-medium text-center"
+            q.className = "mm-aj-q"
             q.textContent = node.question
             container.appendChild(q)
 
             node.options.forEach(opt => {
                 const btn = document.createElement("button")
-                btn.className = "mt-4 w-full bg-blue-600 text-white py-3 rounded-xl text-lg"
+                btn.className = "mm-aj-opt"
                 btn.textContent = opt.text
                 btn.onclick = () => {
                     current = opt.next
@@ -375,29 +394,78 @@ const initialLangValue = lang
         }
     </script>
 
-    <style>
-        .opacity-0 {
-            opacity: 0
+    <!-- El JS crea nodos sin data-astro-cid, asi que estas reglas van globales. -->
+    <style is:global>
+        .mm-aj-page{background:var(--mm-paper);padding:var(--space-xl) var(--space-sm) var(--space-lg)}
+        .mm-aj-card{
+            max-width:860px;margin:0 auto;background:var(--mm-paper);color:var(--mm-ink);
+            border:var(--mm-border) solid var(--mm-ink);padding:var(--space-xl) var(--mm-pad-x);
+            font-family:var(--mm-font-display);
         }
-
-        .opacity-100 {
-            opacity: 1
+        .mm-aj-h1{
+            font-size:var(--text-xl);font-weight:900;text-transform:uppercase;line-height:1.05;
+            letter-spacing:-.02em;margin:0 0 var(--space-md);overflow-wrap:anywhere;
         }
-
-        .translate-y-4 {
-            transform: translateY(1rem)
+        .mm-aj-intro{
+            background:var(--mm-paper-2);border:var(--mm-border) solid var(--mm-ink);
+            border-left:6px solid var(--mm-accent);padding:var(--space-md);margin-bottom:var(--space-md);
         }
-
-        .translate-y-0 {
-            transform: translateY(0)
+        .mm-aj-introbtn{
+            display:block;width:100%;text-align:left;cursor:pointer;background:none;border:none;padding:0;
+            font-family:var(--mm-font-mono);font-size:var(--text-sm);font-weight:700;text-transform:uppercase;
+            color:var(--mm-accent-ink);margin-bottom:var(--space-2xs);
         }
-
-        #intro-text {
-            transition: all 300ms ease;
-            overflow: hidden;
-            max-height: 2000px;
-            opacity: 1;
+        .mm-aj-introbtn:hover{text-decoration:underline}
+        .mm-aj-introtext{
+            font-family:var(--mm-font-mono);font-size:var(--text-sm);line-height:1.7;color:var(--mm-body);
+            margin:0;transition:all var(--mm-dur-2) var(--mm-ease-out);overflow:hidden;max-height:2000px;opacity:1;
         }
+        .mm-aj-bar{
+            height:14px;border:var(--mm-border) solid var(--mm-ink);background:var(--mm-paper-2);
+            margin-bottom:var(--space-md);
+        }
+        .mm-aj-barfill{height:100%;background:var(--mm-accent);transition:width var(--mm-dur-2) var(--mm-ease-out)}
+        .mm-aj-q{
+            font-size:var(--text-lg);font-weight:800;line-height:1.2;margin:0 0 var(--space-md);
+            overflow-wrap:anywhere;
+        }
+        .mm-aj-opt{
+            display:block;width:100%;margin-top:var(--space-xs);cursor:pointer;text-align:left;
+            font-family:var(--mm-font-mono);font-size:var(--text-sm);font-weight:700;
+            background:var(--mm-paper-2);color:var(--mm-ink);border:var(--mm-border) solid var(--mm-ink);
+            padding:var(--space-xs) var(--space-sm);
+            transition:background var(--mm-dur-1) var(--mm-ease-out),color var(--mm-dur-1) var(--mm-ease-out),transform var(--mm-dur-1) var(--mm-ease-out);
+        }
+        .mm-aj-opt:hover{background:var(--mm-ink);color:var(--mm-on-ink)}
+        .mm-aj-opt:active{transform:translateY(1px)}
+        .mm-aj-exp{
+            margin-top:var(--space-md);padding:var(--space-md);
+            background:var(--mm-paper-2);border:var(--mm-border) solid var(--mm-ink);
+        }
+        .mm-aj-exptext{
+            font-family:var(--mm-font-mono);font-size:var(--text-sm);line-height:1.7;
+            color:var(--mm-body);margin:0 0 var(--space-sm);
+        }
+        .mm-aj-img{display:block;width:100%;height:auto;border:var(--mm-border) solid var(--mm-ink)}
+        .mm-aj-result{
+            font-size:var(--text-xl);font-weight:800;text-transform:uppercase;line-height:1.1;
+            text-align:center;margin:0;overflow-wrap:anywhere;
+        }
+        .mm-aj-restart{
+            display:block;width:100%;margin-top:var(--space-md);cursor:pointer;
+            font-family:var(--mm-font-mono);font-size:var(--text-sm);font-weight:700;text-transform:uppercase;
+            background:var(--mm-ink);color:var(--mm-on-ink);border:var(--mm-border) solid var(--mm-ink);
+            padding:var(--space-xs) var(--space-sm);
+            transition:background var(--mm-dur-1) var(--mm-ease-out),transform var(--mm-dur-1) var(--mm-ease-out);
+        }
+        .mm-aj-restart:hover{background:var(--mm-accent);border-color:var(--mm-accent)}
+        .mm-aj-restart:active{transform:translateY(1px)}
+        .is-hidden{display:none}
+        .mm-aj-fade{
+            opacity:0;transform:translateY(1rem);
+            transition:opacity var(--mm-dur-2) var(--mm-ease-out),transform var(--mm-dur-2) var(--mm-ease-out);
+        }
+        .mm-aj-fade.is-in{opacity:1;transform:none}
     </style>
 
     <PreFooter/>
