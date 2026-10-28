@@ -39,6 +39,7 @@
     --mm-border-heavy: 1px;
     --mm-hair: 1px;
     --mm-radius-pill: 999px;
+    --mm-radius-sm: 6px;                           /* imágenes y campos de formulario */
 
     /* ── Tipografía ── */
     --mm-font-display: 'Geist', system-ui, sans-serif;
