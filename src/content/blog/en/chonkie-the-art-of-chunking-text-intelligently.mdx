@@ -1,64 +1,164 @@
 ---
-title: 'Chonkie: the art of intelligently chunking text'
-description: 'Chonkie is an open-source tool that automates the intelligent fragmentation of text for artificial intelligence and RAG systems. Using semantic, structural, and token-based strategies, it divides long documents without losing coherence or context, improving model understanding and response quality. Ideal for developers, researchers, and professionals working with natural language processing.'
+title: 'Chonkie: how to chunk text for RAG with chunkers and Pipeline'
+description: "A guide to Chonkie, the MIT library for chunking text in RAG: chunkers, Pipeline, refineries and vector databases, with code tested on version 1.7."
 pubDate: 'Oct 16, 2025'
+updatedDate: "Oct 28, 2026"
 heroImage: '/chonkie_logo_br_transparent_bg.png'
 customURL: '/blog/es/chonkie-el-arte-de-trocear-texto-con-inteligencia'
+faqs:
+  - pregunta: "What is Chonkie?"
+    respuesta: >
+        It is an MIT-licensed Python library for splitting long texts into chunks before indexing them in a RAG system. It offers several chunking strategies, refineries to add overlap or embeddings, and connectors to store the result in vector databases such as Chroma, Qdrant or pgvector.
+
+  - pregunta: "What is the Chonkie Pipeline?"
+    respuesta: >
+        It is a way to chain every step in a single expression: read files, prepare the text, chunk it, refine it and export or store it. It arrived in version 1.4.0, in October 2025, and you use it with methods such as chunk_with, refine_with, export_with and store_in, finishing with run.
+
+  - pregunta: "Which chunker should I use?"
+    respuesta: >
+        Start with RecursiveChunker: it respects paragraphs and sentences and needs no models. If topics change within the same document, use SemanticChunker. For code, CodeChunker. For tables, TableChunker. The LLM-based and neural chunkers only pay off if you have measured that they improve retrieval.
+
+  - pregunta: "Is Chonkie free?"
+    respuesta: >
+        Yes. The library is open source under the MIT license and installs with pip install chonkie. Extras such as semantic chunking or vector database connectors are installed separately. The company also offers an optional paid cloud service.
 ---
 
+When working with **generative AI** or **RAG (Retrieval-Augmented Generation)** systems, one of the biggest challenges is context. Models can't process infinite text, so we need to split it. But doing it right isn't trivial: cut too much and you lose coherence; cut too little and you overload the model and make retrieval worse.
 
-When working with **generative AI** or **RAG (Retrieval-Augmented Generation)** systems, one of the biggest challenges is context. Models can’t process infinite text, so we need to split it. But doing it right isn’t trivial: cut too much, and you lose coherence; cut too little, and you overload the model.
+That's where **Chonkie** comes in, an open-source library that automates *chunking*: splitting text into fragments that make sense on their own. In this article I explain how it works, which strategies it offers, how to use its `Pipeline` with code tested against the current version, and what has changed since I wrote the first version of this post.
 
-That’s where **Chonkie** comes in — an open-source tool that automates *chunking*, the intelligent division of text into semantic fragments. Its goal is simple: to help AI models better understand information without losing context or structure.
+## What Chonkie is
 
-<br/>
+Chonkie is a Python library for chunking text before indexing it in a RAG system. It offers around ten chunking strategies, tools to add overlap or embeddings to each chunk, and connectors to export the result or store it in a vector database. MIT license. And it's light.
+
+The project started in November 2024 as a personal project by Bhavnick Minhas, who was tired of rewriting the same chunking code for every RAG application. Shreyash Nigam joined, they founded a company, went through Y Combinator in 2025, and today they maintain the library alongside an optional cloud service. The code is on [GitHub](https://github.com/chonkie-inc/chonkie) and the documentation at [docs.chonkie.ai](https://docs.chonkie.ai/).
+
+Its clearest design choice is installing only what you need. According to its README, the base wheel is about 505 KB and about 49 MB installed, compared with 80 to 171 MB for alternatives that pull in many dependencies:
+
+```bash
+pip install chonkie                 # base: token, fast, sentence, recursive...
+pip install "chonkie[semantic]"     # semantic chunking with embeddings
+pip install "chonkie[chroma]"       # ChromaDB connector
+pip install "chonkie[all]"          # everything, not recommended in production
+```
 
 ## How it works
 
-Chonkie organizes the process into modular stages. First, it selects a chunking strategy (known as *chunkers*), then it can refine the text with overlaps or embeddings, and finally export or store it in a vector database.
+Chonkie organises the process into stages you can combine: fetch the documents, prepare them, chunk them, refine the chunks and store them. Each stage has its own named components, and in current versions you can chain all of them with a `Pipeline` object.
 
-Its most common strategies include:
+The stages, with the names the library uses:
 
-* **TokenChunker**: splits by token count, useful for quick tasks.
-* **SentenceChunker**: divides by full sentences.
-* **RecursiveChunker**: follows the text structure (headings, paragraphs).
-* **SemanticChunker**: groups fragments by meaning.
+| Stage | Component | What it does |
+|---|---|---|
+| Fetch | *Fetchers* | Read files or folders |
+| Prepare | *Chefs* | Clean text, Markdown or tables before chunking |
+| Chunk | *Chunkers* | Split the text with a given strategy |
+| Refine | *Refineries* | Add overlap between chunks or compute embeddings |
+| Export | *Porters* | Save as JSON or as a Hugging Face dataset |
+| Store | *Handshakes* | Send to Chroma, Qdrant, pgvector, Pinecone, Weaviate, Milvus and others |
 
-This flexibility allows chunking to adapt to different content types: articles, code, documentation, or even conversations.
+## Chunking strategies
 
-<br/>
+Chonkie offers strategies ranging from the simplest, cutting by size, to the most expensive, asking an LLM where to cut. The first three or four are usually enough; the rest only pay off if you have measured that they improve retrieval on your own data.
 
-### A simple example
+The chunkers available in version 1.7:
+
+* **TokenChunker**: splits by token count. Fast and predictable.
+* **FastChunker**: byte-based splitting for large volumes. Added in 1.5.2.
+* **SentenceChunker**: groups whole sentences without breaking them.
+* **RecursiveChunker**: follows the text structure (sections, paragraphs, sentences) with configurable rules.
+* **SemanticChunker**: compares sentence embeddings and cuts where the topic changes.
+* **LateChunker**: embeds the whole document first and then splits it, so each chunk keeps global context.
+* **CodeChunker**: chunks code following its syntax.
+* **TableChunker**: splits Markdown or HTML tables by rows without breaking columns.
+* **NeuralChunker**: a trained model picks the split points.
+* **SlumberChunker**: an LLM picks the split points. The most expensive option.
+
+One detail worth knowing: if you don't set a tokenizer, Chonkie counts **characters**. If you want `chunk_size=512` to mean 512 tokens of your model, pass `tokenizer="gpt2"` or whichever you use (it accepts `tiktoken`, `tokenizers` and `transformers`).
+
+## A simple example
+
+The most direct usage is still to create a chunker and call it with the text. Each returned chunk carries its text, its token count and its exact position in the original, which lets you link the model's answer back to the source paragraph later.
 
 ```python
-    from chonkie import RecursiveChunker
+from chonkie import RecursiveChunker
 
-    text = "Artificial intelligence is transforming entire industries. But understanding it requires precision and context."
+text = "Artificial intelligence is transforming entire industries. But understanding it requires precision and context."
 
-    chunker = RecursiveChunker()
-    chunks = chunker(text)
+chunker = RecursiveChunker(chunk_size=512)
+chunks = chunker(text)
 
-    for c in chunks:
-        print(c.text)
+for c in chunks:
+    print(c.text, c.token_count, c.start_index, c.end_index)
 ```
 
-With just a few lines, the text is divided into coherent fragments that can be sent to a language model or a vector database.
+With just a few lines the text is split into coherent chunks, ready to embed or send to a model.
 
-<br/>
+## The Pipeline: the whole flow in one expression
 
-## Why it matters
+`Pipeline` arrived in version 1.4.0, in October 2025, and it is the recommended way to build a complete flow. It chains the stages with methods such as `chunk_with`, `refine_with`, `export_with` or `store_in`, and runs with `run`, which returns a `Document` with its chunks.
 
-Chonkie isn’t just a utility library — it’s a key component in the AI data processing pipeline. It enables systems to understand long documents, improving retrieval accuracy and the quality of generated responses.
+```python
+from chonkie import Pipeline
 
-In short, **Chonkie helps models read better**. And in a world overloaded with information, that’s almost magic. <br/>
+pipe = (
+    Pipeline()
+    .fetch_from("file", dir="./docs", ext=[".md"])
+    .process_with("markdown")
+    .chunk_with("recursive", chunk_size=512)
+    .refine_with("overlap", context_size=64)
+    .export_with("json", file="chunks.json")
+)
 
-## A step further: intelligence applied to text
+docs = pipe.run()  # a folder returns a list of Document
+for doc in docs:
+    print(len(doc.chunks))
+```
 
-Beyond text splitting, Chonkie represents a modern philosophy in language processing: **preserving meaning** at every step. By allowing strategies based on semantics, structure, and context, it becomes an essential tool for any AI pipeline working with complex textual information.
+If you are not reading files, pass the text directly with `pipe.run(texts="...")`, which returns a single `Document`. To store in a vector database add, for example, `.store_in("qdrant", collection_name="docs", url="http://localhost:6333")`, and to compute embeddings `.refine_with("embeddings", model="all-MiniLM-L6-v2")` (note that the name is `embeddings`, plural). There is also an async version, `await pipe.arun(...)`, for high volumes.
 
-Whether it’s for training models, building semantic search engines, or powering corporate chatbots, Chonkie provides the foundation for everything: turning messy text into usable knowledge. <br/>
+I have checked this code against version 1.7.0. If you are coming from versions before 1.4, note that the old `tokenizer_or_token_counter` argument is gone and is now called `tokenizer` everywhere.
+
+## Chonkie compared with other options
+
+Chonkie competes with the text splitters in LangChain and LlamaIndex, which you already get if you use those frameworks. The difference is that Chonkie is a specialised, standalone library: more strategies, lighter, and it doesn't force you to adopt a whole framework.
+
+| | Chonkie | LangChain text splitters | LlamaIndex node parsers |
+|---|---|---|---|
+| Focus | Chunking and ingestion only | Part of a large framework | Part of a large framework |
+| Strategies | Token, sentence, recursive, semantic, late, code, tables, neural, LLM | Recursive, character, token, Markdown, code | Sentence, token, semantic, hierarchical |
+| Vector connectors | Included as extras | Through the framework | Through the framework |
+| License | MIT | MIT | MIT |
+
+If you already have everything built on LangChain or LlamaIndex, their splitters may be enough. If you want a piece you can swap without touching the rest, Chonkie fits better.
+
+## Limitations
+
+Chonkie handles chunking well, but it doesn't read scanned PDFs, it doesn't understand the layout of a complex document and it won't tell you which strategy is best for your data. That part is on you: measure retrieval quality with real questions and tune the size and strategy.
+
+- **Input.** It works on text. For PDF, Word or images you first need a converter such as [Docling](/blog/en/docling-the-easy-way-to-use-files-with-llms/), or the newer Mistral OCR and LiteParse chefs.
+- **Cost of advanced strategies.** Semantic, neural and LLM chunking need extra models and dependencies, and they are much slower.
+- **Self-published benchmarks.** The speed figures (for example, up to 33 times faster token chunking) come from the project itself.
+- **Moving API.** The library changes fast: there have been several breaking changes between minor versions, so pin the version in production.
+
+## What has happened since
+
+Since October 2025 Chonkie has shipped three minor versions at a pace of almost one update a month. It has gained `Pipeline`, HTML table chunking, a FastChunker, native async support, a chunking API you can host yourself and new document converters. Its repository has more than 4,800 stars.
+
+According to the [release notes on GitHub](https://github.com/chonkie-inc/chonkie/releases) and the [PyPI history](https://pypi.org/project/chonkie/):
+
+- **1.4.0 (11 October 2025).** `chonkie.Pipeline` arrives, together with `TableChef` and `TableChunker`.
+- **1.5.0 (16 December 2025).** Drops Python 3.9 and adds 3.13; new byte and row tokenizers.
+- **1.5.2 (January 2026).** New `FastChunker`.
+- **1.6.0 (11 March 2026).** HTML table support, a chunking API you can deploy on your own server and native async execution.
+- **1.7.0 (7 July 2026).** LiteParse integration to read more formats and a public `ComponentRegistry` for building your own components.
+
+The repository now redirects to the `feyninc` organisation, although the old links still work. The library is also available in TypeScript for those working in Node.
+
+If your flow needs to keep the index up to date when documents change, it is worth reading how RAG fits into an [event-driven architecture with LLMs](/blog/en/event-driven-architecture-and-llms/).
 
 ## Conclusion
 
-Ultimately, **Chonkie turns text chaos into understandable order**. A discreet yet essential piece that helps artificial intelligence keep understanding the world, word by word.
-If you want to dive deeper into this type of tool, I recommend reading the full article where I compare <a href="https://marcmayol.com/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag" title="Chonkie vs Docling"> Chonkie with Docling</a>, another interesting tool for document processing in RAG architectures, for which I also have a <a href="https://marcmayol.com/blog/en/docling-the-easy-way-to-use-files-with-llms" title="Docling"> full article</a>.
+Chonkie helps models read better, because it gives them chunks that make sense instead of arbitrary cuts. With `Pipeline`, the whole ingestion flow fits in a few lines and each piece can be swapped without touching the rest.
+
+If you want to dive deeper into this type of tool, I recommend the article where I compare [Chonkie with Docling](/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag/), two complementary approaches to document processing in RAG architectures, and the [full article on Docling](/blog/en/docling-the-easy-way-to-use-files-with-llms/).

@@ -1,0 +1,117 @@
+---
+title: 'Deep Research de OpenAI: cómo funciona, qué cuesta y qué queda de él en 2026'
+description: "Cómo funciona Deep Research de OpenAI: un agente que busca, lee y cita fuentes. Límites por plan, la API, sus errores y qué ha cambiado desde 2025."
+pubDate: 'Mar 15, 2025'
+updatedDate: "Oct 28, 2026"
+heroImage: '/0_b0CBS0Q69eBap68g.webp'
+faqs:
+  - pregunta: "¿Qué es Deep Research de OpenAI?"
+    respuesta: >
+        Es una función de ChatGPT que investiga un tema por su cuenta: planifica búsquedas, lee páginas, PDF e imágenes, cambia de rumbo según lo que encuentra y entrega un informe con citas. Tarda entre unos minutos y media hora, frente a los segundos de una respuesta normal.
+
+  - pregunta: "¿Hace falta pagar para usar Deep Research?"
+    respuesta: >
+        No del todo. En 2025 OpenAI lo abrió a todos los planes con cupos mensuales: los usuarios gratuitos tienen pocas consultas con una versión ligera, Plus y Team tienen más y Pro tiene el cupo más alto. Los límites han cambiado varias veces, así que conviene mirar el contador que muestra ChatGPT.
+
+  - pregunta: "¿Se puede usar Deep Research desde la API?"
+    respuesta: >
+        Los modelos o3-deep-research y o4-mini-deep-research llegaron a la API en junio de 2025, pero OpenAI los apagó el 23 de julio de 2026 y recomienda gpt-5.6-sol como sustituto. Hoy se replica el mismo patrón con un modelo de razonamiento, búsqueda web y modo en segundo plano.
+
+  - pregunta: "¿Puedo fiarme de sus informes?"
+    respuesta: >
+        Como punto de partida, sí. Como fuente final, no: la propia OpenAI reconoce desde el anuncio del 2 de febrero de 2025 que puede inventar datos, citar rumores o no transmitir bien la incertidumbre. Abre las citas clave y comprueba que dicen lo que el informe afirma.
+---
+
+El 2 de febrero de 2025 OpenAI presentó **Deep Research**, una función de ChatGPT que investiga un tema durante varios minutos y entrega un informe con citas. Llegó pocos días después del terremoto de DeepSeek-R1 y en plena carrera con Google y Perplexity. Año y medio después ha cambiado de modelo, de precio y de forma de uso. Aquí explico cómo funciona, para qué sirve, dónde falla y qué ha pasado desde entonces.
+
+## Qué es Deep Research
+
+Deep Research es un agente de investigación dentro de ChatGPT. En lugar de contestar con lo que el modelo ya sabe, planifica una búsqueda, consulta decenas o cientos de fuentes, lee texto, PDF e imágenes y redacta un informe largo con enlaces a cada afirmación. Tarda entre 5 y 30 minutos.
+
+La diferencia con la búsqueda normal de ChatGPT está en la autonomía. Una búsqueda normal hace una o dos consultas y resume. Deep Research encadena muchas: busca, lee, descubre que le falta un dato, vuelve a buscar con otros términos y solo para cuando cree que tiene suficiente. Al empezar suele hacer preguntas aclaratorias para acotar el encargo, y avisa cuando el informe está listo.
+
+En su lanzamiento usaba una versión de **o3** ajustada para navegar y analizar. Con ella marcó un 26,6 % en Humanity's Last Exam, frente al 9,4 % de DeepSeek-R1 y el 3,3 % de GPT-4o, según los datos que publicó [OpenAI en su anuncio](https://openai.com/index/introducing-deep-research/).
+
+<figure>
+    <img src="/0_3q0AgNEDPjmOtj1p.webp" alt="Sam Altman presenta Deep Research en Tokio."/>
+    <figcaption>Sam Altman presenta Deep Research en Tokio.</figcaption>
+</figure>
+
+## Cómo funciona por dentro
+
+Por dentro, Deep Research es un modelo de razonamiento entrenado con aprendizaje por refuerzo para usar herramientas durante mucho tiempo: un buscador, un navegador que abre páginas y un intérprete de Python para analizar datos. Ninguna de esas herramientas era nueva. Lo nuevo era que el modelo aprendiera a encadenarlas cientos de veces sin perder el objetivo.
+
+El ciclo es más o menos este:
+
+1. **Aclarar.** Un modelo rápido hace preguntas sobre el encargo y reescribe la petición con más detalle.
+2. **Planificar.** El modelo de razonamiento decide qué buscar primero.
+3. **Buscar y leer.** Abre resultados, lee, extrae datos y decide si son fiables o si necesita otra fuente.
+4. **Analizar.** Si hay números, puede ejecutar código para calcular o hacer gráficos.
+5. **Redactar.** Escribe el informe con citas en línea a las fuentes usadas.
+
+Este bucle de pensar, actuar y observar es el mismo que hay detrás de casi todos los agentes actuales. Si quieres la base teórica, la explico en [mi artículo sobre agentes autónomos](/blog/es/la-revolucion-de-los-agentes-autonomos-en-la-inteligencia-artificial-estas-preparado/), y la parte de razonamiento paso a paso en [mi artículo sobre prompting y CoT](/blog/es/explorando-las-fronteras-avanzadas-del-prompt-y-cot/).
+
+## La respuesta a DeepSeek (y a Google)
+
+Deep Research llegó en un momento muy concreto. DeepSeek-R1 había salido en enero de 2025 con un rendimiento cercano a o1 a un coste mucho menor, y OpenAI necesitaba enseñar algo que la competencia no tuviera. Pero el primero en lanzar un "deep research" fue Google.
+
+Google estrenó su [Deep Research en Gemini](https://blog.google/products/gemini/google-gemini-deep-research/) el 11 de diciembre de 2024. Perplexity sacó [el suyo](https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research) el 14 de febrero de 2025, doce días después que OpenAI. Mientras, OpenAI y Microsoft investigaban si DeepSeek había usado *destilación* a partir de sus modelos sin permiso, y Sam Altman describía la competencia como "estimulante". Fue una carrera. En pocos meses, todos los grandes asistentes tenían su modo de investigación.
+
+| Herramienta | Lanzamiento | Punto fuerte |
+|---|---|---|
+| Gemini Deep Research (Google) | Diciembre de 2024 | Integración con el buscador de Google y con Workspace |
+| ChatGPT Deep Research (OpenAI) | Febrero de 2025 | Informes largos y razonamiento con o3, luego GPT-5.2 |
+| Perplexity Deep Research | Febrero de 2025 | Rapidez y acceso gratuito con límites |
+
+## Para qué sirve en la práctica
+
+Deep Research rinde mejor en encargos que a una persona le llevarían horas de buscar y leer, y cuyo resultado se puede comprobar: estados del arte, comparativas de producto, normativa, análisis de mercado o revisión de literatura. Rinde peor en preguntas cortas, temas muy recientes o datos que solo están detrás de un muro de pago.
+
+Algunos usos donde encaja:
+
+- **Consultoría y estrategia.** Mapas de competidores, tendencias de un sector o tamaño de mercado, con fuentes para cada cifra.
+- **Periodismo e investigación.** Reunir el contexto de un tema antes de escribir y localizar las fuentes primarias.
+- **Legal y cumplimiento.** Primera pasada por normativa y regulaciones, siempre revisada después por alguien que sepa.
+- **Ciencia y salud.** Revisión de literatura para saber qué se ha publicado sobre un tema.
+- **Compras complejas.** Comparar opciones técnicas con criterios concretos, como hardware o software empresarial.
+
+La clave es escribir el encargo como se lo escribirías a un becario: qué quieres, para qué, qué fuentes valen y qué formato debe tener la entrega. Cada informe gasta una consulta del cupo, y en Plus eran 25 al mes a mediados de 2025, así que compensa acertar a la primera.
+
+## Limitaciones
+
+El mayor problema de Deep Research es que suena convincente incluso cuando se equivoca. La propia OpenAI admite que puede inventar datos, hacer inferencias incorrectas, citar rumores como hechos y no transmitir bien cuánta certeza hay detrás de cada frase. Un informe de veinte páginas con citas genera una confianza que no siempre merece.
+
+Otras limitaciones conocidas:
+
+- **Citas que no dicen lo que el texto afirma.** El enlace existe, pero la frase citada no aparece o dice otra cosa.
+- **Sesgo hacia lo que es fácil de leer.** Las fuentes abiertas y bien posicionadas pesan más que las mejores fuentes, que a menudo están en PDF o detrás de un registro.
+- **Tiempo y cupos.** Cada informe tarda minutos y consume una de las consultas del mes.
+- **Datos privados.** Hasta 2026 no podía consultar fácilmente documentos internos; ahora puede hacerlo a través de conectores, con lo que eso implica en permisos.
+
+Mi recomendación técnica: tratar el informe como un primer borrador. Y abrir siempre las 3 o 4 citas en las que se apoya la conclusión, sobre todo si alguna sostiene una cifra.
+
+## Precio y acceso
+
+Deep Research empezó en exclusiva para el plan Pro (200 $ al mes, con 100 consultas mensuales, según [TechCrunch](https://techcrunch.com/2025/02/02/openai-unveils-a-new-chatgpt-agent-for-deep-research/)) y en pocos meses llegó a todos los planes con cupos distintos. Hoy está limitado en los planes Free y Go, incluido en Plus, Business y Enterprise, y en su nivel más alto en Pro.
+
+En abril de 2025 OpenAI añadió una versión ligera basada en **o4-mini** para ampliar los cupos: cuando se agotan las consultas completas, las siguientes usan el modelo ligero. Según la [página de Wikipedia sobre la herramienta](https://en.wikipedia.org/wiki/ChatGPT_Deep_Research), que recoge las cifras de las preguntas frecuentes de OpenAI, a mediados de 2025 Pro tenía 250 consultas al mes, Plus y Team 25 y el plan gratuito 5 en versión ligera. Los cupos se reinician 30 días después del primer uso.
+
+## Qué ha pasado desde entonces
+
+Desde febrero de 2025 Deep Research ha pasado de experimento para unos pocos a función estándar de ChatGPT, ha cambiado de modelo y ha ganado conectores, mientras su versión para desarrolladores ha desaparecido como producto propio. Hoy es más un patrón de uso que un modelo concreto.
+
+- **Abril de 2025.** Versión ligera con o4-mini y apertura a usuarios gratuitos.
+- **Junio de 2025.** Llegan a la API `o3-deep-research` y `o4-mini-deep-research`, con búsqueda web, búsqueda en archivos, MCP remoto e intérprete de código, y con webhooks para avisar cuando termina la tarea.
+- **Febrero de 2026.** ChatGPT pasa a usar un modelo basado en GPT-5.2. Se puede conectar a cualquier servidor MCP o app, limitar la búsqueda a sitios de confianza, seguir el progreso en directo e interrumpir para reorientar la investigación.
+- **22 de abril de 2026.** OpenAI anuncia la retirada de los modelos de la API.
+- **23 de julio de 2026.** Se apagan `o3-deep-research` y `o4-mini-deep-research`; OpenAI propone `gpt-5.6-sol` como sustituto, según su [lista de retiradas](https://developers.openai.com/api/docs/deprecations).
+
+La [guía de deep research de la API](https://developers.openai.com/api/docs/guides/deep-research) avisa de que cambiar el nombre del modelo no basta para migrar. Lo que queda es el patrón: un modelo de razonamiento con esfuerzo alto, las herramientas de búsqueda web, búsqueda en archivos y MCP, el **modo en segundo plano** porque las tareas tardan, y `max_tool_calls` como principal palanca para controlar coste y latencia. Ojo con un detalle: el modo en segundo plano guarda los datos unos diez minutos, así que no es compatible con la retención cero de datos.
+
+La conexión con MCP es de lo más útil de 2026, porque permite investigar sobre documentación interna además de la web abierta. Si estás decidiendo cómo exponer esas fuentes al modelo, te puede servir mi comparativa de [MCP frente a Skills](/blog/es/mcp-vs-skills/).
+
+## Conclusión
+
+Deep Research nació como respuesta rápida a la competencia y se ha quedado como una de las funciones más útiles de ChatGPT para trabajo serio. Su valor está en ahorrar horas de búsqueda y lectura; su riesgo, en que esas horas se conviertan en confianza ciega en un informe bien maquetado.
+
+Si lo usas en tu trabajo, cuéntame qué encargos le das a Deep Research y cuáles has dejado de darle desde que pasó a GPT-5.2.

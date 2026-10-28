@@ -7,42 +7,56 @@ import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 import { getLangFromUrl} from '../i18n/utils';
+import { existsSync } from 'node:fs';
+import { PERSON_ID, WEBSITE_ID, PERSON_LOGO, SITE_URL } from '../consts';
 const lang = getLangFromUrl(Astro.url);
 const { title, description, pubDate, updatedDate, heroImage,customURL,faqs} = Astro.props;
-const image = "https://marcmayol.com/" + heroImage
-const datePublished = new Date(pubDate).toISOString()
-const currentURL = Astro.url
+// La portada se sirve en WebP si existe; el original queda para las vistas previas de redes
+const heroWebp = heroImage?.replace(/\.(png|jpe?g)$/i, '.webp');
+const heroSrc = heroWebp && heroWebp !== heroImage && existsSync(`public${heroWebp}`) ? heroWebp : heroImage;
+const image = heroImage ? new URL(heroImage, SITE_URL).href : undefined;
+// Fecha local (la que se muestra en la página), sin hora: evita que medianoche se convierta en el día anterior en UTC
+const isoDay = (d: Date) => d.toLocaleDateString('sv-SE');
+const datePublished = isoDay(new Date(pubDate));
+const dateModified = isoDay(new Date(updatedDate ?? pubDate));
+const currentURL = new URL(Astro.url.pathname, SITE_URL).href;
+const blogURL = `${SITE_URL}/blog/${lang}/`;
 const backLabel = lang === 'es' ? '← VOLVER AL BLOG' : '← BACK TO BLOG';
-const item= {
+const byLabel = lang === 'es' ? 'Por' : 'By';
+const updatedLabel = lang === 'es' ? 'Actualizado' : 'Updated';
+const aboutURL = `/about/${lang}/`;
+const item = {
 	"@context": "https://schema.org",
-	"@type": "BlogPosting",
-	"mainEntityOfPage": {
-		"@type": "WebPage",
-		"@id":currentURL,
-	},
-	"headline": title,
-	"description": description,
-	"image": image,
-	"author": {
-		"@type": "Person",
-		"name": "Marc Mayol Orell",
-		"url": "https://marcmayol.com/about"
-	},
-	"publisher": {
-		"@type": "Organization",
-		"name": "Marc Mayol Orell",
-		"logo": {
-			"@type": "ImageObject",
-			"url": "https://marcmayol.com/logo512.png"
-		}
-	},
-	"datePublished": {datePublished },
-}
+	"@graph": [
+		{
+			"@type": "BlogPosting",
+			"@id": `${currentURL}#post`,
+			"mainEntityOfPage": { "@type": "WebPage", "@id": currentURL },
+			"headline": title,
+			"description": description,
+			...(image && { "image": [image] }),
+			"inLanguage": lang,
+			"datePublished": datePublished,
+			"dateModified": dateModified,
+			"author": { "@type": "Person", "@id": PERSON_ID, "name": "Marc Mayol", "url": `${SITE_URL}${aboutURL}` },
+			"publisher": { "@type": "Person", "@id": PERSON_ID, "name": "Marc Mayol", "logo": { "@type": "ImageObject", "url": PERSON_LOGO } },
+			"isPartOf": { "@id": WEBSITE_ID },
+		},
+		{
+			"@type": "BreadcrumbList",
+			"itemListElement": [
+				{ "@type": "ListItem", "position": 1, "name": lang === 'es' ? 'Inicio' : 'Home', "item": `${SITE_URL}${lang === 'es' ? '/' : '/en/'}` },
+				{ "@type": "ListItem", "position": 2, "name": "Blog", "item": blogURL },
+				{ "@type": "ListItem", "position": 3, "name": title },
+			],
+		},
+	],
+};
 ---
 
 <html lang={lang}>
 	<head>
-		<BaseHead title={title} description={description} image={heroImage} item={item}/>
+		<BaseHead title={title} description={description} image={heroImage} item={item} altURL={customURL ?? null} ogType="article"/>
 	</head>
 
 	<body class="mm-body">
@@ -51,11 +65,16 @@ const item= {
 			<div class="mm-article-head">
 				<a class="mm-article-back" href={`/blog/${lang}/`}>{backLabel}</a>
 				<h1 class="mm-article-title">{title}</h1>
-				<div class="mm-article-meta"><FormattedDate date={pubDate}/></div>
+				<div class="mm-article-meta">
+					<span>{byLabel} <a class="mm-article-author" href={aboutURL} rel="author">Marc Mayol</a></span>
+					<span aria-hidden="true">·</span>
+					<FormattedDate date={pubDate}/>
+					{updatedDate && <><span aria-hidden="true">·</span><span>{updatedLabel} <FormattedDate date={updatedDate}/></span></>}
+				</div>
 			</div>
 
 			{heroImage &&
-				<img class="mm-article-hero" width={1020} height={510} src={heroImage} alt={title} title={title}/>}
+				<img class="mm-article-hero" width={1020} height={510} src={heroSrc} alt={title} title={title} fetchpriority="high"/>}
 
 			<div id="post-content" class="mm-article-body">
 				<slot/>
@@ -92,7 +111,9 @@ const item= {
 		font-size:var(--text-2xl);font-weight:900;line-height:1.06;letter-spacing:-.02em;
 		margin:0 0 var(--space-sm);overflow-wrap:anywhere;
 	}
-	.mm-article-meta{font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted)}
+	.mm-article-meta{font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);display:flex;flex-wrap:wrap;gap:.25rem .5rem;align-items:baseline}
+	.mm-article-author{color:var(--mm-ink);font-weight:700;text-decoration:none}
+	.mm-article-author:hover{text-decoration:underline}
 	.mm-article-hero{display:block;width:100%;height:auto;border-bottom:var(--mm-border) solid var(--mm-ink)}
 	.mm-article-body{
 		padding:var(--space-xl) var(--mm-pad-x) var(--space-2xl);

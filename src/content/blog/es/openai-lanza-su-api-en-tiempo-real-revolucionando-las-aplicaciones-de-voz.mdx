@@ -1,0 +1,112 @@
+---
+title: 'La API Realtime de OpenAI: cómo funciona, cuánto cuesta y qué ha cambiado desde 2024'
+description: "Cómo funciona la API Realtime de OpenAI para agentes de voz: eventos, WebRTC, WebSocket y SIP, precios por token, limitaciones y su evolución hasta 2026."
+pubDate: 'Oct 03, 2024'
+updatedDate: "Oct 28, 2026"
+heroImage: '/1727936458641.png'
+faqs:
+  - pregunta: "¿Qué es la API Realtime de OpenAI?"
+    respuesta: >
+        Es una API para conversaciones de voz con baja latencia. Audio entra, audio sale. No hay que encadenar un reconocedor de voz, un LLM y un sintetizador por separado: todo pasa por una sesión persistente, por WebRTC, WebSocket o SIP, en la que cliente y servidor se intercambian eventos.
+
+  - pregunta: "¿Cuánto cuesta la API Realtime?"
+    respuesta: >
+        Se cobra por tokens. En octubre de 2026, gpt-realtime-2.1 cuesta 32 $ por millón de tokens de audio de entrada (0,40 $ si están en caché) y 64 $ por millón de salida. La versión mini baja a 10 $ y 20 $. En el lanzamiento de 2024 el audio costaba 100 $ y 200 $ por millón.
+
+  - pregunta: "¿Qué modelo conviene usar hoy?"
+    respuesta: >
+        gpt-realtime-2.1 o gpt-realtime-2.1-mini. OpenAI ha anunciado que gpt-realtime, gpt-realtime-mini y los antiguos modelos gpt-4o-realtime dejarán de funcionar el 20 de enero de 2027, así que cualquier proyecto nuevo debería empezar ya con la familia 2.1.
+
+  - pregunta: "¿Cuándo no compensa usar la API Realtime?"
+    respuesta: >
+        Cuando no necesitas conversación en tiempo real. Para transcribir grabaciones, generar locuciones o responder mensajes de voz sin prisa, una cadena de transcripción, modelo de texto y síntesis suele salir más barata que pagar 64 $ por millón de tokens de audio de salida, y es más fácil de depurar.
+---
+
+El 1 de octubre de 2024, en su [DevDay](https://techcrunch.com/2024/10/01/openais-devday-brings-realtime-api-and-other-treats-for-ai-app-developers/), OpenAI presentó la **API Realtime**: conversaciones de voz con un modelo sin pasar por texto en medio. Dos años después ha salido de beta. Ha cambiado de modelo tres veces y el audio de entrada ha bajado de 100 $ a 32 $ por millón de tokens. En este artículo explico cómo funciona por dentro, para qué tiene sentido, dónde se queda corta y qué ha pasado desde aquel anuncio.
+
+## Qué problema resuelve
+
+La API Realtime sirve para que una aplicación hable con el usuario casi sin esperas. Antes, un asistente de voz encadenaba tres piezas: transcripción, modelo de texto y síntesis de voz. Cada salto sumaba latencia. Y por el camino se perdía información, como el tono o las pausas, que no sobreviven a una transcripción. Aquí un solo modelo, hoy `gpt-realtime-2.1`, escucha audio y responde con audio.
+
+Ese "speech-to-speech" tiene dos ventajas prácticas. Una es la velocidad. En vez de 3 esperas encadenadas (transcribir, pensar y sintetizar), hay una sola. La otra es que el modelo oye cómo se dice algo y no solo qué se dice, así que `gpt-realtime-2.1` puede responder con una entonación que encaje o corregir la pronunciación en una app de idiomas.
+
+El primer modelo fue `gpt-4o-realtime-preview`, basado en GPT-4o (no en GPT-4, como se dijo a veces en la época). Hoy el modelo de referencia es `gpt-realtime-2.1`.
+
+## Cómo funciona por dentro
+
+Por dentro, la API Realtime es una sesión persistente en la que cliente y servidor se mandan eventos. No es una petición y una respuesta como en Chat Completions: abres una conexión, la configuras y a partir de ahí todo son mensajes en las dos direcciones, como el audio que entra, las respuestas que salen o las llamadas a herramientas.
+
+Hay tres formas de conectarse:
+
+| Transporte | Dónde encaja | Comentario |
+|---|---|---|
+| **WebRTC** | Navegador y móvil | El cliente envía el micrófono directamente a OpenAI usando un token efímero que genera tu servidor |
+| **WebSocket** | Servidor a servidor | Tu backend recibe y envía el audio; más control, más trabajo |
+| **SIP** | Telefonía | El agente atiende llamadas de teléfono reales, sin montar un puente propio |
+
+Dentro de la sesión, cuatro piezas hacen casi todo el trabajo, de la detección de turno (VAD) a la transcripción en paralelo:
+
+- **Detección de turno (VAD).** El servidor detecta cuándo el usuario ha dejado de hablar y lanza la respuesta. Si el usuario interrumpe, se corta. También se puede desactivar para llevar los turnos a mano, por ejemplo con un botón de "pulsar para hablar" en la app.
+- **Herramientas.** El modelo puede llamar a funciones tuyas, a servidores MCP remotos y a conectores. Mientras espera el resultado, la conversación sigue abierta.
+- **Instrucciones y voz.** Al configurar la sesión eliges la voz, las instrucciones de sistema y el formato de audio.
+- **Transcripción en paralelo.** Si necesitas guardar lo que se ha dicho, puedes pedir que el audio de entrada se transcriba a la vez.
+
+Este modelo de eventos encaja muy bien con arquitecturas orientadas a eventos en el backend; hablé de esa combinación en [arquitectura de eventos y LLMs](/blog/es/arquitectura-eda-y-llms/).
+
+## Para qué sirve en la práctica
+
+La API Realtime tiene sentido cuando la conversación en vivo es el producto: atención al cliente por teléfono, asistentes de voz dentro de una app, práctica de idiomas, apoyo en tareas con las manos ocupadas o traducción simultánea. En todos esos casos, un segundo de silencio se nota y estropea la experiencia.
+
+Algunos ejemplos concretos:
+
+- **Centralitas y soporte.** Con SIP, un agente puede coger el teléfono, consultar un pedido mediante una función y responder sin que el usuario note el salto.
+- **Aprendizaje de idiomas.** El modelo corrige pronunciación y ritmo porque recibe el audio original, no una transcripción.
+- **Asistentes dentro de una web.** Con WebRTC, el navegador habla con el modelo directamente y tu servidor solo emite el token de sesión.
+- **Agentes que actúan.** Combinado con herramientas y MCP, el agente de voz deja de limitarse a contestar y pasa a hacer cosas: reservar, buscar, abrir una incidencia. Si te interesa ese salto, lo trato en [mi artículo sobre agentes autónomos](/blog/es/la-revolucion-de-los-agentes-autonomos-en-la-inteligencia-artificial-estas-preparado/).
+
+## Cuánto cuesta
+
+El precio se calcula por tokens de audio, texto e imagen, y el audio de salida es lo más caro. En octubre de 2026, con `gpt-realtime-2.1`, una conversación típica ronda unos céntimos por minuto si la caché funciona. En 2024 el mismo minuto costaba varias veces más.
+
+Precios por millón de tokens según la [página de precios de OpenAI](https://developers.openai.com/api/docs/pricing); los de octubre de 2024 son los que se anunciaron en el DevDay, recogidos en el [directo de Simon Willison](https://simonwillison.net/2024/Oct/1/openai-devday-2024-live-blog/):
+
+| Modelo | Audio entrada | Audio en caché | Audio salida | Texto salida |
+|---|---|---|---|---|
+| gpt-4o-realtime-preview (oct. 2024) | 100 $ | n/d | 200 $ | 20 $ |
+| gpt-realtime (ago. 2025) | 32 $ | 0,40 $ | 64 $ | 16 $ |
+| gpt-realtime-2.1 (2026) | 32 $ | 0,40 $ | 64 $ | 24 $ |
+| gpt-realtime-2.1-mini (2026) | 10 $ | 0,30 $ | 20 $ | 2,40 $ |
+
+En el lanzamiento, OpenAI lo traducía a unos 0,06 $ por minuto de audio de entrada y 0,24 $ por minuto de salida. Lo importante es la **caché**. En una conversación larga, todo el historial se vuelve a enviar en cada turno, y si no se cachea el coste crece mucho: con `gpt-realtime-2.1`, el audio de entrada en caché cuesta 0,40 $ por millón frente a 32 $. Por eso conviene vigilar la longitud de las sesiones y resumir o recortar el contexto cuando se alarga.
+
+## Limitaciones
+
+Las limitaciones de la API Realtime son sobre todo de coste, de control y de depuración. Un sistema voz a voz es más rápido, pero también más opaco que una cadena de piezas separadas, y algunos problemas de producción, como el ruido o las interrupciones, no los resuelve el modelo por sí solo.
+
+- **Coste en sesiones largas.** Lo explicado arriba: sin caché y sin recortar contexto, un agente que habla durante media hora sale caro.
+- **Menos control fino.** En una cadena clásica puedes cambiar el sintetizador o corregir la transcripción antes de que llegue al modelo. Aquí es todo un bloque.
+- **Depuración.** Para saber por qué el agente dijo algo hay que guardar transcripciones y eventos; el audio por sí solo cuesta de auditar.
+- **Ruido y turnos.** La detección de voz falla en entornos ruidosos o con varias personas hablando, y una mala configuración hace que el agente interrumpa o se quede callado.
+- **Contexto.** El primer `gpt-realtime` tenía una ventana de 32.000 tokens, que se queda corta en llamadas largas con muchas herramientas.
+- **Dependencia de un proveedor.** Todo pasa por los servidores de OpenAI, con lo que eso implica para datos sensibles y para la latencia desde Europa.
+
+## Qué ha pasado desde entonces
+
+Desde el anuncio de octubre de 2024, la API Realtime ha salido de beta, ha bajado de precio, ha ganado telefonía, imágenes y MCP, y en 2026 ha pasado a modelos que razonan antes de hablar. Los modelos de la primera época ya están retirados o tienen fecha de apagado.
+
+La cronología, según la [lista de retiradas de OpenAI](https://developers.openai.com/api/docs/deprecations) y sus anuncios:
+
+- **Diciembre de 2024.** Nueva instantánea del modelo preview con el audio más barato (40 $ de entrada y 80 $ de salida por millón).
+- **28 de agosto de 2025.** La API pasa a disponibilidad general con `gpt-realtime`, el primer modelo GA. Llegan la entrada de imágenes, los servidores MCP remotos y las llamadas por SIP, y el precio baja hasta los 32 $ y 64 $ actuales ([ficha del modelo](https://developers.openai.com/api/docs/models/gpt-realtime)).
+- **Octubre de 2025.** Se apaga la instantánea original de octubre de 2024.
+- **Febrero de 2026.** Sale `gpt-realtime-1.5`.
+- **7 de mayo de 2026.** OpenAI presenta `gpt-realtime-2`, que razona antes de responder, junto con `gpt-realtime-translate` (traducción en vivo, 0,034 $ por minuto) y `gpt-realtime-whisper` (transcripción en streaming, 0,017 $ por minuto), según el [anuncio en su foro de desarrolladores](https://community.openai.com/t/new-realtime-voice-models-in-the-api/1380471). Ese mismo día se apagan los `gpt-4o-realtime-preview`.
+- **Julio de 2026.** Llega `gpt-realtime-2.1` y su versión mini. OpenAI anuncia que `gpt-realtime`, `gpt-realtime-mini` y los `gpt-4o-realtime` dejarán de funcionar el **20 de enero de 2027**.
+
+Si tienes algo en producción con un modelo antiguo, la migración no es opcional. La buena noticia es que el precio del audio se mantiene; lo que sube es el texto de salida del modelo grande, de 16 $ a 24 $ por millón. La [guía oficial de la API Realtime](https://developers.openai.com/api/docs/guides/realtime) ya usa `gpt-realtime-2.1` en todos sus ejemplos.
+
+## Mi valoración técnica
+
+La API Realtime ha pasado de demo prometedora a pieza razonable para producción, sobre todo desde que llegaron SIP y la caché. Mi recomendación es usarla cuando la conversación en vivo aporte valor de verdad, y medir el coste por minuto desde el primer prototipo, porque es lo que más sorprende cuando se escala.
+
+Para casos sin tiempo real, como transcribir reuniones o generar audios, sigue teniendo sentido una cadena de piezas separadas. Sale más barata. Se audita paso a paso y deja cambiar cada componente, por ejemplo usar `gpt-realtime-whisper` solo para transcribir, a 0,017 $ por minuto. Y en ambos casos hay que guardar transcripciones y eventos, porque sin ellos no hay forma de saber qué ha hecho el agente ni por qué.

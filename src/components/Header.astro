@@ -9,13 +9,15 @@ interface Props {
 	customURL?: string;
 }
 const { customURL } = Astro.props as Props;
+// Portada canónica de cada idioma (/es/ es una copia de /)
+const home = lang === 'es' ? '/' : '/en/';
 ---
 
 <header class="mm-header">
-	<a href={`/${lang}`} class="mm-logo">MARC_MAYOL<span class="mm-red">.COM</span></a>
+	<a href={home} class="mm-logo">MARC_MAYOL<span class="mm-red">.COM</span></a>
 	<nav class="mm-nav" aria-label="Main Navigation">
 		<a href={`/about/${lang}/`} class="mm-navlink" title={t('nav.about')}>{t('nav.about')}</a>
-		<a href={`/${lang}#servicios`} class="mm-navlink" title={t('nav.services')}>{t('nav.services')}</a>
+		<a href={`${home}#servicios`} class="mm-navlink" title={t('nav.services')}>{t('nav.services')}</a>
 		<a href={`/blog/${lang}/`} class="mm-navlink" title={t('nav.blog')}>{t('nav.blog')}</a>
 		<a href={`/contacto/${lang}/`} class="mm-navlink mm-navlink--cta" title={t('nav.contact')}>{t('nav.contact')}</a>
 		<span class="mm-lang">
@@ -68,5 +70,8 @@ const { customURL } = Astro.props as Props;
 		/* Apilado ocupa demasiado alto para dejarlo fijo: en móvil se queda quieto. */
 		.mm-header{flex-direction:column;gap:var(--space-xs);padding:var(--space-xs) var(--space-sm);position:static}
 		.mm-nav{flex-wrap:wrap;justify-content:center}
+		/* Objetivos táctiles de 44 px como mínimo */
+		.mm-logo,.mm-navlink,.mm-lang-btn{display:inline-flex;align-items:center;min-height:44px}
+		.mm-lang-btn{min-width:44px;justify-content:center}
 	}
 </style>

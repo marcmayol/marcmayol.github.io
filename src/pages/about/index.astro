@@ -4,40 +4,17 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import AboutContent from '../../components/AboutContent.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { personSchema, WEBSITE_ID } from '../../consts';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const item = {
 	'@context': 'https://schema.org',
-	'@type': 'AboutPage',
-	"name": "t('about.seotitle')",
-	"alternativeName": "Sobre mí -Marc Mayol Orell",
-	"description": t('about.seodescription'),
-	"author": {
-		"@type": "Person",
-		"name": "Marc Mayol Orell",
-		"url": "https://marcmayol.com",
-		"sameAs": [
-			"https://www.linkedin.com/in/marc-mayol-orell/",
-			"https://github.com/marcmayol"
-		],
-		"knowsAbout": [
-			"python",
-			"google products",
-			"Generative AI",
-			"javascript",
-			"vertexai",
-			"OpenAi",
-			"Prompt Engineering",
-		]
-	},
-	"mainEntity": {
-		"@type": "Person",
-		"name": "Marc Mayol Orell",
-		"jobTitle": "IA engineer y profesor",
-		"image": "https://marcmayol.com/images/perfil.jpg",
-		"description": "Marc Mayol especialista en inteligencia artificial generativa, desarrollo de productos y formación en IA.",
-		"url": "https://marcmayol.com"
-	}
+	'@type': 'ProfilePage',
+	'name': t('about.seotitle'),
+	'description': t('about.seodescription'),
+	'inLanguage': lang,
+	'isPartOf': { '@id': WEBSITE_ID },
+	'mainEntity': personSchema(lang),
 }
 ---
 
@@ -46,13 +23,13 @@ const item = {
 <head>
 	<BaseHead title={t('about.seotitle')}
 			  description={t('about.seodescription')}
-			  item={item} image="/perfil.png"/>
+			  item={item} image="/perfil.jpg"/>
 </head>
 <body class="mm-body">
 <Header customURL="/about/en/" />
 <AboutContent>
 	<div class="mm-story-block">
-		<div class="mm-story-media"><img src="/fotoarearea.jpg" alt="Foto aérea de Palma" /></div>
+		<div class="mm-story-media"><img src="/fotoarearea.webp" alt="Foto aérea de Palma" /></div>
 		<div>
 			<h3 class="mm-story-h">Mi historia</h3>
 			<p class="mm-story-t">
@@ -78,7 +55,7 @@ const item = {
 	<div class="mm-story-block">
 		<div class="mm-story-media">
 			<figure>
-				<img src="/20f5d489-5e90-4cd0-906a-e58353358e9b.png" alt="IA-chan" />
+				<img src="/20f5d489-5e90-4cd0-906a-e58353358e9b.webp" alt="IA-chan" />
 				<figcaption>IA-chan, la compañera que me ayuda en mis clases y artículos de IA.</figcaption>
 			</figure>
 		</div>

@@ -1,0 +1,149 @@
+---
+title: "Gemma en Android: cómo ejecutar un LLM on-device con LiteRT"
+description: "Cómo llevé Gemma a un móvil Android: exportar el modelo a .litertlm, integrarlo en la app y qué rendimiento esperar, con los errores que me encontré."
+pubDate: "Oct 28, 2026"
+heroImage: "/gemma-en-android.png"
+customURL: "/blog/en/gemma-on-android-on-device-llm/"
+faqs:
+  - pregunta: "¿Qué es un archivo .litertlm?"
+    respuesta: >
+        Es el formato de LiteRT-LM, el runtime de Google para ejecutar LLMs en el dispositivo. Un solo fichero. Dentro van los pesos cuantizados, el tokenizer y, si el modelo es multimodal, el codificador de visión. Google publica modelos Gemma ya convertidos en Hugging Face, en la organización litert-community.
+
+  - pregunta: "¿Puedo exportar a .litertlm un Gemma que he fine-tuneado?"
+    respuesta: >
+        Sí, con litert-torch. A mí me funcionó en WSL con transformers 4.56.2 y el tokenizer SentencePiece en la carpeta del modelo. Pero con Gemma 3n multimodal y un LoRA fusionado, el modelo exportado dejó de ver las imágenes. Si tu caso es solo texto o te vale el modelo base, el camino es mucho más sencillo.
+
+  - pregunta: "¿Qué móvil necesito para ejecutar Gemma on-device?"
+    respuesta: >
+        Un Android arm64 con 6 GB de RAM o más. El modelo Gemma 3n E2B con visión ocupa unos 2,7 GB en disco y en mis pruebas usaba unos 3 GB de RAM en CPU. Yo lo probé en un Pixel 8 Pro.
+
+  - pregunta: "¿Es rápido Gemma en un móvil?"
+    respuesta: >
+        Depende mucho de la tarea y del backend. Google publica para Gemma 4 E2B unos 47 tokens por segundo de decodificación en CPU y 52 en GPU en un Galaxy S26 Ultra. En mi caso, con Gemma 3n multimodal analizando fotos en CPU porque la GPU fallaba, cada foto tardaba varios minutos.
+---
+
+Este artículo es la parte práctica de mi [guía para ejecutar un LLM en local](/blog/es/ejecutar-llm-en-local-guia-ia-on-device/). Aquí voy al grano. Meto Gemma en un móvil Android y hago que funcione sin conexión, sin que tus datos salgan del teléfono, que es lo que de verdad importa y lo que conté en el artículo sobre [Shadow AI](/blog/es/shadow_ai/).
+
+Lo hice para **Balùa**, mi app que mira la foto de un plato y te dice qué alimentos hay. Fine-tuneé Gemma para que devolviera un JSON con los alimentos, lo exporté al formato de LiteRT y lo ejecuté en un Pixel 8 Pro. Funcionó, con matices. Te cuento los pasos, los errores y lo que tardaba.
+
+Cuando busqué cómo hacerlo, todo lo que encontraba estaba en inglés y casi nada contaba los fallos, ni siquiera los issues #994 y #1039 de litert-torch, que daban por imposible exportar Gemma 3n con visión. Así que aquí van, en español.
+
+## ¿Qué necesitas para ejecutar Gemma en Android?
+
+Necesitas tres cosas: un modelo Gemma en formato `.litertlm`, un runtime en la app que lo cargue (LiteRT-LM, o MediaPipe LLM Inference, que es el que usé yo) y un móvil Android arm64 con al menos 6 GB de RAM. Si no vas a fine-tunear, descarga el modelo ya convertido por Google y te ahorras la parte difícil.
+
+Las piezas, en orden:
+
+- **El modelo.** Google publica Gemma ya convertido en Hugging Face, en [litert-community](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). El de Gemma 4 E2B pesa unos 2,6 GB.
+- **El runtime.** Yo usé MediaPipe `tasks-genai` (versiones 0.10.29 a 0.10.35). Hoy Google empuja [LiteRT-LM](https://developers.google.com/edge/litert-lm/android), con API de Kotlin y soporte para CPU, GPU y NPU.
+- **El dispositivo.** arm64, 6 GB de RAM o más, y espacio para el modelo, que no va dentro del APK.
+
+Mi recomendación: si el modelo oficial te sirve, úsalo. El oficial de Gemma 3n E2B en int4 identificaba comida en mi Pixel sin tocar nada. Lo que viene en la siguiente sección solo hace falta si has entrenado tu propia versión.
+
+## ¿Cómo exporto Gemma al formato .litertlm?
+
+Se exporta con `litert-torch`, que solo tiene versiones para Linux y macOS. En Windows, usa WSL. La clave es fijar `transformers` en la 4.56.2, dar mucha memoria de intercambio a WSL y tener en la carpeta del modelo el tokenizer SentencePiece y el `special_tokens_map.json` con `eoi_token`. Con eso, un solo comando.
+
+Los issues de litert-torch (#994 y #1039) daban por roto exportar Gemma 3n con visión. Se puede. Este es el entorno que me funcionó, tal cual está en el [cookbook](https://github.com/marcmayol/on-device-ai-cookbook):
+
+```bash
+uv venv exportenv --python 3.12
+UV_LINK_MODE=copy uv pip install 'litert-torch==0.9.1' 'transformers==4.56.2' pillow torchvision timm
+```
+
+**La versión de `transformers` es lo más importante.** Con la 5.x tuve que parchear litert-torch porque el modelo cambió de estructura por dentro. El export terminaba sin errores y el modelo salía roto: generaba cosas como `df online df online...`. Con la 4.56.2 no hacen falta esos parches.
+
+Un detalle de `uv`: usa enlaces duros. Si reutilizas un entorno, reinstala con `UV_LINK_MODE=copy` para no arrastrar parches de otro.
+
+**Memoria.** El paso que crea el módulo MLIR con un modelo de unos 11 GB se quedaba sin memoria con 31 GB de RAM y WSL lo mataba con un `Killed`. Lo arreglé dando a WSL 28 GB y 72 GB de swap en `.wslconfig`, y reiniciando con `wsl --shutdown`.
+
+**Dos ficheros que tienen que estar en la carpeta del modelo:**
+
+1. `tokenizer.model` (SentencePiece, unos 4,7 MB). El tokenizer rápido de Gemma 3n solo trae `tokenizer.json`, y entonces MediaPipe falla con `SentencePiece tokenizer is not found in the model`. Descárgalo de `google/gemma-3n-E2B-it`.
+2. `special_tokens_map.json` con `eoi_token`. Si falta, el export peta con `KeyError: 'eoi_token'`. Cópialo del modelo base.
+
+Y el comando:
+
+```bash
+litert-torch export_hf /ruta/merged_gemma3n /out \
+  --task=image_text_to_text --export_vision_encoder \
+  --quantization_recipe=dynamic_wi4_afp32
+```
+
+Tarda unos 30 minutos y sale un `model.litertlm` de unos 2,7 GB con visión. Ojo con el nombre de la receta de cuantización, que no es intuitivo:
+
+| Receta | Qué hace | Cuándo usarla |
+|---|---|---|
+| `dynamic_wi4_afp32` | Pesos en 4 bits | Primera prueba, menor tamaño |
+| `dynamic_wi8_afp32` | Pesos en 8 bits, unas 2 veces más grande | Si int4 degrada la salida |
+| `weight_only_wi4_afp32` / `wi8` | Solo cuantiza pesos | Alternativa a las dinámicas |
+| `static_wi8_ai8` / `ai16` | Pesos y activaciones | Cuando necesites exprimir más |
+
+`dynamic_int4` no existe, aunque sea lo primero que escribes. La de 4 bits se llama `dynamic_wi4_afp32`.
+
+## ¿Cómo integro el modelo en la app?
+
+Copia el `.litertlm` a la carpeta externa de la app, nunca a `/data/local/tmp`, y cárgalo con el runtime desde un hilo en segundo plano. Con MediaPipe, el backend de GPU me cerraba la app, así que forcé CPU. Deja `maxTokens` en 1024 como mínimo, porque solo la imagen ya consume unos 258 tokens.
+
+El modelo no cabe en el APK. Durante el desarrollo lo subo con `adb push` a `Android/data/<paquete>/files/`, que es la carpeta que devuelve `getExternalFilesDir`. La app la lee sin permisos especiales. Desde `/data/local/tmp` la app no puede leerlo y falla sin avisar claro.
+
+La configuración de MediaPipe que usé, del cookbook:
+
+```kotlin
+LlmInference.LlmInferenceOptions.builder()
+    .setModelPath(path)                       // en getExternalFilesDir, NO /data/local/tmp
+    .setMaxTokens(1024)                        // input imagen ~258 tokens; no bajar
+    .setPreferredBackend(LlmInference.Backend.CPU)   // el backend GPU CASCA (SIGSEGV)
+    ...
+```
+
+Tres cosas que me encontré:
+
+- **La GPU cascaba** con un SIGSEGV al crear el ejecutor de OpenCL. En CPU iba estable.
+- **El modelo repetía el JSON en bucle.** Lo resolví parseando con una expresión regular y quitando duplicados, en vez de esperar un JSON limpio.
+- **Android avisaba de que la librería nativa no estaba alineada a 16 KB.** En un dispositivo con páginas de 4 KB (compruébalo con `getconf PAGESIZE`) es solo un aviso y el modelo carga igual.
+
+Si empiezas hoy, mira LiteRT-LM antes que MediaPipe. Según la [documentación oficial](https://developers.google.com/edge/litert-lm/android), configuras un `EngineConfig` con la ruta del modelo y el backend (con uno aparte para la visión), inicializas el `Engine` fuera del hilo principal y conversas con `createConversation()`. Yo no lo he probado aún en Balùa, así que no te puedo contar sus fallos.
+
+Un consejo de diseño: pon el analizador detrás de una interfaz. En Balùa, si no encontraba el `.litertlm`, la app caía a un analizador simulado. Así pude desarrollar la interfaz sin tener el modelo de 2,7 GB en el móvil y, más tarde, cambiar de Gemma a Qwen sin tocar el resto. Es lo que cuento en [arquitectura hexagonal y LLMs](/blog/es/arquitectura-hexagonal-y-llms/).
+
+## ¿Qué rendimiento puedo esperar?
+
+Depende de la tarea. Para texto, Google publica para Gemma 4 E2B unos 47 tokens por segundo en CPU y 52 en GPU en un Galaxy S26 Ultra. Para una foto con Gemma 3n en CPU, en mi Pixel 8 Pro, cada análisis tardaba varios minutos, con la CPU al 365-421 % y unos 3 GB de RAM.
+
+Estas son las cifras de Google para Gemma 4 E2B con LiteRT-LM, sacadas de su [ficha en Hugging Face](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm) (1.024 tokens de entrada, 256 de salida):
+
+| Dispositivo | Backend | Prefill (tok/s) | Decode (tok/s) | Primer token | Memoria |
+|---|---|---|---|---|---|
+| Galaxy S26 Ultra | CPU | 557 | 46,9 | 1,8 s | 1.733 MB |
+| Galaxy S26 Ultra | GPU | 3.808 | 52,1 | 0,3 s | 676 MB |
+| Mi Pixel 8 Pro, Gemma 3n con foto | CPU (MediaPipe) | n/d | n/d | varios minutos por foto | ~3 GB |
+
+La última fila es mía y no es comparable del todo: otro modelo (Gemma 3n), otro runtime (MediaPipe), un Pixel 8 Pro frente a un Galaxy S26 Ultra y, sobre todo, una foto como entrada. Codificar la imagen pesa mucho. Pero es lo que viví, y sirve para no prometer respuestas instantáneas en una app multimodal.
+
+## ¿Qué falla y cómo lo detectas?
+
+Lo que más falla es la conversión. El export termina bien y el modelo sale roto. Para detectarlo, compáralo con tu modelo en bf16 en el PC y con el `.litertlm` oficial de Google, siempre con dos imágenes distintas: si dos fotos diferentes dan la misma respuesta, el codificador de visión se ha roto.
+
+Este fue mi caso. Con el export ya arreglado, mi Gemma 3n fine-tuneado devolvía un JSON impecable. Pero con dos fotos distintas daba la misma lista de alimentos, con las mismas raciones. Aislé el problema así:
+
+| Prueba | Resultado | Qué me dijo |
+|---|---|---|
+| Mi modelo en bf16 en el PC | Perfecto | El fine-tuning y el prompt estaban bien |
+| `.litertlm` oficial de Google en el Pixel | Veía: comida → alimentos, retrato → "Hombre" | El runtime estaba bien |
+| Mi modelo exportado, int4 | Alimentos inventados, palabras corruptas | La cuantización degradaba |
+| Mi modelo exportado, int8 | JSON limpio, pero igual para cualquier foto | La visión se perdía en la conversión |
+
+Tampoco había plan B dentro de MediaPipe: su soporte de LoRA es solo para Gemma 2B, Gemma-2 2B y Phi-2, solo en GPU y sin visión.
+
+Conclusión: el fine-tuning en bf16 funcionaba. Desplegar Gemma 3n multimodal con LoRA fusionado y la visión intacta estaba bloqueado por el tooling, a fecha de mis pruebas.
+
+## ¿Con qué me quedé al final?
+
+Para Balùa acabé cambiando de modelo y de runtime: Qwen2.5-VL de 3B en GGUF, con llama.cpp y GPU por Vulkan. Esa ruta me conservó la visión del modelo fine-tuneado. Gemma, eso sí, sigue siendo buena opción si te vale el modelo oficial o si tu caso es solo texto.
+
+Con Qwen, la carga y la primera foto en el Pixel bajaron a unos 3 minutos, frente a unos 10 en CPU, y las siguientes fotos a unos 2 min 30 s. El modelo ocupa 1,8 GB más 1,3 GB del proyector de visión.
+
+En junio también entrené Gemma 4 E2B, pero entonces MediaPipe no lo soportaba. Hoy Google ya publica Gemma 4 en `.litertlm` y LiteRT-LM lo ejecuta en Android. Es lo siguiente que quiero probar.
+
+Si estás decidiendo si te compensa ejecutar un modelo en el dispositivo, qué tamaño elegir o qué cuantización usar, empieza por la [guía de IA on-device](/blog/es/ejecutar-llm-en-local-guia-ia-on-device/). Y las recetas completas, con los errores exactos, están en el [On-Device AI Cookbook](https://github.com/marcmayol/on-device-ai-cookbook).

@@ -138,3 +138,36 @@ export const speakerTopics = {"es":[
             audience: "AI users, developers, and anyone interested in human-machine communication"
         }
     ]}
+
+// Entidad única (schema.org) que reutilizan todas las páginas vía @id
+export const SITE_URL = 'https://marcmayol.com';
+export const PERSON_ID = `${SITE_URL}/#person`;
+export const WEBSITE_ID = `${SITE_URL}/#website`;
+export const PERSON_LOGO = `${SITE_URL}/logos/logo512.png`;
+
+export const personSchema = (lang: 'es' | 'en') => ({
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    'name': 'Marc Mayol',
+    'alternateName': 'Marc Mayol Orell',
+    'url': `${SITE_URL}/`,
+    'image': `${SITE_URL}/perfil.jpg`,
+    'jobTitle': lang === 'es' ? 'Desarrollador e investigador de IA generativa' : 'Gen AI Developer & Researcher',
+    'knowsAbout': ['Generative AI', 'Large Language Models', 'On-device AI', 'RAG', 'AI agents', 'Prompt Engineering', 'Python', 'Google Cloud Vertex AI'],
+    'sameAs': [
+        'https://www.linkedin.com/in/marc-mayol-orell/',
+        'https://github.com/marcmayol',
+        'https://huggingface.co/natzx94',
+        'https://x.com/srmarcmayol',
+        'https://medium.com/@marcmayol',
+    ],
+});
+
+export const websiteSchema = {
+    '@type': 'WebSite',
+    '@id': WEBSITE_ID,
+    'url': `${SITE_URL}/`,
+    'name': 'Marc Mayol',
+    'inLanguage': ['es', 'en'],
+    'publisher': { '@id': PERSON_ID },
+};

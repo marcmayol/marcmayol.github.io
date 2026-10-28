@@ -1,0 +1,193 @@
+---
+title: "Run an LLM locally: a practical guide to on-device AI"
+description: "When running an LLM locally pays off, what hardware you need, how to pick the model and quantization, and the real limits I hit on PC and on Android."
+pubDate: "Oct 28, 2026"
+heroImage: "/run-llm-locally.png"
+customURL: "/blog/es/ejecutar-llm-en-local-guia-ia-on-device/"
+faqs:
+  - pregunta: "What do I need to run an LLM locally?"
+    respuesta: >
+        An open-weights model in a format your runtime understands (GGUF for llama.cpp, Ollama or LM Studio; .litertlm for LiteRT-LM on Android) and a machine with enough memory. On a PC, a 16 GB GPU handles 3B models in bf16 and quantized 7B models comfortably. On a phone, an arm64 Android device with 6 GB of RAM or more.
+
+  - pregunta: "Which quantization should I pick: 4-bit or 8-bit?"
+    respuesta: >
+        Start with 4-bit (Q4_K_M in GGUF) because it shrinks the model a lot, then check quality against your own cases. If the model is fine-tuned or multimodal and starts saying odd things, move up to 8-bit. On the PC, train and validate in bf16 and leave quantization for deployment.
+
+  - pregunta: "Is an LLM on the phone faster than one in the cloud?"
+    respuesta: >
+        For short text it can be, because there is no network round trip. For heavy tasks, like analysing a photo with a multimodal model, no: on my Pixel 8 Pro the first answer took around three minutes on the GPU and much longer on the CPU. What you get is privacy, zero cost per request and offline use.
+
+  - pregunta: "Can I run a model I fine-tuned myself locally?"
+    respuesta: >
+        Yes, but the hard part is usually the conversion, not the training. Merge the LoRA, convert to GGUF or .litertlm and validate on the device with real cases. In my tests the bf16 fine-tune worked perfectly and what broke was the step into the mobile format.
+---
+
+I've spent a good chunk of 2026 putting language models where they don't belong: on my home PC and on my phone. Not because it's trendy. I had two projects that needed it.
+
+The first one is **Balùa**, an Android app that looks at a photo of a plate and tells you which foods are on it so it can estimate calories. Everything stays on the phone. The second is **EsDrac**, a model that speaks Mallorcan Catalan, which I trained on my own GPU.
+
+Along the way I've broken models, filled my disk and learned what actually works. I've been writing it all down in a public repo, the [On-Device AI Cookbook](https://github.com/marcmayol/on-device-ai-cookbook). This post is the tidy version: when running an LLM locally pays off, on what hardware, how to choose the model and the quantization, and where the real limits are.
+
+## What does running an LLM locally mean?
+
+Running an LLM locally means the model runs on hardware you control, a PC or a phone, instead of on a provider's server. The weights live on your disk, your CPU or GPU does the inference, and the data never leaves the machine. When that machine is the user's own device, we call it on-device AI.
+
+In practice there are three pieces:
+
+1. **An open-weights model.** Gemma, Qwen, Llama and friends.
+2. **A format.** The bf16 model from Hugging Face rarely works as is: you convert it to GGUF, to `.litertlm` or to whatever your runtime expects.
+3. **A runtime.** The program that loads the file and generates text: llama.cpp, Ollama, LM Studio, LiteRT-LM...
+
+Almost every problem I ran into lives in piece 2. More on that below.
+
+## When does running an LLM locally make sense?
+
+It makes sense when the data is sensitive, when you'll make lots of requests and don't want to pay for each one, when the app has to work offline, or when you don't want to depend on a provider. If all you need is the best possible quality and network latency doesn't bother you, the cloud still wins.
+
+With Balùa it was clear from day one. These are photos of what you eat, often taken at home. I didn't want them leaving the phone. And an app that calls a paid API for every photo would have forced me to charge money or add usage caps.
+
+This is the table I go through before deciding:
+
+| Reason | When it matters | When it isn't worth it |
+|---|---|---|
+| Privacy | Photos, health, internal documents, customer data | Public or already anonymised data |
+| Cost | Lots of repetitive requests, free app | Occasional use, a few calls a month |
+| Offline | Field apps, travel, phones without coverage | Tools that already need the internet |
+| Latency | Short text answers, autocomplete | Heavy multimodal tasks on a phone |
+| Control | You want to pin a version and avoid provider changes | Whatever the API offers is fine |
+
+The latency row is the misleading one. A local model doesn't always answer sooner. On the phone, analysing one photo with a multimodal model took me minutes. I'll get to that in the limits section.
+
+If people at your company already paste internal data into external chatbots, the privacy argument lands fast. I wrote about it in my post on [Shadow AI](/blog/en/shadow_ai/).
+
+## Where do I run it: a PC with a GPU or a phone?
+
+If you're going to train, tune or test models, start on a PC with a GPU. If the goal is putting AI in the user's hand without a server, you'll end up on the phone, but the road still goes through the PC: that's where you train, convert and validate before touching the device.
+
+My reference setup is an **RTX 5070 Ti with 16 GB of VRAM** and a **Pixel 8 Pro**. Everything in this post was done with those two.
+
+| | PC with GPU (16 GB) | Android phone |
+|---|---|---|
+| What I use it for | Training, converting, validating, serving | Inference for the end user |
+| Models that fit well | 3B or E2B in bf16; 7B with LoRA | Quantized 2B-3B |
+| Formats | bf16 (transformers), GGUF | GGUF, `.litertlm` |
+| Runtimes | transformers, llama.cpp, Ollama, LM Studio | llama.cpp via JNI, LiteRT-LM, MediaPipe |
+| Practical minimum | 16 GB of VRAM to stay sane | arm64 and 6 GB of RAM or more |
+| Speed | Fast | From seconds to minutes depending on the task |
+
+There's a PC trap that took me a while to spot. Other apps also eat VRAM. While I was training EsDrac's 7B model, the time per step kept climbing for no obvious reason. It was Chrome with GPU acceleration and a game slowly taking memory. With both closed, training was stable. If you're tight on VRAM, close anything that uses the GPU.
+
+To serve a text model on a PC, GGUF is the easiest route. I published EsDrac as a GGUF Q8_0 file (about 8 GB) precisely so anyone could open it in Ollama, LM Studio or llama.cpp without touching Python.
+
+## How do I choose the model?
+
+Pick the smallest model that does your specific task well, and check it with your own data before optimising anything. Size sets the ceiling on what the model can learn. How you frame the task sets how much you're asking of it. Both decisions matter more than any deployment trick.
+
+**Size matters more than it seems.** With EsDrac I wanted the model to speak Mallorcan, with its distinctive articles (*es, sa, ses*). With a 3B Qwen2.5 I tried merges, full fine-tuning and several datasets. It picked up single words but couldn't build sentences. With the same kind of data and a 7B model with LoRA, it started speaking for real. The bottleneck was parameters, not data.
+
+**With 16 GB of VRAM you can't have it all.** You want full fine-tuning, a 7B model and no memory blow-ups. You only get two of the three:
+
+- Full fine-tuning + 7B: doesn't fit.
+- Full fine-tuning without blowing memory: forces you down to 3B.
+- 7B without blowing memory: LoRA. That's what I used for EsDrac (LoRA r=128, about 5 hours).
+
+**Frame the task for a small model.** In Balùa I don't ask the model for calories. A small vision model invents numbers easily. I only ask which foods it sees and a qualitative portion size, as JSON:
+
+```json
+{
+  "alimentos": [
+    { "nombre": "arroz blanco", "racion": "media" },
+    { "nombre": "pechuga de pollo", "racion": "grande" }
+  ]
+}
+```
+
+A local nutrition table supplies the number and the user adjusts the portion. The model never produces the final figure, so it can't hallucinate it. To me this is the most useful lesson of the whole project: take away the part the model does badly and a small one is enough.
+
+**Distil when the big one is too big.** For Balùa I labelled the photos with a 7B Qwen2.5-VL and used those labels to train a 3B Qwen2.5-VL, which is the one that fits on the phone. In my evaluation, the distilled 3B scored a group-level F1 of 0.658 versus 0.582 for the one trained on the original labels.
+
+## Which quantization should I use?
+
+Use bf16 on the PC to train and validate, and quantize only at the end, for deployment. For the phone, 4-bit (Q4_K_M in GGUF) is a sensible starting point. If the model is multimodal or fine-tuned and the output degrades, move up to 8-bit before blaming the training.
+
+Quantizing means storing the weights with fewer bits. The model gets smaller and faster in exchange for some quality. These are real sizes from my models:
+
+| Model | Format | Size |
+|---|---|---|
+| EsDrac 7B (full merge) | bf16 | ~14 GB |
+| EsDrac 7B | GGUF Q8_0 | ~8 GB |
+| Qwen2.5-VL 3B (Balùa) | GGUF Q4_K_M + f16 vision projector | ~1.8 GB + ~1.3 GB |
+| Gemma 3n E2B with vision | `.litertlm` int4 | ~2.7 GB |
+
+Two things I learned the hard way:
+
+**On a Blackwell GPU, don't quantize VLMs with bitsandbytes.** I loaded Gemma 4 E2B with `load_in_4bit=True` on the 5070 Ti and the model described "a grey background" and "coloured pixels". It couldn't see the photo. The vision encoder got corrupted in 4-bit. In bf16 the same model identified the food without trouble. An E2B or 3B model fits in 16 GB in bf16, so you don't need to quantize to work locally. This is the inference code I use for validation, straight from the cookbook:
+
+```python
+from transformers import AutoModelForImageTextToText, AutoProcessor
+import torch
+
+model = AutoModelForImageTextToText.from_pretrained(
+    model_id, dtype=torch.bfloat16, device_map="auto")   # bf16, NO load_in_4bit
+proc = AutoProcessor.from_pretrained(model_id)
+
+msgs = [{"role": "user", "content": [
+    {"type": "image", "image": img},
+    {"type": "text",  "text": "¿Qué alimentos hay? Devuelve JSON."},
+]}]
+inputs = proc.apply_chat_template(
+    msgs, add_generation_prompt=True, tokenize=True,
+    return_dict=True, return_tensors="pt").to(model.device)
+out = model.generate(**inputs, max_new_tokens=256, do_sample=False)
+print(proc.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True))
+```
+
+One detail: `pipeline("image-text-to-text")` with the image inside the content didn't pass the image through properly for me. The processor with `apply_chat_template` did.
+
+**A fine-tuned model handles quantization worse.** My Gemma 3n tuned for food, exported to int4, made up foods and wrote garbled words. In 8-bit the JSON came out clean, but it still couldn't see the photo. Google's official int4 build, on the other hand, could. There's no quantization that's right for everything: you have to measure it with your model.
+
+## How do I check the model really works?
+
+Validate the bf16 model on the PC first, then the converted one on the device, and compare both on the same cases. On-device tooling fails silently: the conversion finishes without errors and the model comes out broken. Without a good reference to compare against, you won't know which step broke it.
+
+My test bench has three parts:
+
+1. **A script on the PC** that runs real photos through the bf16 model. If it fails here, the problem is the training or the prompt.
+2. **A test mode in the app.** On launch it analyses a `test.jpg` and writes the result to the log. That way I iterate with `adb logcat` without opening the camera.
+3. **The two-image test.** I feed it two different photos. If the answers change, the model can see. If they're identical, the vision encoder broke during conversion.
+
+That third test saved me weeks. My exported Gemma 3n returned perfect JSON. But a photo of pork loin with salad and a completely different photo of mine got the same answer, portions included. It was reciting a generic meal.
+
+In production, besides testing, you want to measure: what users ask, how long it takes and where it fails. That's what observability tools like [Langfuse](/blog/en/langfuse_the_definitive_observability_platform_for_llms_in_2025/) are for, and they work with your own models too.
+
+## What are the real limits?
+
+The real limits are speed on the phone, conversion tooling that's still immature, file sizes, and the quality of small models on hard tasks. None of them stops you from building useful things, but you should know them before promising anything to a client or to your users.
+
+**Speed.** On the Pixel 8 Pro, multimodal Gemma 3n on the CPU took several minutes per photo. MediaPipe's GPU backend simply crashed the app. With Qwen2.5-VL 3B on llama.cpp and Vulkan, loading plus the first photo dropped to about 3 minutes (2 min 47 s in the best run), versus around 10 minutes on the CPU. Later photos took about 2 min 30 s. For a food logging app that's acceptable. For a chat, it isn't.
+
+**Immature tooling.** Exporting Gemma 3n to `.litertlm` only worked for me with one specific `transformers` version, 4.56.2. With 5.x the export finished fine and the model came out corrupted. Converting EsDrac to GGUF went the same way: I needed a separate environment with an older `transformers`. My rule now: one isolated virtual environment per conversion, with pinned versions.
+
+**Size.** Models don't fit in the APK. They go separately, in the app's folder, and have to be downloaded or copied over. On the PC they pile up: between models, intermediate merges and caches, I ended up freeing about 139 GB from my main drive.
+
+**Quality on hard cases.** Balùa gets the main dish right and barely invents anything, but it misses secondary ingredients. And some visual distinctions it never learned: *coca de trampó*, a Mallorcan flatbread, stayed "pizza". With the vision encoder frozen, a LoRA on the language side can't learn to see new things.
+
+**Runtimes move fast.** What had no support in June has it now. Google already publishes Gemma 4 models in `.litertlm` and a Kotlin API in [LiteRT-LM](https://github.com/google-ai-edge/LiteRT-LM). Check the official docs before calling something impossible.
+
+One architecture tip: put the model behind an interface. In Balùa the food analyser is a swappable piece, which let me move from Gemma to Qwen without touching the rest of the app. It's the idea I explained in [hexagonal architecture and LLMs](/blog/en/hexagonal-architecture-and-llms/).
+
+## Where do I start?
+
+Start with a small, already converted model on your PC, using llama.cpp, Ollama or LM Studio. Measure whether it solves your case with your data. Only when that works, think about fine-tuning, aggressive quantization or moving to the phone. Every step adds a new place where something can break.
+
+My working order today:
+
+1. **Define the task** so the model only does what it does well.
+2. **Try an official, already converted model** before training anything.
+3. **If that's not enough, fine-tune in bf16** and validate on the PC.
+4. **Convert with pinned versions** and repeat the validation on the device.
+5. **Quantize from less to more aggressive:** if 4-bit degrades, try 8.
+
+If your target is Android and you want to use Gemma, I wrote the step-by-step guide with everything I ran into: [how to run Gemma on Android on-device](/blog/en/gemma-on-android-on-device-llm/), covering the `.litertlm` export, wiring it into the app and the performance to expect.
+
+And if you get stuck, the full recipes, with the exact errors and what fixed them, are in the [cookbook](https://github.com/marcmayol/on-device-ai-cookbook).

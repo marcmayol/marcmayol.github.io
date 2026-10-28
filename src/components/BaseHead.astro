@@ -10,11 +10,46 @@ interface Props {
 	description: string;
 	image?: string;
 	item?: Schema;
+	// Ruta de la otra versión de idioma: undefined = se deduce de la URL, null = no hay traducción
+	altURL?: string | null;
+	ogType?: 'website' | 'article';
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image = '/perfil.jpg', altURL, ogType = 'website' } = Astro.props;
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const withSlash = (p: string) => (p.endsWith('/') || p.includes('.') ? p : p + '/');
+
+// Las rutas sin prefijo de idioma son copias de la versión en español: todas apuntan a una sola URL
+const duplicates: Record<string, string> = {
+	'/es/': '/',
+	'/about/': '/about/es/',
+	'/blog/': '/blog/es/',
+	'/contacto/': '/contacto/es/',
+	'/archjourney/': '/es/archjourney/',
+};
+const path = withSlash(decodeURI(Astro.url.pathname));
+const canonicalPath = duplicates[path] ?? path;
+const canonicalURL = new URL(canonicalPath, Astro.site);
+
+// Pareja ES/EN de esta página para hreflang
+const swapLang = (p: string) => {
+	if (p === '/') return { es: '/', en: '/en/' };
+	if (p === '/en/') return { es: '/', en: '/en/' };
+	if (/\/(es|en)\//.test(p)) return { es: p.replace(/\/en\//, '/es/'), en: p.replace(/\/es\//, '/en/') };
+	return null;
+};
+let pair: { es: string; en: string } | null = null;
+if (altURL === undefined) {
+	pair = swapLang(canonicalPath);
+} else if (altURL) {
+	const other = withSlash(altURL);
+	pair = canonicalPath.includes('/en/') ? { es: other, en: canonicalPath } : { es: canonicalPath, en: other };
+}
+const alternates = pair && [
+	{ lang: 'es', href: new URL(pair.es, Astro.site) },
+	{ lang: 'en', href: new URL(pair.en, Astro.site) },
+	{ lang: 'x-default', href: new URL(pair.es, Astro.site) },
+];
 ---
 
 <!-- Global Metadata -->
@@ -29,13 +64,13 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Design fonts: Archivo + Space Mono -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<!-- Design fonts: Archivo + Space Mono, alojadas en /fonts (ver global.css) -->
+<link rel="preload" href="/fonts/archivo-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/space-mono-latin-400.woff2" as="font" type="font/woff2" crossorigin />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{alternates && alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
@@ -43,19 +78,19 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={new URL(image, Astro.site)} />
 <link rel="manifest" href="/manifest.json"/>
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:image" content={new URL(image, Astro.site)} />
 <!-- Meta etiqueta para navegadores Android -->
 <meta name="theme-color" content="#ffffff"/>
 <meta name="robots" content="index,follow"/>
@@ -64,14 +99,10 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta name="application-name" content={APPLICATION_NAME}/>
 <!-- Favicon principal -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
-<!-- Favicon para navegadores estándar -->
-<link rel="icon" type="image/png" sizes="16x16" href="/logos/favicon-16x16.png"/>
-<link rel="icon" type="image/png" sizes="32x32" href="/logos/favicon-32x32.png"/>
-<!-- Iconos para dispositivos Apple -->
-<link rel="apple-touch-icon" sizes="180x180" href="/logos/apple-touch-icon.png"/>
-<!-- Iconos para Android/Chrome -->
-<link rel="icon" type="image/png" sizes="192x192" href="/logos/android-chrome-192x192.png"/>
-<link rel="icon" type="image/png" sizes="512x512" href="/logos/android-chrome-512x512.png"/>
+<!-- Iconos para dispositivos Apple y Android/Chrome -->
+<link rel="apple-touch-icon" sizes="192x192" href="/logos/logo192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/logos/logo192.png"/>
+<link rel="icon" type="image/png" sizes="512x512" href="/logos/logo512.png"/>
 <Schema
 	item={Astro.props.item}
 />

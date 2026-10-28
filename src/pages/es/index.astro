@@ -4,31 +4,23 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import HomeContent from '../../components/HomeContent.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { personSchema, websiteSchema } from '../../consts';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const item = {
 	'@context': 'https://schema.org',
-	'@type': 'Person',
-	'name': "Marc Mayol",
-	"description": t('home.seodescription'),
-	'alternativeName': "Marc Mayol Orell",
-	'knowsAbout': [
-		"python",
-		"google products",
-		"Generative AI",
-		"javascript",
-		"vertexai",
-		"OpenAi",
-		"Prompt Engineering",
-	]
+	'@graph': [
+		websiteSchema,
+		{ ...personSchema(lang), 'description': t('home.seodescription') },
+	],
 }
 ---
 
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<BaseHead title={t('home.seotitle')} description={t('home.seodescription')} item={item} image="/perfil.png"/>
+		<BaseHead title={t('home.seotitle')} description={t('home.seodescription')} item={item} image="/perfil.jpg"/>
 	</head>
 	<body class="mm-body">
 		<Header />

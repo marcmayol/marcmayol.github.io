@@ -5,29 +5,42 @@ import Footer from '../../components/Footer.astro';
 import BlogList from '../../components/BlogList.astro';
 import { getCollection } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { PERSON_ID, WEBSITE_ID, SITE_URL } from '../../consts';
 const lang = getLangFromUrl(Astro.url);
 const posts = (await getCollection('blog')).filter(post => post.id.startsWith(`${lang}/`)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
 const t = useTranslations(lang);
-const item ={
-	"@context": "https://schema.org",
-	"@type": "Person",
-	"name": t('about.seotitle'),
-	"publisher": {
-		"@type": "Person",
-		"name": "Marc Mayol Orell",
-		"url": "https://marcmayol.com/about"
-	}
+const item = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'Blog',
+			'@id': `${SITE_URL}/blog/${lang}/#blog`,
+			'url': `${SITE_URL}/blog/${lang}/`,
+			'name': t('blog.seotitle'),
+			'description': t('blog.seodescription'),
+			'inLanguage': lang,
+			'author': { '@id': PERSON_ID },
+			'isPartOf': { '@id': WEBSITE_ID },
+		},
+		{
+			'@type': 'BreadcrumbList',
+			'itemListElement': [
+				{ '@type': 'ListItem', 'position': 1, 'name': lang === 'es' ? 'Inicio' : 'Home', 'item': `${SITE_URL}${lang === 'es' ? '/' : '/en/'}` },
+				{ '@type': 'ListItem', 'position': 2, 'name': 'Blog' },
+			],
+		},
+	],
 }
 ---
 
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<BaseHead title={t('about.seotitle')}
-				  description={t('about.seodescription')}
+		<BaseHead title={t('blog.seotitle')}
+				  description={t('blog.seodescription')}
 				  item={item}/>
 	</head>
 	<body class="mm-body">
