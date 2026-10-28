@@ -1,83 +1,79 @@
-# Design — marcmayol.com
+# Design — marcmayol.com · «Nocturna»
 
 Sistema de diseño bloqueado de la web. Todo rediseño de página lo lee antes de
 tocar código. No se regenera por página: se amplía o se corrige aquí.
 
-Origen: auditoría Hallmark del 28-oct-2026 (1 crítico · 5 mayores · 4 menores)
-sobre el sistema anterior (Marquee Hero, ago-2026). Maqueta de referencia en
-Claude Design: «marcmayol.com · rediseño 2026» → `Portada.dc.html`.
+Historia: auditoría Hallmark del 28-oct-2026 sobre el neo-brutalismo de agosto →
+primera propuesta Split Studio (descartada por Marc) → tres direcciones en Claude
+Design → elegida **C · Nocturna** con acento **ámbar**, auditada con Hallmark
+(1 crítico · 3 mayores · 5 menores, todos corregidos en la C3).
+Maqueta de referencia: proyecto Claude Design «marcmayol.com · rediseño 2026»,
+archivo `NocturnaC3.dc.html`.
 
 ## Genre
-editorial (neo-brutalist: tinta, papel, bordes gruesos, sin radios)
+atmospheric (oscuro, de herramienta de IA, con foto real como única imagen)
 
 ## Macrostructure family
-- Portada y «Sobre mí»: **Split Studio** — dípticos afirmación / prueba real que
-  alternan de lado (`.dip` y `.dip--rev`). Las pruebas son siempre enlaces a cosas
-  que existen: repos, modelos, apps, artículos, charlas.
-- Listado del blog: **Index-First** — la página es la lista; fecha, título y entradilla.
-- Artículo: **Long Document** — una columna de lectura, sin cajas.
-- Contacto: Split Studio de una sola fila (texto / formulario).
+- Portada: **Photographic (split)** — hero dividido: texto sobre el fondo a la
+  izquierda, retrato a la derecha fundido con el fondo. Debajo, bandas de una
+  columna con el título encima del contenido.
+- «Sobre mí»: Photographic (split) con la historia en bandas.
+- Listado del blog: **Index-First** — lista de títulos con fecha en mono a la derecha.
+- Artículo: **Long Document** — columna de lectura de 68ch, sin cajas.
+- Contacto: una banda con el formulario; el pie no repite la llamada.
 
 ## Theme
-Se conserva la marca. Los valores viven en `src/styles/tokens.css`.
-- `--mm-paper`      oklch(95.53% 0.0070 88.6)
-- `--mm-paper-2`    oklch(100% 0 0)
-- `--mm-ink`        oklch(18.09% 0.0054 39.3)
-- `--mm-ink-soft`   oklch(27.49% 0.0070 67.5)
-- `--mm-rule`       oklch(86.86% 0.0163 82.8)
-- `--mm-rule-dark`  oklch(40% 0.005 40)
-- `--mm-accent`     oklch(56.76% 0.2084 27.1)  (rojo de marca, #d62828)
-- `--mm-accent-ink` oklch(53.95% 0.2009 27.3)
-- El rojo ocupa como mucho una zona por pantalla: el CTA principal, una palabra
-  del titular o el pie. Nunca dos bloques rojos seguidos.
+Valores en `src/styles/tokens.css` (los nombres vienen del sistema anterior:
+`paper` = fondo, `ink` = texto).
+- fondo `--mm-paper` oklch(15% 0.008 260) · elevado `--mm-paper-2` oklch(19% 0.01 260)
+- texto `--mm-ink` oklch(96% 0.005 260) · lectura `--mm-ink-soft` oklch(80% 0.01 260)
+- metadatos `--mm-muted` oklch(66% 0.012 260) · filetes `--mm-rule` oklch(30% 0.01 260)
+- acento ámbar `--mm-accent` oklch(80% 0.15 70) — CTA, una palabra del titular,
+  eyebrow del hero y enlaces. Nunca como fondo de un bloque grande.
+- píldora al bajar `--mm-bar` oklch(9% 0.006 260 / 0.96)
 
 ## Typography
-- Display: Archivo 900, roman, tracking −0.035em, mayúsculas solo en H1 y en la
-  frase del pie (frases cortas).
-- Títulos de sección y de artículo: Archivo 800–900 en caja normal (nada de
-  títulos largos en mayúsculas).
-- Texto de lectura: Archivo 400, 17 px mínimo (`--text-md`), entradillas a 22 px.
-- Mono (Space Mono 400/700): solo fechas, metadatos, etiquetas de proyecto y la
-  navegación. Nunca frases de lectura.
-- Fuentes alojadas en `/fonts` (subconjunto latino), sin Google Fonts.
+- Display y texto: Geist (300–600). Titulares a 500, tracking −0.04em, caja normal.
+- Lectura a 17–19 px, peso 300 en entradillas.
+- Mono: Geist Mono, solo navegación, fechas, metadatos y la eyebrow del hero.
+  Mínimo 13 px.
+- Fuentes alojadas en `/fonts`, sin Google Fonts.
 
 ## Spacing
-Rejilla de 4 pt con nombres (`--space-*` en `tokens.css`). Las secciones NO usan
-todas el mismo padding: el hero respira más (`--space-3xl`) que los dípticos.
+Rejilla de 4 pt (`--space-*`). Las bandas varían de ritmo: proyectos 72 px,
+blog 120 px arriba, pie 120 px.
 
 ## Motion
-- Easings: `--mm-ease-out`, `--mm-ease-in`, `--mm-ease-in-out`.
-- Sin reveals al hacer scroll. Sin bucles decorativos (adiós marquee y cursor).
-- Único gesto: el CTA principal con sombra dura que se hunde 3 px al pasar.
+- La única transición con intención: la píldora de navegación pasa de
+  transparente a negra (200 ms, `--mm-ease-out`) al dejar la parte de arriba.
+- Hover: cambio de color al ámbar. Sin reveals al hacer scroll ni bucles.
 - `prefers-reduced-motion`: sin transiciones.
 
 ## Microinteractions stance
-- Éxito silencioso en el formulario (mensaje en línea, sin toast).
-- Hover = subrayado rojo grueso o inversión tinta/papel. Foco: anillo de 3 px, nunca animado.
-- Objetivos táctiles de 44 px en móvil.
+- Foco visible: anillo de 3 px en ámbar, sin animar.
+- Objetivos táctiles de 44 px en móvil; ningún enlace por debajo de 24 px.
+- Éxito silencioso en el formulario.
 
 ## CTA voice
-- Primario: bloque rojo, borde de tinta de 3 px, sombra dura 6 px, texto mono 700.
-- Secundario: bloque papel o tinta con borde de 3 px, sin sombra.
-- Copia en imperativo corto con flecha: «Trabaja conmigo →», «Escríbeme →».
+- Primario: píldora ámbar con texto oscuro, 48 px de alto, «Trabaja conmigo →».
+- En la navegación: «contacto» como píldora ámbar al final.
 
 ## Nav y pie
-- Nav: **N7 Brutal slab** — wordmark «Marc Mayol» en Archivo 900 a la izquierda
-  con borde derecho, fila de enlaces mono en mayúsculas, idioma, y «Contacto»
-  como losa de tinta al final. Borde inferior de 3 px.
-- Pie: **Ft5 Statement** — fondo rojo, una frase grande de cierre, tres botones
-  (escribir, LinkedIn, GitHub) y una línea de metadatos. Sustituye a los bloques
-  de contacto que se repetían en cada página.
+- Nav: **N5 Floating pill**, fija. Transparente arriba (con sombra de texto
+  sobre la foto), cápsula negra estrecha al bajar.
+- Pie: **Ft5 Statement** — «Montemos algo con IA. *Escríbeme.*» con la segunda
+  frase en ámbar, botón de contacto y una línea de enlaces en mono.
 
 ## Prohibido en este sistema
-- Etiquetas «/ SECCIÓN» o insignias negras encima de cada titular.
-- Cifras sin fuente («+6», «10+», «∞»).
-- Cromo dibujado (terminales falsas, `$ whoami`).
+- Etiquetas de sección en mayúsculas, insignias, «/ SECCIÓN».
+- Cifras sin fuente.
+- Titulares en mayúsculas.
 - Texto de lectura en mono.
-- La newsletter repetida en más de un sitio por página.
+- Desenfoque decorativo, el punto de «estado» antes del nombre.
+- Cabeceras de sección colgantes (título a la izquierda, contenido a la derecha).
 
 ## What pages MUST share
-Wordmark, nav N7, pie Ft5, paleta, tipografía, voz de CTA y bordes de 3 px.
+Nav N5, pie Ft5, paleta, Geist + Geist Mono, voz de CTA, filetes de 1 px.
 
 ## What pages MAY differ on
-El orden y número de dípticos, y qué prueba acompaña a cada afirmación.
+Qué bandas lleva cada página y si usan el hero dividido con foto.

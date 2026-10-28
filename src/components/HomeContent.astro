@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { speakerTopics, talkAudienceTags, homeProof } from '../consts';
-import FormattedDate from './FormattedDate.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -10,192 +9,167 @@ const t = useTranslations(lang);
 const talks = speakerTopics[lang];
 const tags = talkAudienceTags[lang];
 const proof = homeProof[lang];
-const services = [1, 2, 3].map((n) => ({
-	title: t(`home.serv${n}title` as 'home.serv1title'),
-	desc: t(`home.serv${n}desc` as 'home.serv1desc'),
-}));
 const latest = (await getCollection('blog'))
 	.filter((p) => p.id.startsWith(`${lang}/`))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 3);
 const isExternal = (href: string) => href.startsWith('http');
+const fmt = (d: Date) => d.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 ---
 
-<div class="mm-home mm-slab">
+<div class="mm-home">
 
-	<!-- Díptico 1 · quién soy / retrato -->
-	<section id="top" class="mm-dip">
-		<div class="mm-cell mm-hero">
+	<!-- Hero dividido: texto sobre el fondo, retrato a la derecha fundido con él -->
+	<section id="top" class="mm-hero">
+		<div class="mm-hero-txt">
 			<h1 class="mm-h1">
 				<span class="mm-who">{t('home.who')}<span class="mm-sr-only">:</span></span>
-				{t('home.heroline1')} {t('home.heroline2')} <span class="mm-red">{t('home.heroline3')}</span>
+				{t('home.h1')} <span class="mm-acc">{t('home.h1accent')}</span>
 			</h1>
 			<p class="mm-lede">{t('home.lede')}</p>
 			<a href={`/contacto/${lang}/`} class="mm-cta">{t('home.cta')}</a>
 		</div>
 		<figure class="mm-photo">
-			<img class="mm-photo-img" src="/perfil-720.webp" srcset="/perfil-720.webp 720w, /perfil-1080.webp 1080w" sizes="(max-width: 860px) 100vw, 540px" alt={t('home.photoalt')} width="720" height="960" fetchpriority="high" />
-			<figcaption class="mm-photo-cap">{t('home.photocap')}</figcaption>
+			<img src="/perfil-1080.webp" srcset="/perfil-720.webp 720w, /perfil-1080.webp 1080w" sizes="(max-width: 860px) 100vw, 50vw" alt={t('home.photoalt')} width="1080" height="1440" fetchpriority="high" />
 		</figure>
 	</section>
 
-	<!-- Díptico 2 · qué hago / lo que he construido (invertido) -->
-	<section id="servicios" class="mm-dip mm-dip--rev">
-		<div class="mm-cell">
-			<h2 class="mm-h2">{t('home.servh2')}</h2>
-			<ul class="mm-svc">
-				{services.map((s) => (
-					<li class="mm-svc-item">
-						<h3 class="mm-svc-title">{s.title}</h3>
-						<p class="mm-svc-desc">{s.desc}</p>
-					</li>
-				))}
-			</ul>
-		</div>
-		<div id="proyectos" class="mm-cell mm-cell--b mm-cell--ink">
-			<h2 class="mm-h2">{t('home.projh2')}</h2>
-			<p class="mm-p">{t('home.projintro')}</p>
-			<ul class="mm-proj">
-				{proof.map((p) => (
-					<li class="mm-proj-item">
-						<a class="mm-proj-link" href={p.href} target={isExternal(p.href) ? '_blank' : undefined} rel={isExternal(p.href) ? 'noopener' : undefined}>
-							<span class="mm-proj-kind">{p.kind}</span>
-							<span class="mm-proj-name">{p.name}</span>
-							<span class="mm-proj-desc">{p.desc}</span>
-						</a>
-					</li>
-				))}
-			</ul>
-		</div>
+	<!-- Proyectos publicados -->
+	<section id="proyectos" class="mm-band">
+		<h2 class="mm-h2">{t('home.projh2')}</h2>
+		<ul class="mm-grid">
+			{proof.map((p) => (
+				<li>
+					<a class="mm-it" href={p.href} target={isExternal(p.href) ? '_blank' : undefined} rel={isExternal(p.href) ? 'noopener' : undefined}>
+						<span class="mm-it-k">{p.kind}</span>
+						<span class="mm-it-n">{p.name}</span>
+						<span class="mm-it-d">{p.desc}</span>
+					</a>
+				</li>
+			))}
+		</ul>
 	</section>
 
-	<!-- Díptico 3 · charlas / lo último del blog -->
-	<section id="charlas" class="mm-dip">
-		<div class="mm-cell mm-cell--white">
+	<!-- Servicios y charlas -->
+	<section id="charlas" class="mm-band mm-band--two">
+		<div>
+			<h2 class="mm-h2">{t('home.servh2')}</h2>
+			<ul class="mm-svc">
+				{[1, 2, 3].map((n) => (
+					<li>
+						<h3 class="mm-svc-t">{t(`home.serv${n}title` as 'home.serv1title')}</h3>
+						<p class="mm-svc-d">{t(`home.serv${n}desc` as 'home.serv1desc')}</p>
+					</li>
+				))}
+			</ul>
+		</div>
+		<div>
 			<h2 class="mm-h2">{t('home.talksh2')}</h2>
 			<p class="mm-p">{t('home.talksp')}</p>
 			<ul class="mm-talks">
 				{talks.map((talk, i) => (
-					<li class="mm-talk">
-						<a class="mm-talk-link" href={`/contacto/${lang}/`}>
-							<span class="mm-talk-title">{talk.title}</span>
-							<span class="mm-talk-aud">{tags[i]}</span>
-						</a>
-					</li>
-				))}
-			</ul>
-			<a class="mm-more" href={lang === 'es' ? '/blog/es/jsconf-espana-2026/' : '/blog/en/jsconf-spain-2026/'}>{t('home.talksblog')} →</a>
-		</div>
-		<div class="mm-cell mm-cell--b">
-			<h2 class="mm-h2">{t('home.blogh2')}</h2>
-			<ul class="mm-posts">
-				{latest.map((post) => (
 					<li>
-						<a class="mm-post" href={`/blog/${post.id}/`}>
-							<span class="mm-post-date"><FormattedDate date={post.data.pubDate} /></span>
-							<span class="mm-post-title">{post.data.title}</span>
+						<a class="mm-talk" href={`/contacto/${lang}/`}>
+							<span class="mm-talk-t">{talk.title}</span>
+							<span class="mm-talk-a">{tags[i]}</span>
 						</a>
 					</li>
 				))}
 			</ul>
-			<a class="mm-more" href={`/blog/${lang}/`}>{t('home.blogall')}</a>
 		</div>
+	</section>
+
+	<!-- Lo último del blog -->
+	<section class="mm-band mm-band--wide">
+		<h2 class="mm-h2">{t('home.blogh2')}</h2>
+		<ul class="mm-posts">
+			{latest.map((post) => (
+				<li>
+					<a class="mm-post" href={`/blog/${post.id}/`}>
+						<span class="mm-post-t">{post.data.title}</span>
+						<time class="mm-post-d" datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+					</a>
+				</li>
+			))}
+		</ul>
+		<a class="mm-more" href={`/blog/${lang}/`}>{t('home.blogall')}</a>
 	</section>
 
 </div>
 
 <style>
-	/* Hallmark · genre: editorial · macrostructure: Split Studio · design-system: design.md · designed-as-app */
-
-	/* Díptico: afirmación / prueba. --rev cambia qué lado pesa más. */
-	.mm-dip{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);border-bottom:var(--mm-border-heavy) solid var(--mm-ink)}
-	.mm-dip--rev{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
-	.mm-cell{padding:var(--space-2xl) var(--space-xl);min-width:0;scroll-margin-top:72px}
-	.mm-cell--b{border-left:var(--mm-border-heavy) solid var(--mm-ink)}
-	.mm-cell--ink{--mm-focus:var(--mm-on-ink);background:var(--mm-ink);color:var(--mm-on-ink)}
-	.mm-cell--white{background:var(--mm-paper-2)}
-
-	/* Hero: respira más que el resto */
-	.mm-hero{padding:var(--space-4xl) var(--space-xl) var(--space-2xl)}
-	.mm-who{
-		display:block;font-family:var(--mm-font-mono);font-size:var(--text-sm);font-weight:700;
-		letter-spacing:.02em;text-transform:none;line-height:1.3;color:var(--mm-accent-ink);
-		margin-bottom:var(--space-sm);
-	}
-	.mm-h1{
-		font-family:var(--mm-font-display);font-weight:900;font-size:var(--text-hero);
-		line-height:.9;letter-spacing:-.035em;text-transform:uppercase;
-		margin:0 0 var(--space-lg);overflow-wrap:break-word;hyphens:manual;min-width:0;
-	}
-	.mm-lede{font-size:var(--text-lede);line-height:1.45;max-width:30ch;margin:0 0 var(--space-xl);color:var(--mm-ink-soft);text-wrap:pretty}
-	.mm-cta{
-		display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;
-		font-family:var(--mm-font-mono);font-weight:700;font-size:var(--text-sm);
-		text-decoration:none;color:var(--mm-on-ink);background:var(--mm-accent);
-		padding:var(--space-sm) var(--space-md);
-		border:var(--mm-border-heavy) solid var(--mm-ink);
-		box-shadow:var(--mm-shadow-hard) var(--mm-shadow-hard) 0 var(--mm-ink);
-		transition:transform var(--mm-dur-1) var(--mm-ease-out),box-shadow var(--mm-dur-1) var(--mm-ease-out);
-	}
-	.mm-cta:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--mm-ink)}
-	.mm-cta:active{transform:translate(var(--mm-shadow-hard),var(--mm-shadow-hard));box-shadow:none}
-
-	.mm-photo{position:relative;margin:0;min-height:560px;background:var(--mm-ink);border-left:var(--mm-border-heavy) solid var(--mm-ink)}
-	.mm-photo-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-	.mm-photo-cap{
-		position:absolute;left:0;bottom:0;background:var(--mm-paper);color:var(--mm-ink);
-		font-family:var(--mm-font-mono);font-size:var(--text-xs);padding:var(--space-2xs) var(--space-sm);
-		border-top:var(--mm-border-heavy) solid var(--mm-ink);border-right:var(--mm-border-heavy) solid var(--mm-ink);
-	}
-
-	/* Titulares de díptico: caja normal, peso de display */
-	.mm-h2{
-		font-family:var(--mm-font-display);font-weight:900;font-size:var(--text-3xl);line-height:1;
-		letter-spacing:-.025em;margin:0 0 var(--space-md);text-wrap:balance;min-width:0;
-	}
-	.mm-p{font-size:var(--text-md);line-height:1.6;margin:0 0 var(--space-md);max-width:52ch;color:var(--mm-ink-soft);text-wrap:pretty}
-	.mm-cell--ink .mm-p{color:var(--mm-on-ink-muted)}
+	/* Hallmark · genre: atmospheric · macrostructure: Photographic (split) · design-system: design.md · designed-as-app */
+	.mm-home{background:var(--mm-paper);color:var(--mm-ink);font-family:var(--mm-font-body)}
 	ul{list-style:none;margin:0;padding:0}
 
-	.mm-svc{border-top:var(--mm-border-heavy) solid var(--mm-ink)}
-	.mm-svc-item{padding:var(--space-md) 0;border-bottom:var(--mm-hair) solid var(--mm-rule)}
-	.mm-svc-title{font-weight:800;font-size:var(--text-lede);letter-spacing:-.01em;margin:0 0 var(--space-2xs)}
-	.mm-svc-desc{font-size:var(--text-md);line-height:1.55;margin:0;color:var(--mm-ink-soft)}
+	/* HERO · sube por detrás de la píldora de navegación */
+	.mm-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);min-height:88vh;margin-top:calc(var(--mm-nav-h) * -1)}
+	.mm-hero-txt{
+		padding:calc(var(--mm-nav-h) + clamp(3.5rem,9vw,8rem)) var(--mm-pad-x) clamp(3rem,8vw,6rem);
+		display:flex;flex-direction:column;justify-content:flex-end;min-width:0;
+	}
+	.mm-who{display:block;font-family:var(--mm-font-mono);font-size:var(--text-sm);font-weight:400;letter-spacing:0;color:var(--mm-accent-ink);margin-bottom:var(--space-md)}
+	.mm-h1{font-family:var(--mm-font-display);font-weight:500;font-size:var(--text-hero);line-height:.98;letter-spacing:-.04em;margin:0 0 var(--space-md);text-wrap:balance;min-width:0}
+	.mm-acc{color:var(--mm-accent-ink)}
+	.mm-lede{font-size:var(--text-lede);line-height:1.55;font-weight:300;color:var(--mm-ink-soft);max-width:40ch;margin:0 0 var(--space-lg)}
+	.mm-cta{
+		align-self:flex-start;display:inline-flex;align-items:center;min-height:48px;padding:0 22px;
+		border-radius:var(--mm-radius-pill);background:var(--mm-accent);color:var(--mm-on-ink);
+		font-weight:600;font-size:var(--text-base);text-decoration:none;
+		transition:background var(--mm-dur-1) var(--mm-ease-out);
+	}
+	.mm-cta:hover{background:var(--mm-ink)}
+	.mm-photo{position:relative;margin:0;min-height:420px;overflow:hidden}
+	.mm-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+	.mm-photo::after{
+		content:"";position:absolute;inset:0;pointer-events:none;
+		background:
+			linear-gradient(90deg,var(--mm-paper) 0%,oklch(15% 0.008 260 / 0) 35%),
+			linear-gradient(180deg,oklch(15% 0.008 260 / 0.55) 0%,oklch(15% 0.008 260 / 0) 22%);
+	}
 
-	.mm-proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:var(--mm-border-heavy) solid var(--mm-on-ink)}
-	.mm-proj-item{border-bottom:var(--mm-hair) solid var(--mm-rule-dark);min-width:0}
-	.mm-proj-item:nth-child(2n){border-left:var(--mm-hair) solid var(--mm-rule-dark)}
-	.mm-proj-link{display:block;height:100%;padding:var(--space-md) var(--space-md) var(--space-md) 0;color:var(--mm-on-ink);text-decoration:none}
-	.mm-proj-item:nth-child(2n) .mm-proj-link{padding-left:var(--space-md)}
-	.mm-proj-link:hover .mm-proj-name{text-decoration:underline;text-decoration-color:var(--mm-accent);text-decoration-thickness:3px;text-underline-offset:5px}
-	.mm-proj-kind{display:block;font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-on-ink-muted);margin-bottom:var(--space-2xs)}
-	.mm-proj-name{display:block;font-weight:900;font-size:var(--text-xl);letter-spacing:-.02em;margin-bottom:var(--space-2xs)}
-	.mm-proj-desc{display:block;font-size:var(--text-base);line-height:1.5;color:var(--mm-on-ink-muted)}
+	/* BANDAS · título encima, una columna; el ritmo cambia de una a otra */
+	.mm-band{max-width:var(--mm-maxw);margin:0 auto;padding:var(--space-3xl) var(--mm-pad-x);border-top:var(--mm-hair) solid var(--mm-rule)}
+	.mm-band--two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-3xl)}
+	.mm-band--wide{padding:var(--space-4xl) var(--mm-pad-x) var(--space-3xl)}
+	.mm-h2{font-family:var(--mm-font-display);font-weight:500;font-size:var(--text-h2);line-height:1.05;letter-spacing:-.03em;margin:0 0 var(--space-lg);max-width:24ch;text-wrap:balance}
+	.mm-p{font-size:var(--text-md);line-height:1.6;font-weight:300;color:var(--mm-ink-soft);margin:calc(var(--space-sm) * -1) 0 var(--space-md);max-width:46ch}
 
-	.mm-talk{border-bottom:var(--mm-hair) solid var(--mm-rule)}
-	.mm-talk-link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-sm);align-items:baseline;padding:var(--space-sm) 0;text-decoration:none;color:var(--mm-ink);min-height:44px}
-	.mm-talk-link:hover .mm-talk-title{color:var(--mm-accent-ink)}
-	.mm-talk-title{font-weight:800;font-size:var(--text-lede);letter-spacing:-.01em;min-width:0}
-	.mm-talk-aud{font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);white-space:nowrap}
+	.mm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--mm-rule);border:1px solid var(--mm-rule)}
+	.mm-it{display:block;height:100%;padding:var(--space-lg) var(--space-md);background:var(--mm-paper);color:var(--mm-ink);text-decoration:none;box-sizing:border-box}
+	.mm-it:hover{background:var(--mm-paper-2)}
+	.mm-it:hover .mm-it-n{color:var(--mm-accent-ink)}
+	.mm-it-k{display:block;font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);text-transform:lowercase;margin-bottom:var(--space-xs)}
+	.mm-it-n{display:block;font-size:1.375rem;font-weight:500;letter-spacing:-.02em;margin-bottom:var(--space-2xs)}
+	.mm-it-d{display:block;font-size:var(--text-base);line-height:1.55;font-weight:300;color:var(--mm-ink-soft)}
 
-	.mm-post{display:block;padding:var(--space-md) 0;border-bottom:var(--mm-hair) solid var(--mm-rule);text-decoration:none;color:var(--mm-ink)}
-	.mm-post:hover .mm-post-title{color:var(--mm-accent-ink)}
-	.mm-post-date{display:block;font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);margin-bottom:var(--space-2xs)}
-	.mm-post-title{display:block;font-weight:800;font-size:var(--text-lede);line-height:1.2;letter-spacing:-.01em;text-wrap:pretty}
+	.mm-svc li{padding:var(--space-md) 0;border-top:var(--mm-hair) solid var(--mm-rule)}
+	.mm-svc-t{font-size:var(--text-lg);font-weight:500;letter-spacing:-.01em;margin:0 0 var(--space-2xs)}
+	.mm-svc-d{font-size:var(--text-md);line-height:1.55;font-weight:300;color:var(--mm-ink-soft);margin:0}
 
-	.mm-more{display:inline-flex;align-items:center;min-height:44px;margin-top:var(--space-sm);font-family:var(--mm-font-mono);font-weight:700;font-size:var(--text-sm);color:var(--mm-accent-ink);text-decoration:none}
-	.mm-more:hover{text-decoration:underline}
+	.mm-talk{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-sm);padding:var(--space-sm) 0;min-height:44px;box-sizing:border-box;border-top:var(--mm-hair) solid var(--mm-rule);color:var(--mm-ink);text-decoration:none}
+	.mm-talk:hover .mm-talk-t{color:var(--mm-accent-ink)}
+	.mm-talk-t{font-size:var(--text-md);font-weight:500;min-width:0}
+	.mm-talk-a{font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);white-space:nowrap;text-transform:lowercase}
 
+	.mm-posts{max-width:880px}
+	.mm-post{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-md);padding:var(--space-md) 0;border-bottom:var(--mm-hair) solid var(--mm-rule);color:var(--mm-ink);text-decoration:none}
+	.mm-post:hover .mm-post-t{color:var(--mm-accent-ink)}
+	.mm-post-t{font-size:1.3125rem;letter-spacing:-.01em;line-height:1.3;min-width:0;text-wrap:pretty}
+	.mm-post-d{font-family:var(--mm-font-mono);font-size:var(--text-xs);color:var(--mm-muted);white-space:nowrap}
+	.mm-more{display:inline-flex;align-items:center;min-height:44px;margin-top:var(--space-md);font-family:var(--mm-font-mono);font-size:var(--text-sm);color:var(--mm-accent-ink);text-decoration:none}
+	.mm-more:hover{text-decoration:underline;text-underline-offset:4px}
+
+	@media (max-width:1000px){.mm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 	@media (max-width:860px){
-		.mm-dip,.mm-dip--rev{grid-template-columns:minmax(0,1fr)}
-		.mm-cell--b,.mm-photo{border-left:none;border-top:var(--mm-border-heavy) solid var(--mm-ink)}
-		.mm-cell,.mm-hero{padding:var(--space-xl) var(--mm-pad-x)}
-		.mm-photo{min-height:420px}
-		.mm-h2{font-size:var(--text-xl);line-height:1.05}
-		.mm-proj{grid-template-columns:minmax(0,1fr)}
-		.mm-proj-item:nth-child(2n){border-left:none}
-		.mm-proj-item:nth-child(2n) .mm-proj-link{padding-left:0}
-		.mm-talk-link{grid-template-columns:minmax(0,1fr);gap:var(--space-3xs)}
+		.mm-hero{grid-template-columns:minmax(0,1fr);min-height:0}
+		.mm-photo{order:-1;min-height:440px}
+		.mm-photo::after{background:linear-gradient(180deg,oklch(15% 0.008 260 / 0.65) 0%,oklch(15% 0.008 260 / 0) 32%,oklch(15% 0.008 260 / 0) 55%,var(--mm-paper) 100%)}
+		.mm-hero-txt{padding:var(--space-md) var(--mm-pad-x) var(--space-2xl)}
+		.mm-band,.mm-band--wide{padding:var(--space-2xl) var(--mm-pad-x)}
+		.mm-band--two{grid-template-columns:minmax(0,1fr);gap:var(--space-2xl)}
+		.mm-grid{grid-template-columns:minmax(0,1fr)}
+		.mm-post,.mm-talk{flex-direction:column;gap:var(--space-3xs)}
 	}
 	@media (prefers-reduced-motion:reduce){.mm-cta{transition:none}}
 </style>

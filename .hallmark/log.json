@@ -2,6 +2,17 @@
   {
     "date": "2026-10-28",
     "scope": "app",
+    "macrostructure": "Photographic (split) · Index-First (blog) · Long Document (artículo)",
+    "theme": "custom «Nocturna» (ámbar)",
+    "theme_axes": "dark / geometric-sans / warm",
+    "nav": "N5 Floating pill (fija)",
+    "footer": "Ft5 Statement",
+    "enrichment": "none (retrato real)",
+    "brief": "Marc descartó Split Studio; eligió la dirección C (oscura) con ámbar tras comparar 4 acentos. Portada, nav, pie y tokens globales; quedan blog, artículo, about y contacto"
+  },
+  {
+    "date": "2026-10-28",
+    "scope": "app",
     "macrostructure": "Split Studio (portada) · Index-First (blog) · Long Document (artículo)",
     "theme": "custom (neo-brutalist editorial, marca tinta/papel/rojo)",
     "theme_axes": "light / grotesk-heavy / warm",

@@ -1,58 +1,66 @@
-/* Hallmark · genre: editorial · macrostructure: Split Studio · design-system: design.md · designed-as-app
- * theme: custom (neo-brutalist editorial, marca tinta/papel/rojo) · anchor hue: warm (27°)
- * axes → paper band: light (95.5%) · display: grotesk-heavy (Archivo 900) · accent: warm red
- * nav: N7 Brutal slab · footer: Ft5 Statement · pre-emit critique: P4 H5 E4 S5 R5 V4
+/* Hallmark · genre: atmospheric · macrostructure: Photographic (split) · design-system: design.md · designed-as-app
+ * theme: custom «Nocturna» (dark · geometric-sans · ámbar) · anchor hue: warm (70°)
+ * axes → paper band: dark (15%) · display: geometric-sans (Geist 500) · accent: warm amber
+ * nav: N5 Floating pill (fija) · footer: Ft5 Statement · pre-emit critique: P5 H4 E5 S5 R5 V4
  *
  * Fuente única de color, tipografía, espacio y motion. Nada de hex sueltos fuera de aquí.
+ * Los nombres se conservan del sistema anterior (paper = fondo, ink = texto) para que
+ * todas las páginas cambien de tema a la vez.
  */
 :root {
+    color-scheme: dark;
+
     /* ── Color ─────────────────────────────────────────────
-       Contrastes verificados sobre papel (#f2f0eb) y blanco.  */
-    --mm-ink: oklch(18.09% 0.0054 39.3);          /* tinta · 16.5:1 sobre papel */
-    --mm-ink-soft: oklch(27.49% 0.0070 67.5);     /* cuerpo de artículo · 13.0:1 */
-    --mm-paper: oklch(95.53% 0.0070 88.6);        /* papel */
-    --mm-paper-2: oklch(100% 0 0);                /* papel elevado (celdas) */
+       Contrastes verificados sobre el fondo (oklch 15%).  */
+    --mm-paper: oklch(15% 0.008 260);              /* fondo */
+    --mm-paper-2: oklch(19% 0.01 260);             /* fondo elevado (celdas, hover) */
+    --mm-bar: oklch(9% 0.006 260 / 0.96);          /* píldora de navegación al bajar */
+    --mm-ink: oklch(96% 0.005 260);                /* texto principal · 16.6:1 */
+    --mm-ink-soft: oklch(80% 0.01 260);            /* texto de lectura · 10.9:1 */
 
-    --mm-accent: oklch(56.76% 0.2084 27.1);       /* rojo de marca · fondos y display */
-    --mm-accent-ink: oklch(53.95% 0.2009 27.3);   /* mismo rojo, legible como texto · 4.9:1 */
-    --mm-accent-hi: oklch(76.15% 0.1421 20.9);    /* rojo sobre tinta · 8.3:1 */
+    --mm-accent: oklch(80% 0.15 70);               /* ámbar · fondos de CTA y acento */
+    --mm-accent-ink: oklch(80% 0.15 70);           /* ámbar como texto · 9.8:1 */
+    --mm-accent-hi: oklch(86% 0.12 75);            /* ámbar claro (hover) */
 
-    --mm-body: oklch(32.11% 0 0);                 /* texto secundario · 11.1:1 */
-    --mm-body-2: oklch(38.67% 0 0);               /* descripciones · 8.6:1 */
-    --mm-muted: oklch(49.89% 0.0113 72.6);        /* metadatos · 5.3:1 papel / 6.0:1 blanco */
+    --mm-body: oklch(80% 0.01 260);                /* texto secundario */
+    --mm-body-2: oklch(74% 0.01 260);              /* descripciones · 8.4:1 */
+    --mm-muted: oklch(66% 0.012 260);              /* metadatos · 6.3:1 */
 
-    --mm-on-ink: oklch(100% 0 0);
-    --mm-on-ink-muted: oklch(76.73% 0.0089 56.3); /* 9.0:1 sobre tinta */
-    --mm-ok: oklch(51.13% 0.1274 150.4);          /* éxito · 4.7:1 papel */
+    --mm-on-ink: oklch(15% 0.008 260);             /* texto sobre bloques claros o ámbar */
+    --mm-on-ink-muted: oklch(32% 0.01 260);
+    --mm-ok: oklch(78% 0.14 155);                  /* éxito · 9.2:1 */
 
-    --mm-rule: oklch(86.86% 0.0163 82.8);         /* filete suave sobre papel */
-    --mm-rule-soft: oklch(89.87% 0.0145 84.6);    /* filete sobre blanco */
-    --mm-rule-dark: oklch(40% 0.005 40);          /* filete sobre tinta */
+    --mm-rule: oklch(30% 0.01 260);                /* filete */
+    --mm-rule-soft: oklch(26% 0.01 260);
+    --mm-rule-dark: oklch(30% 0.01 260);
 
     /* ── Trazo ── */
-    --mm-border: 2px;
-    --mm-border-heavy: 3px;  /* dípticos, nav y CTA */
+    --mm-border: 1px;
+    --mm-border-heavy: 1px;
     --mm-hair: 1px;
+    --mm-radius-pill: 999px;
 
     /* ── Tipografía ── */
-    --mm-font-display: 'Archivo', 'Archivo Fallback', system-ui, sans-serif;
-    --mm-font-mono: 'Space Mono', ui-monospace, 'Courier New', monospace;
+    --mm-font-display: 'Geist', system-ui, sans-serif;
+    --mm-font-body: 'Geist', system-ui, sans-serif;
+    --mm-font-mono: 'Geist Mono', ui-monospace, 'Courier New', monospace;
 
-    --text-2xs: 0.6875rem;  /* 11 */
-    --text-xs: 0.75rem;     /* 12 */
-    --text-sm: 0.8125rem;   /* 13 */
+    --text-2xs: 0.75rem;    /* 12 */
+    --text-xs: 0.8125rem;   /* 13 · mínimo para metadatos */
+    --text-sm: 0.875rem;    /* 14 */
     --text-base: 0.9375rem; /* 15 */
     --text-md: 1.0625rem;   /* 17 */
     --text-lg: 1.25rem;     /* 20 */
     --text-xl: 1.5rem;      /* 24 */
     --text-2xl: 2.125rem;   /* 34 */
-    --text-3xl: 2.875rem;   /* 46 */
-    --text-4xl: 3.75rem;    /* 60 */
-    --text-display: 4.625rem; /* 74 */
-    --text-lede: 1.375rem;  /* 22 · entradillas */
-    --text-hero: clamp(2.5rem, 5.4vw, 4.75rem); /* H1 de portada: cabe «CONSTRUYO» en media columna */
-    --text-statement: clamp(2.75rem, 7vw, 6rem); /* frase del pie, a todo el ancho */
-    --mm-shadow-hard: 6px;  /* sombra dura del CTA primario */
+    --text-3xl: 2.5rem;     /* 40 */
+    --text-4xl: 3.25rem;    /* 52 */
+    --text-display: 4.25rem; /* 68 */
+    --text-lede: 1.1875rem; /* 19 · entradillas */
+    --text-hero: clamp(2.75rem, 5.6vw, 5.25rem);       /* H1 de portada */
+    --text-h2: clamp(1.75rem, 3vw, 2.5rem);            /* titulares de banda */
+    --text-statement: clamp(2.5rem, 6vw, 5rem);        /* frase del pie */
+    --mm-shadow-hard: 0px;
 
     /* ── Espacio · rejilla de 4pt ── */
     --space-3xs: 0.25rem;  /* 4  */
@@ -63,12 +71,13 @@
     --space-lg: 2rem;      /* 32 */
     --space-xl: 2.5rem;    /* 40 */
     --space-2xl: 3.5rem;   /* 56 */
-    --space-3xl: 4rem;     /* 64 */
-    --space-4xl: 7rem;     /* 112 · solo el hero */
+    --space-3xl: 4.5rem;   /* 72 */
+    --space-4xl: 7.5rem;   /* 120 */
 
     /* ── Layout ── */
-    --mm-maxw: 1180px;
-    --mm-pad-x: var(--space-md);   /* padding lateral de sección · móvil */
+    --mm-maxw: 1200px;
+    --mm-nav-h: 76px;
+    --mm-pad-x: 1.25rem;   /* padding lateral · móvil */
     --mm-pad-y: var(--space-2xl);
 
     /* ── Motion ── */
@@ -81,6 +90,12 @@
 
 @media (min-width: 861px) {
     :root {
-        --mm-pad-x: var(--space-xl);
+        --mm-pad-x: clamp(1.25rem, 4vw, 3.5rem);
+    }
+}
+
+@media (max-width: 860px) {
+    :root {
+        --mm-nav-h: 112px;
     }
 }
