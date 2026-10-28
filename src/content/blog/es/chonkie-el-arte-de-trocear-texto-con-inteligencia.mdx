@@ -14,13 +14,13 @@ faqs:
     respuesta: >
         Es una forma de encadenar todos los pasos en una sola expresión: leer archivos, preparar el texto, trocearlo, refinarlo y exportarlo o guardarlo. Llegó en la versión 1.4.0, en octubre de 2025, y se usa con métodos como chunk_with, refine_with, export_with y store_in, terminando con run.
 
-  - pregunta: "¿Qué chunker debería usar?"
+  - pregunta: "¿Qué chunker de Chonkie debería usar en mi RAG?"
     respuesta: >
         Para empezar, RecursiveChunker: respeta párrafos y frases y no necesita modelos. Si los temas cambian dentro de un mismo documento, SemanticChunker. Para código, CodeChunker. Para tablas, TableChunker. Los chunkers con LLM o redes neuronales solo compensan si has medido que mejoran la recuperación.
 
-  - pregunta: "¿Chonkie es gratis?"
+  - pregunta: "¿Cuánto cuesta Chonkie y qué licencia tiene?"
     respuesta: >
-        Sí. La librería es open source con licencia MIT y se instala con pip install chonkie. Los extras, como el troceado semántico o los conectores a bases vectoriales, se instalan aparte. La empresa ofrece además un servicio en la nube de pago, que es opcional.
+        Nada. La librería es open source con licencia MIT y se instala con pip install chonkie. Los extras, como el troceado semántico o los conectores a bases vectoriales, se instalan aparte. La empresa ofrece además un servicio en la nube de pago, que es opcional.
 ---
 
 Cuando trabajamos con sistemas de **IA generativa** o **RAG (Retrieval-Augmented Generation)**, uno de los grandes retos es el contexto. Los modelos no procesan textos infinitos. Hay que dividirlos, y hacerlo bien no es trivial: si cortas demasiado, pierdes coherencia; si cortas poco, saturas el modelo y empeoras la búsqueda.
@@ -134,7 +134,7 @@ Si ya tienes todo montado sobre LangChain o LlamaIndex, sus divisores pueden bas
 
 ## Limitaciones
 
-Chonkie resuelve bien el troceado, pero no lee PDF escaneados, no entiende la maquetación de un documento complejo y no te dice qué estrategia es la mejor para tus datos. Eso te toca a ti: medir la calidad de la recuperación con preguntas reales y ajustar el tamaño y la estrategia.
+Chonkie resuelve bien el troceado, pero no lee PDF escaneados, no entiende la maquetación de un documento complejo y no te dice qué estrategia es la mejor para tus datos. Eso te toca a ti. Mide la calidad de la recuperación con preguntas reales y ajusta el `chunk_size` y el chunker, por ejemplo pasando de `RecursiveChunker` a `SemanticChunker`.
 
 - **Entrada.** Trabaja sobre texto. Para PDF, Word o imágenes necesitas antes un conversor como [Docling](/blog/es/docling-la-forma-facil-de-usar-archivos-con-llms/), o los nuevos chefs de Mistral OCR y LiteParse.
 - **Coste de las estrategias avanzadas.** Semántico, neural y LLM requieren modelos y dependencias extra, y son mucho más lentos.
@@ -149,8 +149,8 @@ Según las [notas de versión en GitHub](https://github.com/chonkie-inc/chonkie/
 
 - **1.4.0 (11 de octubre de 2025).** Llega `chonkie.Pipeline`, junto con `TableChef` y `TableChunker`.
 - **1.5.0 (16 de diciembre de 2025).** Deja de soportar Python 3.9 y añade 3.13; nuevos tokenizadores por bytes y por filas.
-- **1.5.2 (enero de 2026).** Nuevo `FastChunker`.
-- **1.6.0 (11 de marzo de 2026).** Soporte de tablas HTML, una API de troceado que puedes desplegar en tu servidor y ejecución asíncrona nativa.
+- **1.5.2 (enero de 2026).** `FastChunker`.
+- **1.6.0 (11 de marzo de 2026).** Soporte de tablas HTML, una API de troceado que puedes desplegar en tu propio servidor sin depender de la nube de Chonkie y ejecución asíncrona nativa.
 - **1.7.0 (7 de julio de 2026).** Integración con LiteParse para leer más formatos y un `ComponentRegistry` público para crear componentes propios.
 
 El repositorio ahora redirige a la organización `feyninc`, aunque los enlaces antiguos siguen funcionando. La librería existe también en TypeScript, para quien trabaje en Node.
@@ -162,3 +162,6 @@ Si en tu flujo hay que mantener el índice al día cuando cambian los documentos
 Chonkie hace que los modelos lean mejor, porque les da fragmentos con sentido en lugar de cortes arbitrarios. Con el `Pipeline`, además, el flujo completo de ingesta cabe en unas pocas líneas y cada pieza se puede cambiar sin tocar el resto.
 
 Si quieres profundizar en este tipo de herramientas, te recomiendo el artículo donde comparo [Chonkie con Docling](/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-rag/), dos enfoques complementarios para procesar documentos en arquitecturas RAG, y el [artículo completo sobre Docling](/blog/es/docling-la-forma-facil-de-usar-archivos-con-llms/).
+
+{/* enlaces-relacionados */}
+Si te ha interesado, sigue con [Chunking en RAG: estrategias, solapamiento, tamaño y cómo evaluarlo](/blog/es/chunking-en-rag-estrategias/) y [Chonkie y Docling: dos enfoques complementarios para procesar documentos en pipelines RAG](/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-rag/).

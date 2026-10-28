@@ -1,0 +1,180 @@
+---
+title: "Chunking in RAG: strategies, overlap, chunk size and how to evaluate it"
+description: "Chunking strategies for RAG: fixed-size, recursive, sentence, semantic, structure, late and agentic. How to pick chunk size and overlap and evaluate it."
+pubDate: "Oct 28, 2026"
+heroImage: "/chunking-in-rag.png"
+customURL: "/blog/es/chunking-en-rag-estrategias/"
+faqs:
+  - pregunta: "What is the best chunking strategy for RAG?"
+    respuesta: >
+        No single one always wins. To start, recursive: it respects paragraphs and sentences, needs no models and was among the most consistent in Chroma's report. If your documents are manuals or contracts with headings and tables, chunk by structure with Docling. Semantic, late and agentic chunking only pay off if you've measured that they improve retrieval on your data.
+
+  - pregunta: "What chunk size should I use?"
+    respuesta: >
+        Start between 200 and 512 tokens. In Chroma's 2024 report, recursive chunking at 200 tokens with no overlap did well on every metric, with a recall of 88.1. And never go past your embedding model's limit. all-MiniLM-L6-v2, for example, truncates beyond 256 word pieces.
+
+  - pregunta: "Do chunks need overlap?"
+    respuesta: >
+        It helps with small chunks, because it stops an idea from being split across two chunks, but it adds repeated tokens to the context. In Chroma's report, removing overlap improved efficiency and, with 250-token chunks, dropped recall from 82.4 to 77.1. Start with 10 to 20% and measure.
+
+  - pregunta: "How do you evaluate a chunking strategy?"
+    respuesta: >
+        With real questions and the exact passage of the document that answers each one. For each configuration you measure whether that passage shows up in the top k results, the recall@k, and how much irrelevant text comes along. Thirty or forty questions already give a useful signal. Then you score the final answer with an LLM judge and trace the pipeline in Langfuse or Opik to see which chunks arrived.
+---
+
+A RAG system can only answer with what reaches its context. And what reaches it depends on how you split your documents before indexing them. That's where a large part of the quality is decided. If you cut a table in half or separate a condition from its exception, neither the best embedding model nor GPT, Claude or Gemini will fix it later.
+
+In this article I go through the chunking strategies used in 2026, from the simplest to the most expensive: fixed-size, recursive, sentence-based, semantic, document-structure, late chunking and agentic chunking. Then I explain how to decide chunk size and overlap and, above all, how to measure whether a strategy works on your documents.
+
+## What is chunking and why does it decide RAG quality?
+
+Chunking is splitting documents into pieces before computing their embeddings and indexing them. The retriever returns chunks. Not documents. So each chunk has to hold a complete idea that makes sense on its own. If "you have 30 days" lands in one chunk and "to return the order" in the next, neither answers the customer's question well, and the LLM gets half a fact.
+
+Two forces pull in opposite directions. A 100-token chunk gives a precise embedding, because it's about one thing, although it may lack the context that makes it useful. A 1,000-token one keeps that context. Its embedding, however, mixes several topics and shows up in searches where it doesn't belong. And everything you retrieve takes up tokens in the prompt. You pay for it.
+
+[Chroma's report on chunking strategies](https://www.trychroma.com/research/evaluating-chunking) (Smith and Troynikov, July 2024) found that, with the same corpus and the same embedding model, some strategies beat others by up to 9% in recall. Changing your chunker costs far less than changing your model, so it's one of the first things worth reviewing.
+
+## Which chunking strategies are there?
+
+Seven families cover almost everything. Fixed-size, recursive and sentence-based need no model and are the fastest. Semantic, structure-based, late and agentic chunking use embeddings, a layout parser such as Docling or an LLM, so they take more time and, in the LLM's case, money for every document you index.
+
+| Strategy | How it splits | Cost | When to use it | Where you get it |
+|---|---|---|---|---|
+| Fixed-size | Every N tokens or characters | Minimal | Homogeneous text, prototypes | Chonkie `TokenChunker` |
+| Recursive | Sections, then paragraphs, then sentences, until it fits in N | Minimal | Default starting point | Chonkie `RecursiveChunker` |
+| Sentence | Groups whole sentences until N is reached | Low | Narrative text, FAQs, support | Chonkie `SentenceChunker` |
+| Semantic | Where the topic shifts according to embeddings | Medium | Long documents with mixed topics | Chonkie `SemanticChunker` |
+| Structure | By document elements: headings, tables, lists | Medium | PDFs, manuals, contracts, documentation | Docling `HierarchicalChunker` and `HybridChunker` |
+| Late chunking | Embeds the whole document, then splits | Medium-high | Chunks that depend on global context | Chonkie `LateChunker` |
+| Agentic | An LLM decides the cuts or rewrites into propositions | High | Small, high-value corpora | Chonkie `SlumberChunker` |
+
+### Fixed-size
+
+You cut every 512 tokens, for example, without looking at the content. It's predictable and very fast. It also splits sentences and paragraphs anywhere, so it's mostly useful for prototypes or very uniform text, such as call transcripts. If you use it, overlap matters more, because it's the only thing that saves the sentence that falls right on the cut. In Chonkie it's the `TokenChunker`.
+
+### Recursive
+
+It first tries to cut on large separators, such as section breaks. If the piece is still over the limit, it drops to paragraphs, then sentences and, as a last resort, words. That way it respects the structure of the text without any model. It's the one I recommend to start with: in Chroma's report, `RecursiveCharacterTextSplitter` at 200 tokens with no overlap reached a recall of 88.1 and was among the most consistent.
+
+### Sentence-based
+
+It groups whole sentences until it reaches the maximum size and never splits one. It works well with narrative text, support articles or FAQs, where each sentence usually stands on its own. It struggles with extremely long sentences. Also with badly punctuated text, which is exactly what many OCR'd PDFs produce.
+
+### Semantic
+
+It computes the embedding of each sentence and cuts where similarity with the next one drops. In other words, where the topic changes. Chunks come out more coherent than with fixed-size, but you need an embedding model and indexing is slower. The numbers back it up: in Chroma's report, `ClusterSemanticChunker` at 200 tokens had the best precision (8.0) and the best IoU (8.0) in the main table.
+
+### By document structure
+
+If the document has headings, sections, tables and lists, the logical thing is to cut along them. Docling does this with two chunkers on top of its `DoclingDocument`. The [HierarchicalChunker](https://docling-project.github.io/docling/concepts/chunking/) creates one chunk per element and attaches the headings and captions around it. The `HybridChunker` goes further. It starts from that result, fits it to your tokenizer, splits whatever goes over the limit and merges small chunks that share a heading. In long tables it repeats the header in every piece (`repeat_table_header` is on by default).
+
+### Late chunking
+
+Proposed by Jina AI in the paper [Late Chunking](https://arxiv.org/abs/2409.04701) (Günther et al., 2024), it changes the order: it first runs the whole document through a long-context embedding model and then splits the token embeddings into chunks, just before pooling. Each chunk "knows" what the document is about, so a sentence like "its price rose 12%" keeps track of which product it refers to. According to the paper, the gain grows with document length. It requires a long-context embedding model.
+
+### Agentic chunking
+
+Here an LLM decides where to cut. Or it rewrites the text into propositions: minimal, self-contained sentences that express a single fact. The idea comes from the paper [Dense X Retrieval](https://aclanthology.org/2024.emnlp-main.845/) (EMNLP 2024), which showed that indexing by propositions retrieves better than indexing by passages. In Chroma's report, the `LLMChunker` with GPT-4o achieved the highest recall, 91.9, with a precision of 3.9, half that of the best. It's slow and expensive, so keep it for small corpora where every answer matters a lot.
+
+## Do chunks need overlap?
+
+Overlap repeats the end of the previous chunk at the start of each one, so an idea that falls right on the cut appears whole in some chunk. It helps with small chunks and with fixed-size splitting. But it duplicates tokens: with 50 tokens of overlap on 200-token chunks, 25% of the indexed text is repeated. Measure it before adding it out of habit.
+
+Chroma's data shows this well. With `TokenTextSplitter` at 250 tokens and the `all-MiniLM-L6-v2` model, removing a 125-token overlap dropped recall from 82.4 to 77.1, but improved IoU, the metric that penalises irrelevant and repeated text. At the other extreme, the OpenAI-style setting of 800 tokens with 400 of overlap had the worst efficiency of all, with precision around 1.4.
+
+My rule of thumb is simple. With recursive or sentence chunking, start with no overlap or very little: the cuts already fall in sensible places. With fixed-size, add 10 to 20% of the chunk size. In Chonkie, overlap is a separate step, the `overlap` refinery in the `Pipeline`, which I explain in the [Chonkie article](/blog/en/chonkie-the-art-of-chunking-text-intelligently/).
+
+## How do you choose the chunk size?
+
+Start between 200 and 512 tokens and tune it with data. Three limits rule: your embedding model's maximum input, the type of questions you get and how many chunks fit in the LLM prompt. Specific questions call for small chunks; questions that need a full explanation, larger ones.
+
+The first limit is hard. The [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) model card warns that input longer than 256 word pieces is truncated: if you feed it 512-token chunks, half of the text doesn't affect the embedding and nobody tells you. Always check that limit on the card of the model you use.
+
+The second is your use case. If users ask for specific facts ("how many days do I have to return an order?"), 200 to 300-token chunks give more precise embeddings. If they ask things that require reasoning over a section ("how does the sign-up process work?"), you need larger chunks or to retrieve several consecutive ones.
+
+And one detail that catches people out. If you don't give it a tokenizer, Chonkie counts **characters**, so `chunk_size=512` means 512 characters: roughly 100 to 150 tokens in English, far from what you expected. To count real tokens, pass `tokenizer="gpt2"` or your model's own.
+
+## How do you evaluate a chunking strategy?
+
+With real questions and the exact passage that answers each one. You chunk, index and run the questions. Then you check whether any of the top k results contains that whole passage; that's recall@k. With 30 or 40 questions you can compare five configurations in minutes. Without spending a single LLM token.
+
+This script compares five Chonkie configurations on the same document. So it runs without downloading models, it uses TF-IDF as the retriever; in your real system, swap it for your embedding model and vector database. What matters is the metric: a hit counts only if the retrieved chunk contains the full answer, thanks to the `start_index` and `end_index` that Chonkie stores in each chunk.
+
+```python
+# pip install chonkie scikit-learn   (tested with chonkie 1.7.0)
+from chonkie import RecursiveChunker, SentenceChunker, TokenChunker
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+text = open("manual.md", encoding="utf-8").read()
+
+# Each question comes with the exact passage of the document that answers it
+cases = [
+    ("How many days do I have to return an order?", "you have 30 calendar days"),
+    ("Who pays for return shipping?", "return shipping is on us"),
+    ("When is the refund issued?", "within 14 days at most"),
+]
+
+# Without a tokenizer, Chonkie counts characters
+configs = {
+    "token 200 no overlap": TokenChunker(chunk_size=200, chunk_overlap=0),
+    "token 200 overlap 40": TokenChunker(chunk_size=200, chunk_overlap=40),
+    "sentence 400": SentenceChunker(chunk_size=400),
+    "recursive 400": RecursiveChunker(chunk_size=400),
+    "recursive 1200": RecursiveChunker(chunk_size=1200),
+}
+
+K = 2
+for name, chunker in configs.items():
+    chunks = chunker(text)
+    vec = TfidfVectorizer().fit([c.text for c in chunks])
+    matrix = vec.transform([c.text for c in chunks])
+    hits = 0
+    for question, answer in cases:
+        start = text.index(answer)
+        end = start + len(answer)
+        scores = cosine_similarity(vec.transform([question]), matrix)[0]
+        top = scores.argsort()[::-1][:K]
+        # a hit if any retrieved chunk contains the whole answer
+        if any(chunks[i].start_index <= start and chunks[i].end_index >= end for i in top):
+            hits += 1
+    avg = sum(len(c.text) for c in chunks) / len(chunks)
+    print(f"{name:22} chunks={len(chunks):3} avg={avg:6.0f} chars recall@{K}={hits}/{len(cases)}")
+```
+
+With three questions, the result means nothing. It's just the skeleton. To decide you need a few dozen, ideally taken from your users or from support tickets. Alongside recall@k, also look at the average chunk size: two configurations with the same recall don't cost the same if one puts 800 characters per chunk into the prompt and the other 200.
+
+With a candidate configuration, move on to end-to-end evaluation. You generate answers. An LLM judge scores whether they're grounded in the context. And you trace the whole pipeline, retrieval included, to know which chunks reached each answer and in what order. In [Langfuse](/blog/en/langfuse_the_definitive_observability_platform_for_llms_in_2025/) each step becomes a span, with the retrieved chunks stored as metadata. If you prefer another tool, the [LLM observability tools comparison](/blog/en/llm-observability-tools-comparison/) covers five more.
+
+## How do Docling and Chonkie fit into the pipeline?
+
+Docling reads. It turns PDFs, Word files or slide decks into a structured document and, if you want, chunks it by structure with its `HybridChunker`. Chonkie splits already clean text with around ten strategies and stores it in Chroma, Qdrant or pgvector. The usual approach is to chain them: Docling to extract, and Chonkie or Docling itself to chunk.
+
+The practical rule is this. If your input is a PDF with tables, columns or scans, the first thing to break is extraction: no chunker fixes text with a scrambled reading order. Run it through [Docling](/blog/en/docling-the-easy-way-to-use-files-with-llms/) first, which detects columns, tables and headings. Then export to Markdown or chunk directly with its chunkers.
+
+If the text is already clean (Markdown, HTML, knowledge bases), [Chonkie](/blog/en/chonkie-the-art-of-chunking-text-intelligently/) gives you more strategies with fewer dependencies and a `Pipeline` that reads, chunks, refines and stores in the vector database in a few lines. I explain how to combine them step by step in [Chonkie and Docling: two complementary approaches](/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag/).
+
+## Which mistakes should you avoid?
+
+Five come up a lot: going past the embedding model's limit, confusing characters with tokens, splitting tables, losing section headings and changing the chunking without reindexing. The script above exposes most of them. For the rest there's a cheap trick. Open 20 random chunks in Chroma, Qdrant or wherever you store them, and read them: in five minutes you'll see whether there are tables without headers or sentences cut in half.
+
+1. **Chunks longer than the embedding model allows.** With `all-MiniLM-L6-v2`, anything beyond 256 word pieces is silently truncated.
+2. **Characters instead of tokens.** In Chonkie, without `tokenizer`, `chunk_size=512` means 512 characters.
+3. **Split tables.** A row without its header means nothing. Use `TableChunker` in Chonkie or `HybridChunker` in Docling, which repeats the header.
+4. **Chunks without context.** "The deadline is 14 days" is useless without knowing which section it came from. Add the heading as metadata or to the chunk text; in Docling, `contextualize()` returns the chunk enriched with its headings.
+5. **Changing strategy without reindexing everything.** If chunks of 400 and 1,200 characters live in the same index, the recall@k you measure doesn't correspond to either configuration.
+
+## Conclusion
+
+Start with recursive chunking at 200-512 tokens, with little or no overlap. Respect your embedding model's limit. If your documents have headings and tables, chunk by structure with Docling. Leave semantic, late and agentic chunking for when an evaluation with your questions says they pay off: all three make indexing more expensive.
+
+In the end, what pays off most is having a set of questions with their expected answers and measuring every change. With that, choosing between `RecursiveChunker`, `SemanticChunker` or Docling's `HybridChunker` stops being an opinion and becomes a number.
+
+import FAQ from '../../../components/FAQ.astro'
+
+<br/>
+<FAQ items={frontmatter.faqs} lang="en"/>
+<br/>
+
+{/* enlaces-relacionados */}
+If you found this useful, keep reading [Chonkie and Docling: two complementary approaches to document processing in RAG pipelines](/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag/) and [LLM observability: comparing Langfuse, Opik, LangSmith, Phoenix and more](/blog/en/llm-observability-tools-comparison/).

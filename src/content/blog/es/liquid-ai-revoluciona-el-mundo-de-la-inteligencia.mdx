@@ -22,7 +22,7 @@ faqs:
         Sobre todo para ejecutar IA en el propio dispositivo: móviles, portátiles, coches o una Raspberry Pi. Sus puntos fuertes son la velocidad en CPU, el poco consumo de memoria y, en las versiones LFM2.5, las llamadas a herramientas para agentes locales.
 ---
 
-El 30 de septiembre de 2024, **Liquid AI**, una empresa salida del MIT, presentó sus **Liquid Foundation Models (LFM)**: modelos de lenguaje que no seguían la receta del transformer. Prometían más calidad con menos memoria, pero eran cerrados y solo se podían probar en su web y en algunos socios. Dos años después, todo eso ha cambiado: los modelos tienen pesos abiertos, la arquitectura es un híbrido mucho más concreto y el foco está en ejecutar IA en el propio dispositivo. Aquí repaso qué son, cómo funcionan y qué ha pasado desde entonces.
+El 30 de septiembre de 2024, **Liquid AI**, una empresa salida del MIT, presentó sus **Liquid Foundation Models (LFM)**: modelos de lenguaje que no seguían la receta del transformer. Prometían más calidad con menos memoria. Pero eran cerrados, y solo se podían probar en su web y en algunos socios. Dos años después todo eso ha cambiado: los modelos tienen pesos abiertos en Hugging Face, la arquitectura es un híbrido mucho más concreto y el foco está en ejecutar IA en el propio dispositivo, del móvil al coche. Aquí repaso qué son, cómo funcionan y qué ha pasado desde entonces.
 
 ## Qué presentó Liquid AI en 2024
 
@@ -45,7 +45,7 @@ Conviene matizar una cosa: los LFM no ganaban en todo a los transformers de su t
 
 ## Por qué no son transformers
 
-Un transformer guarda en memoria una caché de claves y valores que crece con cada token del contexto. Liquid AI sustituye la mayoría de esas capas de atención por operadores lineales que se adaptan a la entrada, de modo que la memoria crece mucho menos con textos largos y la inferencia es más barata.
+Un transformer guarda en memoria una caché de claves y valores (la caché KV) que crece con cada token del contexto. Liquid AI sustituye la mayoría de esas capas de atención por operadores lineales que se adaptan a la entrada, de modo que la memoria crece mucho menos con textos largos y la inferencia sale más barata. En LFM2, 10 de cada 16 bloques.
 
 La idea viene de las **redes neuronales líquidas** que Ramin Hasani y su equipo desarrollaron en el laboratorio CSAIL del MIT: redes cuyo comportamiento cambia según la señal que reciben, como un sistema dinámico. Los LFM de 2024 se describían como "operadores lineales adaptativos cuyas acciones dependen de la entrada", sin publicar todos los detalles.
 
@@ -62,12 +62,12 @@ Los LFM más grandes, como LFM-40B en 2024 o LFM2-24B-A2B en 2026, usan **mezcla
 
 Los modelos de Liquid AI sirven sobre todo para ejecutar IA en el dispositivo, sin enviar datos a la nube: asistentes en el móvil, extracción de datos de documentos, agentes locales que llaman a herramientas o sistemas embebidos en coches y robots. Donde brillan es en velocidad por vatio y en memoria, no en competir con los modelos más grandes.
 
-Algunos casos concretos:
+Cuatro casos concretos donde encajan LFM2 y LFM2.5:
 
 - **Privacidad.** Procesar correos, notas o documentos médicos sin que salgan del equipo.
-- **Agentes locales.** LFM2.5 está entrenado para llamar a herramientas, así que puede automatizar tareas en el propio dispositivo.
+- **Agentes locales.** LFM2.5 está entrenado para llamar a herramientas, así que puede automatizar tareas en el propio dispositivo sin pasar por la nube.
 - **Extracción y RAG en el borde.** Resumir o estructurar texto en equipos con pocos recursos.
-- **Multimodal pequeño.** Hay variantes de visión y de audio para dispositivos con poca memoria.
+- **Multimodal pequeño.** Hay variantes de visión y de audio.
 
 Si te interesa montar este tipo de agentes, por ejemplo con LFM2.5-2.6B y sus 131.072 tokens de contexto, el planteamiento general lo cuento en [mi artículo sobre agentes autónomos](/blog/es/la-revolucion-de-los-agentes-autonomos-en-la-inteligencia-artificial-estas-preparado/).
 
@@ -75,7 +75,7 @@ Si te interesa montar este tipo de agentes, por ejemplo con LFM2.5-2.6B y sus 13
 
 Los LFM de 2024 eran cerrados: Liquid AI dijo expresamente que no iba a publicar los pesos. Desde LFM2, en julio de 2025, los pesos son abiertos en Hugging Face, pero con una licencia propia que pone un límite a las empresas grandes, así que no es una licencia de código abierto en sentido estricto.
 
-La licencia se llama **LFM Open License v1.0** y está basada en Apache 2.0. Permite usar, modificar y redistribuir los modelos, también con fines comerciales, a organizaciones con menos de **10 millones de dólares** de facturación anual. Las que superan esa cifra necesitan un acuerdo comercial con Liquid AI. Para un desarrollador independiente o una startup pequeña, en la práctica es como una licencia abierta; para un equipo legal de una gran empresa, hay que leerla con calma.
+La licencia se llama **LFM Open License v1.0** y está basada en Apache 2.0. Permite usar, modificar y redistribuir los modelos, también con fines comerciales, a organizaciones con menos de **10 millones de dólares** de facturación anual; las que superan esa cifra necesitan un acuerdo comercial con Liquid AI. Para un desarrollador independiente o una startup pequeña es, en la práctica, una licencia abierta. Una gran empresa tendrá que leerla con calma.
 
 Quien no quiera ejecutarlos en local puede usar la API de Liquid. El modelo LFM2.5-24B-A2B cuesta 0,10 $ por millón de tokens de entrada y 1 $ por millón de salida, según el [anuncio del modelo](https://www.liquid.ai/blog/lfm2-5-24b-a2b).
 
@@ -84,9 +84,9 @@ Quien no quiera ejecutarlos en local puede usar la API de Liquid. El modelo LFM2
 Las limitaciones de los LFM son las de cualquier modelo pequeño, más alguna propia. No compiten con los modelos grandes en razonamiento complejo ni en programación, la licencia no es libre para empresas grandes y las cifras de rendimiento que se citan casi siempre vienen de la propia Liquid AI.
 
 - **Techo de capacidad.** En GPQA Diamond o SWE-Bench Verified, LFM2.5-24B-A2B queda por debajo de modelos como Qwen3.6-35B-A3B, según los propios datos de Liquid.
-- **Benchmarks propios.** Muchas comparativas de velocidad y calidad las publica la empresa; conviene medir en tu caso.
-- **Ecosistema.** Aunque hay soporte en llama.cpp, MLX, vLLM, SGLang y ONNX, las arquitecturas no estándar a veces tardan más en tener soporte completo en otras herramientas.
-- **Idiomas.** LFM2.5-1.2B-Instruct cubre ocho idiomas, entre ellos el español, pero no todos los de un modelo grande.
+- **Benchmarks propios.** Muchas comparativas de velocidad y calidad las publica la empresa. Mide en tu caso.
+- **Ecosistema.** Hay soporte en llama.cpp, MLX, vLLM, SGLang y ONNX, aunque las arquitecturas no estándar a veces tardan más en tener soporte completo en otras herramientas.
+- **Idiomas.** LFM2.5-1.2B-Instruct cubre ocho idiomas, entre ellos el español. No todos los de un modelo grande.
 
 ## Qué ha pasado desde entonces
 
@@ -95,8 +95,8 @@ Desde el anuncio de 2024, Liquid AI ha pasado de modelos cerrados a una familia 
 - **13 de diciembre de 2024.** [Ronda de 250 millones de dólares](https://www.liquid.ai/blog/we-raised-250m-to-scale-capable-and-efficient-general-purpose-ai) liderada por AMD Ventures, según [TechCrunch](https://techcrunch.com/2024/12/20/heres-the-full-list-of-49-us-ai-startups-that-have-raised-100m-or-more-in-2024/), con un acuerdo para entrenar y desplegar los modelos en GPU AMD Instinct.
 - **10 de julio de 2025.** [LFM2](https://www.liquid.ai/blog/liquid-foundation-models-v2-our-second-series-of-generative-ai-models): modelos de 350, 700 y 1.200 millones de parámetros, entrenados con 10 billones de tokens, con pesos abiertos y el doble de velocidad que Qwen3 en CPU según la empresa.
 - **5 de enero de 2026.** Ramin Hasani presenta LFM2.5 en la conferencia inaugural del CES junto a Lisa Su, de AMD. El preentrenamiento sube a 28 billones de tokens y llegan variantes base, instruct, japonesa, de visión y de audio.
-- **20 de enero de 2026.** LFM2.5-1.2B-Thinking, un modelo que razona y cabe en menos de 1 GB de memoria en un móvil. La familia LFM2 supera los 10 millones de descargas en Hugging Face.
-- **24 de febrero de 2026.** LFM2-24B-A2B, su primer modelo grande abierto: 24.000 millones de parámetros, 2.000 millones activos.
+- **20 de enero de 2026.** LFM2.5-1.2B-Thinking. Razona y cabe en menos de 1 GB de memoria en un móvil. La familia LFM2 supera los 10 millones de descargas en Hugging Face.
+- **24 de febrero de 2026.** LFM2-24B-A2B, su primer modelo grande abierto. Tiene 24.000 millones de parámetros y 2.000 millones activos.
 - **4 de agosto de 2026.** [LFM2.5-2.6B](https://www.liquid.ai/blog/lfm2-5-2-6b), pensado para agentes, con 131.072 tokens de contexto y llamadas a herramientas nativas, según su [ficha en Hugging Face](https://huggingface.co/LiquidAI/LFM2.5-2.6B).
 - **13 de octubre de 2026.** LFM2.5-24B-A2B, el último y mayor modelo de la familia LFM2.5: solo razonamiento, 131.072 tokens de contexto y 184 tokens por segundo en un Apple M5 Max según Liquid.
 

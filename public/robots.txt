@@ -1,4 +1,7 @@
+# Preferencias de uso del contenido (https://contentsignals.org/)
+# search: aparecer en buscadores · ai-input: usarse como fuente en respuestas de IA
 User-agent: *
+Content-Signal: search=yes, ai-input=yes
 Allow: /
 
 Sitemap: https://marcmayol.com/sitemap-index.xml

@@ -68,10 +68,12 @@ const home = lang === 'es' ? '/' : '/en/';
 	.mm-lang-btn[data-active="1"]{background:var(--mm-ink);color:var(--mm-on-ink)}
 	@media (max-width:760px){
 		/* Apilado ocupa demasiado alto para dejarlo fijo: en móvil se queda quieto. */
-		.mm-header{flex-direction:column;gap:var(--space-xs);padding:var(--space-xs) var(--space-sm);position:static}
-		.mm-nav{flex-wrap:wrap;justify-content:center}
+		.mm-header{flex-direction:column;gap:0;padding:0 var(--space-2xs);position:static}
+		.mm-nav{flex-wrap:wrap;justify-content:center;row-gap:var(--space-3xs)}
+		.mm-navlink{padding:0 var(--space-xs)}
+		.mm-lang{margin-left:var(--space-3xs)}
 		/* Objetivos táctiles de 44 px como mínimo */
 		.mm-logo,.mm-navlink,.mm-lang-btn{display:inline-flex;align-items:center;min-height:44px}
-		.mm-lang-btn{min-width:44px;justify-content:center}
+		.mm-lang-btn{min-width:40px;justify-content:center}
 	}
 </style>

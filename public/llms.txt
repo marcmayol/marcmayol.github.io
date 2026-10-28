@@ -2,25 +2,29 @@
 
 > Sitio personal de Marc Mayol, ingeniero de inteligencia artificial y profesor. El contenido se centra en el desarrollo de agentes de IA, la ingeniería aplicada a la inteligencia artificial y la reflexión sobre su impacto en la empresa y la sociedad.
 
-Marc Mayol combina divulgación, investigación y desarrollo práctico de soluciones basadas en IA. En su web comparte artículos, guías y proyectos enfocados en cómo la inteligencia artificial —especialmente los agentes— puede integrarse de forma efectiva y ética en entornos reales.
+Marc Mayol combina divulgación, investigación y desarrollo práctico de soluciones basadas en IA. En su web comparte artículos, guías y proyectos sobre cómo la inteligencia artificial, y en especial los agentes, puede integrarse de forma efectiva y ética en entornos reales.
 
 El sitio está diseñado para ser claro y accesible, manteniendo un equilibrio entre precisión técnica y lenguaje divulgativo. Los artículos se escriben en español de España, muchos tienen versión en inglés, y evitan tecnicismos innecesarios.
 
 ## Contenidos principales
 
-- [Artículos sobre IA y agentes](https://marcmayol.com/blog/es/): Análisis y reflexiones sobre el papel de la inteligencia artificial en la empresa y la tecnología actual.
+- [Artículos sobre IA y agentes](https://marcmayol.com/blog/es/): Artículos sobre LLM en producción, RAG, agentes, observabilidad e IA on-device.
 - [Sobre Marc Mayol](https://marcmayol.com/about/es/): Información sobre su perfil profesional, experiencia docente y trayectoria como ingeniero de IA.
 - [Contacto](https://marcmayol.com/contacto/es/): Formulario para pedir consultoría, charlas o formación in-company. Respondo en menos de 48 horas.
-- [Blog in English](https://marcmayol.com/blog/en/): Versión en inglés de los artículos.
+- [Blog in English](https://marcmayol.com/blog/en/): Los artículos traducidos al inglés, como la guía para ejecutar un LLM en local.
 
 ## Artículos destacados
 
-- [MCP vs Claude Skills](https://marcmayol.com/blog/es/mcp-vs-skills/): Qué es cada uno, en qué se diferencian y cuándo usar cuál.
+- [Ejecutar un LLM en local](https://marcmayol.com/blog/es/ejecutar-llm-en-local-guia-ia-on-device/): Cuándo compensa ejecutar un LLM en tu PC o en el móvil, cómo elegir modelo y cuantización, y dónde están los límites.
+- [Gemma en Android](https://marcmayol.com/blog/es/gemma-en-android-llm-on-device/): Exportar Gemma a .litertlm, integrarlo en una app Android y el rendimiento real en un Pixel 8 Pro.
+- [Observabilidad de LLM](https://marcmayol.com/blog/es/observabilidad-llm-comparativa-herramientas/): Langfuse, Opik, LangSmith, Phoenix, Helicone y MLflow comparados: licencia, autoalojamiento, precio y evaluación.
+- [Chunking en RAG](https://marcmayol.com/blog/es/chunking-en-rag-estrategias/): Estrategias de troceado para RAG, de tamaño fijo a semántico, con solapamiento y cómo medir cuál funciona.
+- [MCP vs Claude Skills](https://marcmayol.com/blog/es/mcp-vs-skills/): MCP y Agent Skills de Anthropic: diferencias, una tabla comparativa y ejemplos de SKILL.md.
 - [Shadow AI](https://marcmayol.com/blog/es/shadow_ai/): Riesgos del uso de IA sin autorización en la empresa y cómo gestionarlo.
 - [Arquitectura hexagonal y LLMs](https://marcmayol.com/blog/es/arquitectura-hexagonal-y-llms/): Aplicaciones con LLM que cambian de modelo sin reescribir el núcleo.
 - [Chonkie y Docling](https://marcmayol.com/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-rag/): Procesado de documentos para pipelines RAG.
 - [Langfuse](https://marcmayol.com/blog/es/langfuse_la_plataforma_definitiva_de_observabilidad_para_llm_en_2025/): Observabilidad open source para LLM.
-- [Exercise API](https://marcmayol.com/blog/es/exercise-api-base-de-datos-abierta-de-ejercicios/): API abierta y gratuita de ejercicios de gimnasio.
+- [Exercise API](https://marcmayol.com/blog/es/exercise-api-base-de-datos-abierta-de-ejercicios/): API abierta y gratuita con más de 100 ejercicios de gimnasio, en español e inglés.
 
 ## Recursos externos
 

@@ -5,7 +5,7 @@ pubDate: "Oct 28, 2026"
 heroImage: "/gemma-en-android.png"
 customURL: "/blog/en/gemma-on-android-on-device-llm/"
 faqs:
-  - pregunta: "¿Qué es un archivo .litertlm?"
+  - pregunta: "¿Qué es el formato .litertlm de Google?"
     respuesta: >
         Es el formato de LiteRT-LM, el runtime de Google para ejecutar LLMs en el dispositivo. Un solo fichero. Dentro van los pesos cuantizados, el tokenizer y, si el modelo es multimodal, el codificador de visión. Google publica modelos Gemma ya convertidos en Hugging Face, en la organización litert-community.
 
@@ -32,13 +32,13 @@ Cuando busqué cómo hacerlo, todo lo que encontraba estaba en inglés y casi na
 
 Necesitas tres cosas: un modelo Gemma en formato `.litertlm`, un runtime en la app que lo cargue (LiteRT-LM, o MediaPipe LLM Inference, que es el que usé yo) y un móvil Android arm64 con al menos 6 GB de RAM. Si no vas a fine-tunear, descarga el modelo ya convertido por Google y te ahorras la parte difícil.
 
-Las piezas, en orden:
+Las tres piezas de Gemma en Android, en orden:
 
 - **El modelo.** Google publica Gemma ya convertido en Hugging Face, en [litert-community](https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm). El de Gemma 4 E2B pesa unos 2,6 GB.
 - **El runtime.** Yo usé MediaPipe `tasks-genai` (versiones 0.10.29 a 0.10.35). Hoy Google empuja [LiteRT-LM](https://developers.google.com/edge/litert-lm/android), con API de Kotlin y soporte para CPU, GPU y NPU.
-- **El dispositivo.** arm64, 6 GB de RAM o más, y espacio para el modelo, que no va dentro del APK.
+- **El dispositivo.** arm64 y 6 GB de RAM o más. También espacio para el modelo, que no va dentro del APK.
 
-Mi recomendación: si el modelo oficial te sirve, úsalo. El oficial de Gemma 3n E2B en int4 identificaba comida en mi Pixel sin tocar nada. Lo que viene en la siguiente sección solo hace falta si has entrenado tu propia versión.
+Mi recomendación es simple. Si el modelo oficial te sirve, úsalo: el de Gemma 3n E2B en int4 identificaba comida en mi Pixel sin tocar nada. Lo que viene en la siguiente sección solo hace falta si has entrenado tu propia versión.
 
 ## ¿Cómo exporto Gemma al formato .litertlm?
 
@@ -57,12 +57,12 @@ Un detalle de `uv`: usa enlaces duros. Si reutilizas un entorno, reinstala con `
 
 **Memoria.** El paso que crea el módulo MLIR con un modelo de unos 11 GB se quedaba sin memoria con 31 GB de RAM y WSL lo mataba con un `Killed`. Lo arreglé dando a WSL 28 GB y 72 GB de swap en `.wslconfig`, y reiniciando con `wsl --shutdown`.
 
-**Dos ficheros que tienen que estar en la carpeta del modelo:**
+**Dos ficheros que tienen que estar en la carpeta del modelo de Gemma 3n:**
 
 1. `tokenizer.model` (SentencePiece, unos 4,7 MB). El tokenizer rápido de Gemma 3n solo trae `tokenizer.json`, y entonces MediaPipe falla con `SentencePiece tokenizer is not found in the model`. Descárgalo de `google/gemma-3n-E2B-it`.
 2. `special_tokens_map.json` con `eoi_token`. Si falta, el export peta con `KeyError: 'eoi_token'`. Cópialo del modelo base.
 
-Y el comando:
+Y el comando para exportar Gemma 3n con visión:
 
 ```bash
 litert-torch export_hf /ruta/merged_gemma3n /out \
@@ -83,7 +83,7 @@ Tarda unos 30 minutos y sale un `model.litertlm` de unos 2,7 GB con visión. Ojo
 
 ## ¿Cómo integro el modelo en la app?
 
-Copia el `.litertlm` a la carpeta externa de la app, nunca a `/data/local/tmp`, y cárgalo con el runtime desde un hilo en segundo plano. Con MediaPipe, el backend de GPU me cerraba la app, así que forcé CPU. Deja `maxTokens` en 1024 como mínimo, porque solo la imagen ya consume unos 258 tokens.
+Copia el `.litertlm` a la carpeta externa de la app, nunca a `/data/local/tmp`, y cárgalo con el runtime desde un hilo en segundo plano. Con MediaPipe, el backend de GPU me cerraba la app. Forcé CPU. Deja `maxTokens` en 1024 como mínimo, porque solo la imagen ya consume unos 258 tokens.
 
 El modelo no cabe en el APK. Durante el desarrollo lo subo con `adb push` a `Android/data/<paquete>/files/`, que es la carpeta que devuelve `getExternalFilesDir`. La app la lee sin permisos especiales. Desde `/data/local/tmp` la app no puede leerlo y falla sin avisar claro.
 
@@ -97,7 +97,7 @@ LlmInference.LlmInferenceOptions.builder()
     ...
 ```
 
-Tres cosas que me encontré:
+Tres problemas que me encontré en el Pixel 8 Pro:
 
 - **La GPU cascaba** con un SIGSEGV al crear el ejecutor de OpenCL. En CPU iba estable.
 - **El modelo repetía el JSON en bucle.** Lo resolví parseando con una expresión regular y quitando duplicados, en vez de esperar un JSON limpio.
@@ -140,7 +140,7 @@ Conclusión: el fine-tuning en bf16 funcionaba. Desplegar Gemma 3n multimodal co
 
 ## ¿Con qué me quedé al final?
 
-Para Balùa acabé cambiando de modelo y de runtime: Qwen2.5-VL de 3B en GGUF, con llama.cpp y GPU por Vulkan. Esa ruta me conservó la visión del modelo fine-tuneado. Gemma, eso sí, sigue siendo buena opción si te vale el modelo oficial o si tu caso es solo texto.
+Para Balùa acabé cambiando de modelo y de runtime: Qwen2.5-VL de 3B en GGUF, con llama.cpp y GPU por Vulkan. Esa ruta sí conservó la visión. Gemma sigue siendo buena opción, eso sí, si te vale el modelo oficial o si tu caso es solo texto.
 
 Con Qwen, la carga y la primera foto en el Pixel bajaron a unos 3 minutos, frente a unos 10 en CPU, y las siguientes fotos a unos 2 min 30 s. El modelo ocupa 1,8 GB más 1,3 GB del proyector de visión.
 

@@ -1,93 +1,163 @@
 ---
 title: "MCP vs Claude Skills"
-description: "MCP versus Claude Skills: what each one is, how they differ and when to use which, with a side-by-side comparison table."
+description: "MCP or Claude Skills: what each one does, a comparison table, a sample SKILL.md and MCP server config, and when to use one, the other or both."
 pubDate: "Nov 02, 2025"
+updatedDate: "Oct 28, 2026"
 heroImage: "/skills-mcp.png"
 customURL: "/blog/es/mcp-vs-skills/"
 faqs:
-  - pregunta: "What is MCP?"
+  - pregunta: "What is the difference between MCP and a skill?"
     respuesta: >
-        It is an open protocol that allows language models to connect with tools, resources and external systems in a standardised way.
+        MCP connects Claude to external systems, such as a database, Notion or GitHub, so it can read data and act on them. A skill is a folder with a SKILL.md that teaches Claude how to do a task, with its steps, rules, templates and scripts. MCP gives access; the skill gives method.
 
-  - pregunta: "What are Anthropic Skills?"
+  - pregunta: "How do I install a skill in Claude?"
     respuesta: >
-        They are native functions of Claude that allow it to perform specific actions intelligently and seamlessly within the Anthropic ecosystem.
+        In Claude.ai you upload it as a zip from Settings > Features, with code execution turned on. In Claude Code you just drop the folder into ~/.claude/skills/ or into the project's .claude/skills/. On the API you upload it through the Skills API and use it alongside the code execution tool. The three don't sync with each other.
 
-  - pregunta: "If I only work with Claude, which is better, MCP or Skills?"
+  - pregunta: "Can I use Skills outside Claude?"
     respuesta: >
-        Skills, because they offer more automatic integration, greater ease of use and a better experience for the end user.
+        Yes. Since December 2025 the format has been an open standard (agentskills.io), and more than 70 platforms read it, including ChatGPT, Cursor, GitHub Copilot and VS Code. On 22 October 2026 Anthropic donated it to the Agentic AI Foundation, the same foundation that looks after MCP.
 
-  - pregunta: "Can I use Skills outside the Claude ecosystem?"
+  - pregunta: "Does a skill replace an MCP server?"
     respuesta: >
-        Not yet. Currently, they only work within the Anthropic platform.
+        No. If Claude needs data it doesn't have, or has to act on an external service, you need MCP. If what it lacks is knowing how you do a task, a skill is enough. Most real workflows use both: the skill says which MCP tools to call and in what order.
 
-  - pregunta: "Could Skills become a standard like MCP?"
+  - pregunta: "How much context does a skill use?"
     respuesta: >
-        Yes. Just as MCP started as something minor and is now widely adopted, Skills could become a future standard if Anthropic opens them up and the community adopts them.
+        While idle, around 100 tokens: just its name and description. The full SKILL.md enters the context when a request matches, and any bundled scripts run without their code being loaded. That's why you can install plenty of them without noticing.
+
 ---
 
-Anthropic, the company behind Claude, recently introduced Anthropic Skills, a new way to extend the assistant’s capabilities so that it can interact with data, tools and services natively and more intelligently. And although today they only work within the Claude ecosystem, they are already attracting a lot of attention.
+When I published this article in November 2025, Anthropic's Skills had just come out and only worked inside Claude. A year later a lot has changed: the format is an open standard, more than 70 platforms use it and, since 22 October 2026, it lives in the same foundation as MCP. So I've rewritten almost all of it.
 
-I wrote this article because many people have asked me what the difference is between MCP and Skills. It is understandable that there is confusion: both concepts allow you to extend what Claude can do, but each achieves it in a different way.
+The question I get most is still the same. Do I build an MCP server or write a skill? They solve different problems and, in practice, you almost always end up using both, so the long answer is this article, with examples you can copy as they are.
 
-My goal here is very clear: to explain what MCP is, what Skills are and to compare them accurately and simply so that you can choose the option that best suits your work.
+## The difference in two lines
 
+MCP gives Claude access to things: a database, Notion, GitHub or a 3D printer. A skill teaches it how to do something: the steps, rules and scripts for a specific task.
 
-### What is MCP?
+This is how I put it: MCP is the hands and the skill is the manual. Hands without a manual get things done, just not the way you want, and a manual without hands can't touch anything that isn't already on the table. You need both.
 
-MCP is an open protocol that allows language models to connect with tools and external systems in a standard way. It is a more universal technology designed to work with different models (not only Claude).
+## What MCP is
 
-**Main advantage**: interoperability with other models and providers.
+MCP (Model Context Protocol) is an open protocol for connecting language models to external tools and data. It uses JSON-RPC messages between a client and a server. The application (Claude, Cursor, VS Code, ChatGPT…) acts as the client, and each MCP server offers three things: tools the model can run, resources with data and prompts with templates.
 
+The current specification is dated 28 July 2026. Since December 2025 the protocol has belonged to the Agentic AI Foundation, a directed fund of the Linux Foundation that Anthropic set up with OpenAI and Block. The community maintains it and almost every major client supports it.
 
-### What are Claude Skills?
+In Claude Code, you configure a server with a `.mcp.json` file at the project root. That file goes into the repository, so the whole team uses the same servers:
 
-They are functions designed exclusively for Claude, which are integrated directly into its platform and activated intelligently according to what the user needs.
+```json
+{
+  "mcpServers": {
+    "files": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./reports"]
+    },
+    "notion": {
+      "type": "http",
+      "url": "https://mcp.notion.com/mcp"
+    }
+  }
+}
+```
 
-**Main advantage**: maximum integration and ease if you only work within the Claude ecosystem.
+You can also do it from the terminal:
 
+```bash
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+claude mcp add --scope project files -- npx -y @modelcontextprotocol/server-filesystem ./reports
+```
 
+The first server runs on your machine as a local process (stdio) and gives access to a folder. The second one is remote and works over HTTP. That's what sets MCP apart: the server holds the credentials, keeps the connection open and decides what the model is allowed to do.
 
-## Quick comparison: MCP vs Anthropic Skills
+## What a skill is
 
-| Aspect                          | MCP                               | Anthropic Skills            |
-| -------------------------------- | --------------------------------- | --------------------------- |
-| Nature                           | Open standard protocol            | Native functions of Claude  |
-| Integration with Claude          | Medium                            | Optimal                     |
-| User experience                  | Less fluid                        | Very natural and automatic  |
-| Setup                            | Requires server and maintenance   | Very simple                 |
-| Security                         | Depends on the developer          | Managed by Anthropic        |
-| Vendor dependency                | Low                               | High                        |
-| Compatibility with other models  | Yes                               | No                          |
+A skill is a folder with a `SKILL.md` file. At the top go the `name` and `description` in YAML frontmatter. Below them, the instructions in Markdown. It can carry more files, such as reference guides, templates or scripts, and Claude runs those scripts without putting their code into the context.
 
+It works through progressive disclosure. At startup, Claude only reads each skill's name and description, around 100 tokens apiece. When your request matches a description, it reads the whole `SKILL.md`. If the instructions point to another file or a script, it opens or runs it at that moment. You can have dozens installed without paying for them on every message.
 
+Here is a complete example for analysing sales from a spreadsheet:
 
-## Practical example: analysing an Excel sales file
+```markdown
+---
+name: sales-report
+description: Analyses Excel or CSV sales files and produces a report with totals by month, product and sales rep, plus a trend chart. Use it when the user uploads sales data or asks for a sales report, summary or comparison.
+---
 
-Imagine that a user uploads an Excel file and requests a sales analysis.
+# Sales report
 
-**With MCP**: you have to tell Claude when to use each tool, manage the server and control the entire workflow manually.
+## Steps
+1. Load the file with pandas. If it has several sheets, ask which one to use.
+2. Run `python scripts/clean.py <file>` to normalise dates and amounts.
+3. Compute totals by month, by product and by sales rep.
+4. If there is data from the previous year, compare each month with the same month back then.
+5. Build the chart with `python scripts/chart.py` and save it as a PNG.
 
-**With Anthropic Skills**: Claude automatically detects what it should do, executes the correct skill and returns the result directly and smoothly.
+## Rules
+- Amounts in euros with two decimals.
+- If a column is missing more than 5% of its values, flag it before drawing conclusions.
+- Follow the format in [TEMPLATE.md](TEMPLATE.md).
+```
 
-The user barely notices that an external tool has been used.
+Two rules worth knowing. The `name` can be up to 64 characters of lowercase letters, numbers and hyphens, and it can't contain "claude" or "anthropic". The `description` has a 1,024-character limit and must say what the skill does and when to use it. It's the only thing Claude reads to decide whether to load the skill, so a vague description means a skill that never fires.
 
+## What has changed since November 2025
 
+In the first version I wrote that Skills only worked in Claude and might one day become a standard. That happened, and faster than I expected:
+
+* **December 2025.** Anthropic publishes the format as an open standard at [agentskills.io](https://agentskills.io), with the specification on GitHub.
+* **Adoption.** According to [Anthropic's announcement](https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation), more than 70 platforms have integrated it, including ChatGPT, Cursor, GitHub Copilot and VS Code. There are a million published skills and around 280 million installs.
+* **22 October 2026.** Anthropic donates Agent Skills to the Agentic AI Foundation. Engineers from Anthropic, Google, OpenAI and other companies maintain it.
+* **Skills inside MCP.** In September 2026 the [MCP Skills extension](https://modelcontextprotocol.io/extensions/skills/overview) was finalised. It lets an MCP server distribute skills to clients that support it.
+
+My 2025 conclusion was "if your world is Claude, go with Skills; if you want freedom across models, go with MCP". That no longer holds: both are open standards, under the same foundation and in almost the same products.
+
+## How to install them in Claude.ai, Claude Code and the API
+
+This is where I see the most confusion, because Claude.ai, Claude Code and the API each work their own way, and a skill uploaded to one doesn't show up in the other two. Here's a summary based on the [official Agent Skills documentation](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview):
+
+* **Claude.ai.** The document skills (Word, Excel, PowerPoint and PDF) are already on. Your own are uploaded as a zip under Settings > Features, on the Pro, Max, Team and Enterprise plans and with code execution enabled. They're personal: each team member has to upload them separately.
+* **Claude Code.** Nothing to upload. You put the folder in `~/.claude/skills/` to have it in all your projects, or in `.claude/skills/` to share it with the repository. You can also ship them inside a plugin. Here skills have the same network access as any other program on your computer.
+* **API.** You upload them through the Skills API (`/v1/skills`) and use them by passing their `skill_id` in the `container` parameter, together with the code execution tool. The whole workspace shares them, but they run with no internet access and can't install packages.
+
+## Comparison table
+
+| Aspect | MCP | Agent Skills |
+| --- | --- | --- |
+| What it adds | Access to external systems: data and actions | Procedural knowledge: how a task is done |
+| Format | A server speaking JSON-RPC over stdio or HTTP | A folder with `SKILL.md` and optional files or scripts |
+| Coding required | Yes, unless you use a ready-made server | Not to get started: it's Markdown |
+| Context when idle | The definition of each tool | Around 100 tokens per skill |
+| How it's triggered | Claude calls a specific tool | Claude loads it when the request matches the `description` |
+| Credentials and state | Handled by the server | None; it uses whatever the environment has |
+| Network access | It's the whole point | Yes in Claude Code; no on the API |
+| Where it works | Claude, ChatGPT, Cursor, Gemini, Copilot, VS Code… | 70+ platforms, including Claude, ChatGPT, Cursor, Copilot and VS Code |
+| Who governs it | Agentic AI Foundation (since December 2025) | Agentic AI Foundation (since October 2026) |
+| Main risk | Tools acting with your permissions | Malicious instructions or scripts: review them before installing |
+
+## When to use each one
+
+Before deciding I ask myself one question: does Claude lack access, or does it lack know-how?
+
+**Use MCP** when the data isn't in Claude's environment: an API, a database or a SaaS product. Also when you need authentication, when the same integration has to serve several clients, or when you want Claude to act on a real system, like opening a ticket or sending a job to the printer.
+
+**Use a skill** when Claude already knows how to do the task, just not your way. Think of your report format, a repository's commit conventions or the checklist you run before publishing a post. Steps that must come out identical every time? Script. Normalising the dates in a spreadsheet, for example, is better as a script inside the skill than asking Claude to do it by hand each time, and long documentation, like the schema of a database with 40 tables, goes in a separate file so it's only read when needed.
+
+There's a mistake I see often: building an MCP server for something that is just a procedure, or stuffing paragraphs of instructions into an MCP tool description. If there's nothing to connect to, a skill is cheaper to write and to maintain.
+
+## When to combine them
+
+Back to the sales spreadsheet. If the user uploads the file, the skill is enough. If the data sits in a database or in Google Drive, you need an MCP server to fetch it. The skill is still there to say how to clean it, what to calculate and how to present the report. It can even say which MCP tool to use at each step.
+
+That's how I do it in my [Claude Code plugin for Creality Print](https://github.com/marcmayol/claude-code-creality-print-plugin). The MCP tools talk to the slicer and the printer, and the skill explains in which order to use them and what to check before sending a print. Each falls short on its own: with only the tools, Claude improvises the order; with only the skill, it can't touch the printer.
+
+Claude Code plugins exist for exactly this: they bundle skills, MCP servers and commands into a single install. And with the MCP Skills extension, a server can bring its own skills, so the line between the two pieces matters less and less to whoever installs them.
 
 ## Conclusion
 
-If you work **100 percent with Claude**, Anthropic Skills are the best choice. They offer you:
+If you ask me today which one to pick, the answer depends on what's missing. For access, MCP. For knowledge, a skill. In almost any serious project you'll end up with both: MCP servers to connect Claude to your systems and skills so it works the way you do.
 
-* Less technical complexity
-* Greater security
-* Better user experience
-* Ready-to-use multimodal flows, with no extra setup
-
-However, MCP is ideal if you need to connect your system to **other models**, maintain vendor independence or work with a more open architecture.
-
-Moreover, although today Skills only work within the Claude ecosystem, my view is that they have great potential to become a future standard. MCP started as a curiosity and is now the reference point for function connectivity. Skills could follow the same path if Anthropic decides to open it and the community adopts it.
-
-In short, if your world is Claude, choose Skills. If you seek freedom across models, MCP is your ally. And keep an eye on Skills, as they could be the next major standard.
+The good news is that neither one locks you into a vendor any more. A well-written `SKILL.md` works the same in Claude Code, Copilot or Cursor, and an MCP server serves all of them.
 
 import FAQ from '../../../components/FAQ.astro'
 

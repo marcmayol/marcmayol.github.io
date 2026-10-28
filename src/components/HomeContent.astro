@@ -93,6 +93,7 @@ const marquee = [...marqueeItems[lang], ...marqueeItems[lang]];
 				</a>
 			))}
 		</div>
+		<p class="mm-talks-more"><a href={lang === 'es' ? '/blog/es/jsconf-espana-2026/' : '/blog/en/jsconf-spain-2026/'}>{t('home.talksblog')} →</a></p>
 	</section>
 
 	<!-- NEWSLETTER + BLOG -->
@@ -181,6 +182,9 @@ const marquee = [...marqueeItems[lang], ...marqueeItems[lang]];
 	.mm-talks{padding:var(--space-2xl) var(--mm-pad-x);border-bottom:var(--mm-border) solid var(--mm-ink);scroll-margin-top:96px}
 	.mm-talks-intro{font-family:var(--mm-font-mono);font-size:var(--text-sm);color:var(--mm-body);max-width:620px;margin:0 0 var(--space-md);line-height:1.6}
 	.mm-talks-list{font-family:var(--mm-font-mono)}
+	.mm-talks-more{font-family:var(--mm-font-mono);font-size:var(--text-sm);margin:var(--space-md) 0 0}
+	.mm-talks-more a{color:var(--mm-accent-ink);font-weight:700;text-decoration:none}
+	.mm-talks-more a:hover{text-decoration:underline}
 	.mm-talk{
 		text-decoration:none;color:var(--mm-ink);display:flex;justify-content:space-between;align-items:center;gap:var(--space-sm);
 		padding:var(--space-sm) 0;border-top:var(--mm-hair) solid var(--mm-rule);

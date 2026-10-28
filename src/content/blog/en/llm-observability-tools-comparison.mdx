@@ -1,0 +1,176 @@
+---
+title: "LLM observability: comparing Langfuse, Opik, LangSmith, Phoenix and more"
+description: "A neutral comparison of LLM observability tools: Langfuse, Opik, LangSmith, Phoenix, Helicone and MLflow. Licence, pricing, tracing and evaluation."
+pubDate: "Oct 28, 2026"
+heroImage: "/llm-observability.png"
+customURL: "/blog/es/observabilidad-llm-comparativa-herramientas/"
+faqs:
+  - pregunta: "Which LLM observability tool is best?"
+    respuesta: >
+        It depends on your constraints. To self-host under an open licence, Langfuse (MIT) or Opik (Apache 2.0). If all your code lives in LangChain and LangGraph, LangSmith plugs in with a couple of environment variables. If your team already logs models in MLflow, its tracing saves you another piece. And to see requests and cost in five minutes, by changing only the base URL, Helicone.
+
+  - pregunta: "Which LLM observability tools can be self-hosted for free?"
+    respuesta: >
+        Langfuse (MIT except the ee folders), Opik (Apache 2.0), MLflow (Apache 2.0) and Helicone (Apache 2.0) publish their code and deploy with Docker. Phoenix can be self-hosted too, but its licence is the Elastic License 2.0. LangSmith only offers self-hosting on the Enterprise plan.
+
+  - pregunta: "What metrics should you track in an LLM application?"
+    respuesta: >
+        Four at least. Latency per step and end to end, looking at p50 and p95. Cost per request, which comes from input and output tokens multiplied by the model price. Quality, with an LLM judge or user feedback. And faithfulness to the context, which is how you catch hallucinations in RAG. With agents, add errors, retries and tool calls.
+
+  - pregunta: "Can I switch observability tools without rewriting my code?"
+    respuesta: >
+        Yes, if you instrument with OpenTelemetry. Langfuse, Opik, LangSmith, Phoenix and MLflow accept OTLP traces, so changing destination means changing the exporter endpoint and headers. What doesn't migrate as easily are datasets, versioned prompts and stored evaluations.
+---
+
+Search for "LLM observability tools" and almost everything you find is written by someone selling one. That's normal, but it makes deciding hard. In this article I compare the six options with the most weight in 2026 using the same criteria for all of them: licence, whether you can self-host, starting price, integrations, evaluation and tracing.
+
+I checked every price and licence on each project's official site on 28 October 2026, and I link the source in each case. If a fact didn't appear in an official source, I left it out. Prices change often, so check them again before you sign anything.
+
+## What is LLM observability and how is it different from classic monitoring?
+
+Observing an LLM means storing every call with its context: prompt, response, model, tokens, cost, latency and the agent's intermediate steps. A classic APM tells you a request took 3 seconds; an LLM observability tool tells you which node was slow, what context it received and whether the answer was right.
+
+The difference is that an LLM failure isn't always an error. The request returns 200, the JSON is valid and the answer makes up a returns policy. Prometheus can't see that. You need to store the content, be able to search it and evaluate it, with an LLM judge or with people.
+
+That's why Langfuse, Opik, LangSmith, Phoenix and MLflow look so alike under the hood. They all store **traces**, the tree of steps for each run, and they all let you score them with **evaluators**. Almost all of them version **prompts**. Where they really differ is the licence, where your data lives and how much effort it takes to wire them into your code.
+
+## What should you measure in an LLM application?
+
+Measure four things from day one. Latency, cost, quality and hallucinations. The first two come straight out of the traces if you record tokens and timings; the other two need evaluators, because an HTTP 200 won't tell you the answer invented a fact.
+
+| Metric | What to record | How you get it |
+|---|---|---|
+| Latency | Total time, time to first token and duration of each step | Automatic in traces |
+| Cost | Input and output tokens per call, multiplied by the model price | Automatic if the SDK reports tokens |
+| Quality | Relevance, correctness, format compliance | LLM judge, rules or user feedback |
+| Hallucinations | Whether the answer is grounded in the retrieved context | LLM judge with the context as reference |
+| Errors | Exceptions, retries, timeouts, failed tool calls | Automatic in traces |
+
+For latency, look at percentiles, not the mean. A p95 of 12 seconds with a mean of 2 means a few requests are hanging, almost always at one specific step of the agent. For cost, group it by user or by feature: the monthly total doesn't tell you which part of the app is eating it.
+
+Hallucinations are the hardest thing to measure. And the most useful. In RAG, the practical question is a single one: does the answer follow from the retrieved context? An LLM judge that receives question, context and answer can score it automatically, as Opik's `Hallucination` metric does. It gets it wrong sometimes, but it catches regressions as soon as you change the prompt or the model.
+
+## Which tools are there in 2026 and how do they compare?
+
+The six with the most traction are Langfuse, Opik, LangSmith, Arize Phoenix, Helicone and MLflow. Four are MIT or Apache 2.0. Phoenix uses the Elastic License 2.0 and LangSmith is closed source. Almost all of them now accept OpenTelemetry traces, which greatly reduces the risk of getting locked into a single tool as your application grows.
+
+| Tool | Licence | Self-hostable | Free cloud plan | Paid from | Integration | Evaluation | Tracing |
+|---|---|---|---|---|---|---|---|
+| [Langfuse](https://langfuse.com/pricing) | MIT, except `ee` folders | Yes: Docker Compose, Helm, Terraform | 50,000 units/month, 30 days | $29/month (Core) | Python and JS/TS SDKs, LangChain, LlamaIndex, LiteLLM, Vercel AI SDK | LLM as judge, datasets, manual annotation | Yes, also via OTLP |
+| [Opik](https://www.comet.com/site/pricing/) | Apache 2.0 | Yes: Docker Compose, Helm | 25,000 spans/month, 60 days | $19/month (Pro) | OpenAI, Anthropic, LangChain, LangGraph, LlamaIndex, CrewAI, DSPy | Hallucination, answer relevance, moderation, context precision | Yes, also via OTLP |
+| [LangSmith](https://www.langchain.com/pricing) | Proprietary | Enterprise only | 5,000 traces/month, 1 seat, 14 days | $39/seat/month (Plus) | Native LangChain and LangGraph, OpenAI, Anthropic, CrewAI, Pydantic AI | Datasets and online evaluations | Yes, also via OTLP |
+| [Arize Phoenix](https://github.com/Arize-ai/phoenix) | Elastic License 2.0 | Yes: local, Docker, Kubernetes | Arize AX Free: 25,000 spans/month, 15 days | $50/month ([Arize AX Pro](https://arize.com/pricing/)) | OpenTelemetry and OpenInference | Response and retrieval evals | Yes, native OpenTelemetry |
+| [Helicone](https://www.helicone.ai/pricing) | Apache 2.0 | Yes: Docker | 10,000 requests/month | $79/month (Pro) | Gateway: you change the SDK base URL | No official data | Requests through the gateway |
+| [MLflow](https://github.com/mlflow/mlflow) | Apache 2.0 | Yes | Open source, no own plan | Managed version on Databricks | Autolog for OpenAI, LangChain, LlamaIndex, DSPy, Pydantic AI | 50+ metrics and LLM judges | Yes, OpenTelemetry compatible |
+
+A few notes to read the table properly. Langfuse "units", Opik and Arize "spans" and LangSmith "traces" don't count the same thing, so the free plans can't be compared one to one. Helicone's getting-started docs say nothing about evaluations, so I don't claim anything there. And Arize's pricing page has no price for Phoenix: the $50 one belongs to its cloud platform, Arize AX.
+
+## When should you pick each tool?
+
+Choose by your constraints. On the basics the six are so similar that the feature list decides little. What matters are four things: whether data can leave your network, whether you work with LangChain, whether your team already runs MLflow and how many lines of code you're willing to touch. Once you've answered those, two candidates usually remain.
+
+### Langfuse
+
+It's the most balanced option if you want to self-host and have traces, versioned prompts, datasets and evaluations in a single console. The repository is MIT except the `ee` folders. Docker Compose is enough to try it; for production they recommend Helm. Since January 2026 it [has been part of ClickHouse](https://github.com/langfuse/langfuse), the analytics database it's built on. One detail: when self-hosted it sends basic usage statistics by default, which you turn off with `TELEMETRY_ENABLED=false`. There's a longer walkthrough in the [Langfuse article](/blog/en/langfuse_the_definitive_observability_platform_for_llms_in_2025/).
+
+### Opik
+
+Opik, from Comet, is Apache 2.0 and, according to its own repository, you can self-host the whole platform without a commercial licence. Its strong point is evaluation: it ships LLM-judge metrics such as `Hallucination`, answer relevance and context precision, plus a PyTest integration to run evaluations in CI. If what worries you most is catching quality regressions before you deploy, it's the one that handles it best out of the box. I go into more detail in the [Opik article](/blog/en/opik_your_copilot_to_master_llms_in_production/).
+
+### LangSmith
+
+If your application is built on LangChain or LangGraph, LangSmith is the path of least friction: you set a few environment variables and you see every node in the graph with its input, output and latency. It doesn't require LangChain. It [accepts OpenTelemetry traces](https://docs.langchain.com/langsmith/trace-with-opentelemetry) from any agent. The downsides are real: closed source, $39 per seat per month on Plus and self-hosting only on Enterprise. Rule it out if your data can't leave your network.
+
+### Arize Phoenix
+
+Phoenix is built on OpenTelemetry and uses OpenInference to instrument frameworks automatically, so it fits well if your team already has an OTel culture. It runs locally, in a container or on Kubernetes. Its licence, the Elastic License 2.0, lets you use it for free inside your company, but it isn't an OSI-approved licence, and that matters if your legal team only accepts MIT or Apache.
+
+### Helicone
+
+Helicone works as a gateway. You change the OpenAI SDK base URL to `https://ai-gateway.helicone.ai` and you already see requests, cost and latency, without instrumenting anything. It's the fastest route. In exchange, you only see the calls to the model, not your agent's internal steps. And a warning: on 28 October 2026 [its website](https://www.helicone.ai/) says "Helicone is no longer part of Mintlify. Details to come soon.", with no further official explanation. I'd wait to see what happens before betting on it long term.
+
+### MLflow
+
+If your data team already uses MLflow to log experiments and models, its GenAI tracing module saves you another tool. It's Apache 2.0, self-hostable, OpenTelemetry compatible and turns tracing on with one line, for example `mlflow.openai.autolog()`. It includes LLM judges and a prompt registry. Its interface is less agent-centric than Langfuse's or Opik's, but having everything in one place counts for a lot.
+
+## How do you instrument without marrying a tool?
+
+Instrument with OpenTelemetry and use the `gen_ai.*` attributes. Langfuse, Opik, LangSmith, Phoenix and MLflow accept OTLP traces, so your code depends on none of them: changing destination means changing the exporter endpoint and headers. Vendor SDKs are more convenient, but they tie you down.
+
+This example sends Langfuse a span with the model, prompt, response and tokens. It goes over [OTLP on HTTP](https://langfuse.com/docs/opentelemetry/get-started). JSON or protobuf both work, but gRPC isn't supported yet. Authentication is Basic Auth with the public and secret keys encoded in base64, as in the code below. Watch the `x-langfuse-ingestion-version: 4` header: without it, traces can take up to 10 minutes to show up.
+
+```python
+# pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http
+import base64, os, time
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+
+auth = base64.b64encode(
+    f"{os.environ['LANGFUSE_PUBLIC_KEY']}:{os.environ['LANGFUSE_SECRET_KEY']}".encode()
+).decode()
+
+exporter = OTLPSpanExporter(
+    endpoint="https://cloud.langfuse.com/api/public/otel/v1/traces",  # EU region
+    headers={"Authorization": f"Basic {auth}", "x-langfuse-ingestion-version": "4"},
+)
+provider = TracerProvider()
+provider.add_span_processor(BatchSpanProcessor(exporter))
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer("my-app")
+
+def call_model(question: str) -> str:
+    with tracer.start_as_current_span("chat") as span:
+        span.set_attribute("gen_ai.request.model", "gpt-4o-mini")
+        span.set_attribute("gen_ai.prompt", question)
+        start = time.perf_counter()
+        answer = "..."  # your real provider call goes here
+        span.set_attribute("gen_ai.completion", answer)
+        span.set_attribute("gen_ai.usage.input_tokens", 42)
+        span.set_attribute("gen_ai.usage.output_tokens", 128)
+        span.set_attribute("app.latency_ms", (time.perf_counter() - start) * 1000)
+        return answer
+
+call_model("What is the returns policy?")
+provider.shutdown()  # flush the buffer before exiting
+```
+
+If tomorrow you want to try another tool, you change `endpoint` and `headers` and the rest of the code stays the same. For a self-hosted Langfuse (from version 3.22.0), the endpoint is `http://localhost:3000/api/public/otel/v1/traces`. In practice, many teams combine both: OpenTelemetry for traces and the vendor SDK only for what the standard doesn't cover, such as versioned prompts or datasets.
+
+## How do you detect hallucinations in production?
+
+With an LLM judge. It receives the question, the retrieved context and the answer, and scores whether the answer is grounded in that context. Langfuse, Opik, Phoenix and MLflow ship ready-made evaluators of this kind. You can run them on a sample of production traces or on a fixed dataset before each deployment, and it's worth doing both.
+
+What works best is splitting two moments. Before deploying, you run a dataset of 50 or 100 questions with known answers and compare the score with the previous version; if it drops, you don't deploy. In production you evaluate part of the real traces and watch the weekly trend, because users ask things you never put in the dataset.
+
+Two cautions. The judge is an LLM too and it makes mistakes, so review a sample of its verdicts by hand now and then, especially the negative ones. And every evaluation costs tokens: evaluating 100% of traffic can double the bill. A small, steady sample is usually enough to see trends.
+
+In RAG, many "hallucinations" are retrieval failures. The fact never arrived. The model got three chunks that didn't contain it and filled the gap with whatever seemed reasonable, because that's what an LLM does when information is missing. That's why it pays to trace the search too: which chunks it returned, in what order and with what score. If the failure is there, review how you split your documents; I explain it in the article on [chunking strategies in RAG](/blog/en/chunking-in-rag-strategies/).
+
+## Which questions should you ask before deciding?
+
+Before looking at features, answer five questions. Where your data can live. Which licence your company accepts. Whether you use LangChain, LlamaIndex or your own code. How many traces you'll generate per month. And who will open the dashboards, just engineering or product and support too. With that, one or two of the six tools usually remain to try.
+
+1. **Data.** If prompts and responses can't leave your infrastructure, you need to self-host: Langfuse, Opik, MLflow, Helicone or Phoenix. LangSmith, only with Enterprise.
+2. **Licence.** MIT and Apache 2.0 rarely cause trouble. The Elastic License 2.0 and proprietary software usually go through legal review.
+3. **Framework.** With LangChain or LangGraph, LangSmith gives you the most direct integration. With LlamaIndex, DSPy or your own code, any of the others will do.
+4. **Volume.** Count how many traces or spans you generate per month and put it next to each plan's limits: 50,000 units in Langfuse, 25,000 spans in Opik or 5,000 traces in LangSmith don't measure the same thing.
+5. **Users.** If product or support will review conversations, the Langfuse, Opik or LangSmith interface has to let them filter by user and session and annotate answers without writing code. Try it with them, not just with the engineering team.
+
+My default approach: instrument with OpenTelemetry from the start, begin with a self-hostable tool under an open licence and move to the cloud only if maintaining it costs you more than paying for it. That way, if you pick the wrong tool, switching takes an afternoon instead of a migration.
+
+## Conclusion
+
+There's no winning tool; there's one that fits your constraints. Langfuse and Opik cover most cases under an open licence, LangSmith wins in teams that live in LangChain, Phoenix in teams that already run OpenTelemetry, MLflow wherever MLflow is already in place and Helicone when you want visibility in five minutes.
+
+If you want to go deeper into one, start with the [Langfuse article](/blog/en/langfuse_the_definitive_observability_platform_for_llms_in_2025/) or the [Opik one](/blog/en/opik_your_copilot_to_master_llms_in_production/). And if your application is a RAG system, also look at how to [split your documents](/blog/en/chunking-in-rag-strategies/), because many of the problems you'll see in your traces start there.
+
+import FAQ from '../../../components/FAQ.astro'
+
+<br/>
+<FAQ items={frontmatter.faqs} lang="en"/>
+<br/>
+
+{/* enlaces-relacionados */}
+If you found this useful, keep reading [Chonkie and Docling: two complementary approaches to document processing in RAG pipelines](/blog/en/chonkie-and-docling-two-complementary-approaches-to-document-processing-rag/) and [Shadow AI: The Hidden Artificial Intelligence Lurking in Your Company](/blog/en/shadow_ai/).

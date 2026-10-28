@@ -17,12 +17,12 @@ faqs:
     respuesta: >
         Los modelos o3-deep-research y o4-mini-deep-research llegaron a la API en junio de 2025, pero OpenAI los apagó el 23 de julio de 2026 y recomienda gpt-5.6-sol como sustituto. Hoy se replica el mismo patrón con un modelo de razonamiento, búsqueda web y modo en segundo plano.
 
-  - pregunta: "¿Puedo fiarme de sus informes?"
+  - pregunta: "¿Puedo fiarme de los informes de Deep Research?"
     respuesta: >
         Como punto de partida, sí. Como fuente final, no: la propia OpenAI reconoce desde el anuncio del 2 de febrero de 2025 que puede inventar datos, citar rumores o no transmitir bien la incertidumbre. Abre las citas clave y comprueba que dicen lo que el informe afirma.
 ---
 
-El 2 de febrero de 2025 OpenAI presentó **Deep Research**, una función de ChatGPT que investiga un tema durante varios minutos y entrega un informe con citas. Llegó pocos días después del terremoto de DeepSeek-R1 y en plena carrera con Google y Perplexity. Año y medio después ha cambiado de modelo, de precio y de forma de uso. Aquí explico cómo funciona, para qué sirve, dónde falla y qué ha pasado desde entonces.
+El 2 de febrero de 2025 OpenAI presentó **Deep Research**, una función de ChatGPT que investiga un tema durante varios minutos y entrega un informe con citas, pocos días después del terremoto de DeepSeek-R1 y en plena carrera con Google y Perplexity. Desde entonces ha cambiado de modelo, de precio y de forma de uso. Aquí explico cómo funciona, para qué sirve, dónde falla y qué ha pasado en este año y medio.
 
 ## Qué es Deep Research
 
@@ -41,7 +41,7 @@ En su lanzamiento usaba una versión de **o3** ajustada para navegar y analizar.
 
 Por dentro, Deep Research es un modelo de razonamiento entrenado con aprendizaje por refuerzo para usar herramientas durante mucho tiempo: un buscador, un navegador que abre páginas y un intérprete de Python para analizar datos. Ninguna de esas herramientas era nueva. Lo nuevo era que el modelo aprendiera a encadenarlas cientos de veces sin perder el objetivo.
 
-El ciclo es más o menos este:
+El ciclo de Deep Research, en 5 pasos:
 
 1. **Aclarar.** Un modelo rápido hace preguntas sobre el encargo y reescribe la petición con más detalle.
 2. **Planificar.** El modelo de razonamiento decide qué buscar primero.
@@ -49,7 +49,7 @@ El ciclo es más o menos este:
 4. **Analizar.** Si hay números, puede ejecutar código para calcular o hacer gráficos.
 5. **Redactar.** Escribe el informe con citas en línea a las fuentes usadas.
 
-Este bucle de pensar, actuar y observar es el mismo que hay detrás de casi todos los agentes actuales. Si quieres la base teórica, la explico en [mi artículo sobre agentes autónomos](/blog/es/la-revolucion-de-los-agentes-autonomos-en-la-inteligencia-artificial-estas-preparado/), y la parte de razonamiento paso a paso en [mi artículo sobre prompting y CoT](/blog/es/explorando-las-fronteras-avanzadas-del-prompt-y-cot/).
+Este bucle de pensar, actuar y observar es el mismo que hay detrás de casi todos los agentes actuales. Si quieres la base teórica, la explico en [mi artículo sobre agentes autónomos de IA](/blog/es/la-revolucion-de-los-agentes-autonomos-en-la-inteligencia-artificial-estas-preparado/), y la parte de razonamiento paso a paso en [mi artículo sobre zero-shot, few-shot y CoT](/blog/es/explorando-las-fronteras-avanzadas-del-prompt-y-cot/).
 
 ## La respuesta a DeepSeek (y a Google)
 
@@ -65,28 +65,28 @@ Google estrenó su [Deep Research en Gemini](https://blog.google/products/gemini
 
 ## Para qué sirve en la práctica
 
-Deep Research rinde mejor en encargos que a una persona le llevarían horas de buscar y leer, y cuyo resultado se puede comprobar: estados del arte, comparativas de producto, normativa, análisis de mercado o revisión de literatura. Rinde peor en preguntas cortas, temas muy recientes o datos que solo están detrás de un muro de pago.
+Deep Research rinde mejor en encargos que a una persona le llevarían horas de buscar y leer, y cuyo resultado se puede comprobar: estados del arte, comparativas de producto, normativa, análisis de mercado o revisión de literatura. Para una pregunta corta no compensa esperar de 5 a 30 minutos. Tampoco para temas muy recientes o datos que solo están detrás de un muro de pago.
 
-Algunos usos donde encaja:
+Cinco usos donde encaja Deep Research:
 
 - **Consultoría y estrategia.** Mapas de competidores, tendencias de un sector o tamaño de mercado, con fuentes para cada cifra.
 - **Periodismo e investigación.** Reunir el contexto de un tema antes de escribir y localizar las fuentes primarias.
-- **Legal y cumplimiento.** Primera pasada por normativa y regulaciones, siempre revisada después por alguien que sepa.
+- **Legal y cumplimiento.** Una primera pasada por normativa. Después la revisa alguien que sepa.
 - **Ciencia y salud.** Revisión de literatura para saber qué se ha publicado sobre un tema.
-- **Compras complejas.** Comparar opciones técnicas con criterios concretos, como hardware o software empresarial.
+- **Compras complejas.** Comparar opciones técnicas, como hardware o software empresarial, con los criterios concretos que le das tú en el encargo.
 
 La clave es escribir el encargo como se lo escribirías a un becario: qué quieres, para qué, qué fuentes valen y qué formato debe tener la entrega. Cada informe gasta una consulta del cupo, y en Plus eran 25 al mes a mediados de 2025, así que compensa acertar a la primera.
 
 ## Limitaciones
 
-El mayor problema de Deep Research es que suena convincente incluso cuando se equivoca. La propia OpenAI admite que puede inventar datos, hacer inferencias incorrectas, citar rumores como hechos y no transmitir bien cuánta certeza hay detrás de cada frase. Un informe de veinte páginas con citas genera una confianza que no siempre merece.
+El mayor problema de Deep Research es que suena convincente incluso cuando se equivoca. La propia OpenAI admite que puede inventar datos, hacer inferencias incorrectas, citar rumores como hechos y no transmitir bien cuánta certeza hay detrás de cada frase. Un informe de veinte páginas con citas da confianza. No siempre la merece.
 
-Otras limitaciones conocidas:
+Otras cuatro limitaciones conocidas de Deep Research:
 
 - **Citas que no dicen lo que el texto afirma.** El enlace existe, pero la frase citada no aparece o dice otra cosa.
 - **Sesgo hacia lo que es fácil de leer.** Las fuentes abiertas y bien posicionadas pesan más que las mejores fuentes, que a menudo están en PDF o detrás de un registro.
-- **Tiempo y cupos.** Cada informe tarda minutos y consume una de las consultas del mes.
-- **Datos privados.** Hasta 2026 no podía consultar fácilmente documentos internos; ahora puede hacerlo a través de conectores, con lo que eso implica en permisos.
+- **Tiempo y cupos.** Cada informe tarda minutos. Y gasta una consulta del mes.
+- **Datos privados.** Hasta 2026 no podía consultar fácilmente documentos internos. Ahora puede hacerlo a través de conectores, con lo que eso implica en permisos.
 
 Mi recomendación técnica: tratar el informe como un primer borrador. Y abrir siempre las 3 o 4 citas en las que se apoya la conclusión, sobre todo si alguna sostiene una cifra.
 
@@ -106,7 +106,7 @@ Desde febrero de 2025 Deep Research ha pasado de experimento para unos pocos a f
 - **22 de abril de 2026.** OpenAI anuncia la retirada de los modelos de la API.
 - **23 de julio de 2026.** Se apagan `o3-deep-research` y `o4-mini-deep-research`; OpenAI propone `gpt-5.6-sol` como sustituto, según su [lista de retiradas](https://developers.openai.com/api/docs/deprecations).
 
-La [guía de deep research de la API](https://developers.openai.com/api/docs/guides/deep-research) avisa de que cambiar el nombre del modelo no basta para migrar. Lo que queda es el patrón: un modelo de razonamiento con esfuerzo alto, las herramientas de búsqueda web, búsqueda en archivos y MCP, el **modo en segundo plano** porque las tareas tardan, y `max_tool_calls` como principal palanca para controlar coste y latencia. Ojo con un detalle: el modo en segundo plano guarda los datos unos diez minutos, así que no es compatible con la retención cero de datos.
+La [guía de deep research de la API](https://developers.openai.com/api/docs/guides/deep-research) avisa de que cambiar el nombre del modelo no basta para migrar. Lo que queda es el patrón: un modelo de razonamiento con esfuerzo alto, las herramientas de búsqueda web, búsqueda en archivos y MCP, el **modo en segundo plano** porque las tareas tardan, y `max_tool_calls` como principal palanca para controlar coste y latencia. Ojo con un detalle. El modo en segundo plano guarda los datos unos diez minutos, así que no es compatible con la retención cero de datos.
 
 La conexión con MCP es de lo más útil de 2026, porque permite investigar sobre documentación interna además de la web abierta. Si estás decidiendo cómo exponer esas fuentes al modelo, te puede servir mi comparativa de [MCP frente a Skills](/blog/es/mcp-vs-skills/).
 
