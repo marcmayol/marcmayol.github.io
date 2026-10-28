@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-28",
+    "scope": "app",
+    "macrostructure": "Split Studio (portada) · Index-First (blog) · Long Document (artículo)",
+    "theme": "custom (neo-brutalist editorial, marca tinta/papel/rojo)",
+    "theme_axes": "light / grotesk-heavy / warm",
+    "nav": "N7 Brutal slab",
+    "footer": "Ft5 Statement",
+    "enrichment": "none (retrato real)",
+    "brief": "rediseño 2026 en rama rediseno-2026: design.md + nav, pie y portada; quedan blog, artículo, about y contacto"
+  },
+  {
     "date": "2026-08-04",
     "macrostructure": "Marquee Hero",
     "theme": "custom (neo-brutalist editorial)",

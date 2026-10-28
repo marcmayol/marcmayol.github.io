@@ -13,6 +13,22 @@ export const talkAudienceTags = {
     en: ['DEVS · STUDENTS', 'GENERAL PUBLIC', 'LEADERS · HR', 'TECHNICAL', 'ALL AUDIENCES'],
 } as const;
 
+// Pruebas de la portada: cosas publicadas que se pueden abrir (díptico «lo que he construido»)
+export const homeProof = {
+    es: [
+        { kind: 'API · GitHub Pages', name: 'Exercise API', desc: '104 ejercicios de gimnasio con ilustraciones y mapas musculares, en ES/EN. Sin claves ni límites.', href: '/exercise-api/' },
+        { kind: 'Modelo · Hugging Face', name: 'EsDrac', desc: 'LLM que habla mallorquí, entrenado con LoRA sobre Qwen2.5 7B.', href: 'https://huggingface.co/natzx94/EsDrac-v1-7B' },
+        { kind: 'Librería · Observabilidad', name: 'LLM‑Trace', desc: 'Trazas de LLM sobre SQLite, sin infraestructura.', href: 'https://github.com/llm-trace/llm-trace' },
+        { kind: 'Guía · GitHub', name: 'On‑Device AI Cookbook', desc: '5 recetas para entrenar y desplegar LLM y modelos de visión en local y en Android.', href: 'https://github.com/marcmayol/on-device-ai-cookbook' },
+    ],
+    en: [
+        { kind: 'API · GitHub Pages', name: 'Exercise API', desc: '104 gym exercises with illustrations and muscle maps, in Spanish and English. No keys, no limits.', href: '/exercise-api/' },
+        { kind: 'Model · Hugging Face', name: 'EsDrac', desc: 'An LLM that speaks Majorcan Catalan, trained with LoRA on Qwen2.5 7B.', href: 'https://huggingface.co/natzx94/EsDrac-v1-7B' },
+        { kind: 'Library · Observability', name: 'LLM‑Trace', desc: 'LLM tracing on SQLite, with no infrastructure.', href: 'https://github.com/llm-trace/llm-trace' },
+        { kind: 'Guide · GitHub', name: 'On‑Device AI Cookbook', desc: '5 recipes to train and ship LLMs and vision models locally and on Android.', href: 'https://github.com/marcmayol/on-device-ai-cookbook' },
+    ],
+} as const;
+
 // Proyectos personales (rejilla en la página "Sobre mí")
 export const projects = {
     es: [

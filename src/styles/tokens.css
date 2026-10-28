@@ -1,7 +1,7 @@
-/* Hallmark · macrostructure: Marquee Hero · genre: editorial · theme: custom (neo-brutalist editorial)
- * tone: técnico + directo · anchor hue: warm (27°)
+/* Hallmark · genre: editorial · macrostructure: Split Studio · design-system: design.md · designed-as-app
+ * theme: custom (neo-brutalist editorial, marca tinta/papel/rojo) · anchor hue: warm (27°)
  * axes → paper band: light (95.5%) · display: grotesk-heavy (Archivo 900) · accent: warm red
- * pre-emit critique: P5 H5 E4 S5 R4 V4
+ * nav: N7 Brutal slab · footer: Ft5 Statement · pre-emit critique: P4 H5 E4 S5 R5 V4
  *
  * Fuente única de color, tipografía, espacio y motion. Nada de hex sueltos fuera de aquí.
  */
@@ -27,9 +27,11 @@
 
     --mm-rule: oklch(86.86% 0.0163 82.8);         /* filete suave sobre papel */
     --mm-rule-soft: oklch(89.87% 0.0145 84.6);    /* filete sobre blanco */
+    --mm-rule-dark: oklch(40% 0.005 40);          /* filete sobre tinta */
 
     /* ── Trazo ── */
     --mm-border: 2px;
+    --mm-border-heavy: 3px;  /* dípticos, nav y CTA */
     --mm-hair: 1px;
 
     /* ── Tipografía ── */
@@ -47,6 +49,10 @@
     --text-3xl: 2.875rem;   /* 46 */
     --text-4xl: 3.75rem;    /* 60 */
     --text-display: 4.625rem; /* 74 */
+    --text-lede: 1.375rem;  /* 22 · entradillas */
+    --text-hero: clamp(2.5rem, 5.4vw, 4.75rem); /* H1 de portada: cabe «CONSTRUYO» en media columna */
+    --text-statement: clamp(2.75rem, 7vw, 6rem); /* frase del pie, a todo el ancho */
+    --mm-shadow-hard: 6px;  /* sombra dura del CTA primario */
 
     /* ── Espacio · rejilla de 4pt ── */
     --space-3xs: 0.25rem;  /* 4  */
@@ -58,6 +64,7 @@
     --space-xl: 2.5rem;    /* 40 */
     --space-2xl: 3.5rem;   /* 56 */
     --space-3xl: 4rem;     /* 64 */
+    --space-4xl: 7rem;     /* 112 · solo el hero */
 
     /* ── Layout ── */
     --mm-maxw: 1180px;
