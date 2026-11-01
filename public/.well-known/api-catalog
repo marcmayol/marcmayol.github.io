@@ -1,0 +1,19 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://marcmayol.com/exercise-api/",
+      "service-desc": [
+        {
+          "href": "https://marcmayol.com/exercise-api/openapi.json",
+          "type": "application/vnd.oai.openapi+json;version=3.1"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://marcmayol.com/exercise-api/docs.html",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

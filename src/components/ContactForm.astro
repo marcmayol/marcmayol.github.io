@@ -23,25 +23,25 @@ const texts = {
 };
 ---
 
-<form class="mm-form" novalidate>
+<form class="mm-form" novalidate toolname="contact_marc_mayol" tooldescription={t('form.tooldesc')}>
 	<h2 class="mm-form-title">{t('form.title')}</h2>
 
 	<div class="mm-form-grid">
 		<div class="mm-field">
 			<label class="mm-flabel" for="mm-name">{t('form.name')}</label>
-			<input class="mm-in" id="mm-name" type="text" name="name" placeholder={t('form.nameph')} maxlength="80" autocomplete="name" required aria-describedby="mm-name-err" />
+			<input class="mm-in" id="mm-name" type="text" name="name" toolparamdescription={t('form.toolname')} placeholder={t('form.nameph')} maxlength="80" autocomplete="name" required aria-describedby="mm-name-err" />
 			<p class="mm-ferr" id="mm-name-err" hidden></p>
 		</div>
 		<div class="mm-field">
 			<label class="mm-flabel" for="mm-email">{t('form.email')}</label>
-			<input class="mm-in" id="mm-email" type="email" name="email" placeholder="tu@email.com" maxlength="120" autocomplete="email" required aria-describedby="mm-email-err" />
+			<input class="mm-in" id="mm-email" type="email" name="email" toolparamdescription={t('form.toolemail')} placeholder="tu@email.com" maxlength="120" autocomplete="email" required aria-describedby="mm-email-err" />
 			<p class="mm-ferr" id="mm-email-err" hidden></p>
 		</div>
 	</div>
 
 	<div class="mm-field">
 		<label class="mm-flabel" for="mm-company">{t('form.company')}</label>
-		<input class="mm-in" id="mm-company" type="text" name="companyName" placeholder={t('form.companyph')} maxlength="80" autocomplete="organization" />
+		<input class="mm-in" id="mm-company" type="text" name="companyName" toolparamdescription={t('form.toolcompany')} placeholder={t('form.companyph')} maxlength="80" autocomplete="organization" />
 	</div>
 
 	<div class="mm-field">
@@ -51,18 +51,18 @@ const texts = {
 				<button type="button" class="mm-topic" data-topic={topic.id} aria-pressed="false">{topic.label}</button>
 			))}
 		</div>
-		<input type="hidden" name="topic" value="" />
+		<input type="hidden" name="topic" value="" toolparamdescription={t('form.tooltopic')} />
 	</div>
 
 	<div class="mm-field">
 		<label class="mm-flabel" for="mm-message">{t('form.message')}</label>
-		<textarea class="mm-in mm-textarea" id="mm-message" name="message" rows="5" placeholder={t('form.messageph')} maxlength="2000" required aria-describedby="mm-message-err"></textarea>
+		<textarea class="mm-in mm-textarea" id="mm-message" name="message" toolparamdescription={t('form.toolmessage')} rows="5" placeholder={t('form.messageph')} maxlength="2000" required aria-describedby="mm-message-err"></textarea>
 		<p class="mm-ferr" id="mm-message-err" hidden></p>
 	</div>
 
 	{/* Trampa para bots: invisible y fuera del foco. Un humano nunca lo rellena. */}
 	<div class="mm-hp" aria-hidden="true">
-		<label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+		<label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" toolparamdescription={t('form.toolhoneypot')} /></label>
 	</div>
 
 	<button class="mm-submit" type="submit">{t('form.send')}</button>

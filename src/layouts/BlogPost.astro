@@ -9,6 +9,7 @@ type Props = CollectionEntry<'blog'>['data'];
 import { getLangFromUrl} from '../i18n/utils';
 import { existsSync } from 'node:fs';
 import { PERSON_ID, WEBSITE_ID, PERSON_LOGO, SITE_URL } from '../consts';
+import { markdownPath } from '../utils/postMarkdown';
 const lang = getLangFromUrl(Astro.url);
 const { title, description, pubDate, updatedDate, heroImage,customURL,faqs} = Astro.props;
 // La portada se sirve en WebP si existe; el original queda para las vistas previas de redes
@@ -56,7 +57,7 @@ const item = {
 
 <html lang={lang}>
 	<head>
-		<BaseHead title={title} description={description} image={heroImage} item={item} altURL={customURL ?? null} ogType="article"/>
+		<BaseHead title={title} description={description} image={heroImage} item={item} altURL={customURL ?? null} ogType="article" markdownURL={markdownPath(Astro.url.pathname)}/>
 	</head>
 
 	<body class="mm-body">

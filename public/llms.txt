@@ -6,6 +6,8 @@ Marc Mayol combina divulgación, investigación y desarrollo práctico de soluci
 
 El sitio está diseñado para ser claro y accesible, manteniendo un equilibrio entre precisión técnica y lenguaje divulgativo. Los artículos se escriben en español de España, muchos tienen versión en inglés, y evitan tecnicismos innecesarios.
 
+Cada artículo también está en Markdown: cambia la barra final de su URL por `.md`, como en https://marcmayol.com/blog/es/mcp-vs-skills.md
+
 ## Contenidos principales
 
 - [Artículos sobre IA y agentes](https://marcmayol.com/blog/es/): Artículos sobre LLM en producción, RAG, agentes, observabilidad e IA on-device.
@@ -24,7 +26,13 @@ El sitio está diseñado para ser claro y accesible, manteniendo un equilibrio e
 - [Arquitectura hexagonal y LLMs](https://marcmayol.com/blog/es/arquitectura-hexagonal-y-llms/): Aplicaciones con LLM que cambian de modelo sin reescribir el núcleo.
 - [Chonkie y Docling](https://marcmayol.com/blog/es/chonkie-y-docling-dos-enfoques-complementarios-para-procesar-documentos-rag/): Procesado de documentos para pipelines RAG.
 - [Langfuse](https://marcmayol.com/blog/es/langfuse_la_plataforma_definitiva_de_observabilidad_para_llm_en_2025/): Observabilidad open source para LLM.
-- [Exercise API](https://marcmayol.com/blog/es/exercise-api-base-de-datos-abierta-de-ejercicios/): API abierta y gratuita con más de 100 ejercicios de gimnasio, en español e inglés.
+- [Exercise API](https://marcmayol.com/blog/es/exercise-api-base-de-datos-abierta-de-ejercicios/): API abierta y gratuita con más de 150 ejercicios de gimnasio, en español e inglés.
+
+## Exercise API
+
+- [Especificación OpenAPI](https://marcmayol.com/exercise-api/openapi.json): Los endpoints y el formato de cada respuesta. Sin clave y con CORS abierto.
+- [Documentación](https://marcmayol.com/exercise-api/docs.html): Guía en español e inglés, con ejemplos en JavaScript, curl y Python.
+- [Skill para agentes](https://marcmayol.com/.well-known/agent-skills/exercise-api/SKILL.md): Cómo buscar ejercicios con la API y qué atribución exige su licencia.
 
 ## Recursos externos
 

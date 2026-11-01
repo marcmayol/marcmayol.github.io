@@ -13,9 +13,11 @@ interface Props {
 	// Ruta de la otra versión de idioma: undefined = se deduce de la URL, null = no hay traducción
 	altURL?: string | null;
 	ogType?: 'website' | 'article';
+	// Versión Markdown de esta página, si la tiene
+	markdownURL?: string;
 }
 
-const { title, description, image = '/perfil.jpg', altURL, ogType = 'website' } = Astro.props;
+const { title, description, image = '/perfil.jpg', altURL, ogType = 'website', markdownURL } = Astro.props;
 
 const withSlash = (p: string) => (p.endsWith('/') || p.includes('.') ? p : p + '/');
 
@@ -71,6 +73,8 @@ const alternates = pair && [
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 {alternates && alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+{markdownURL && <link rel="alternate" type="text/markdown" href={markdownURL} />}
+<link rel="api-catalog" href="/.well-known/api-catalog" />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
